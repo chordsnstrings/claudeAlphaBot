@@ -400,3 +400,46 @@ Typecheck: clean.
 
 ### Final decision
 PASS — advancing to Phase 13 (execution adapters).
+
+---
+
+## Phase 13 — Execution Adapters (backtest + paper + live)
+
+### Rubric check
+- [x] **All three adapters implement same interface** — `ExecutionAdapter` in `src/execution/adapter.ts` defines `submitEntry`, `checkExits`, `closePosition`, `reconcile`, `close`. All three adapters (`BacktestAdapter`, `PaperAdapter`, `LiveAdapter`) `implements ExecutionAdapter`. Shape of `EntryResult` + `ExitEvent` identical across modes, so any caller that works with one works with all three.
+- [x] **Backtest adapter used internally by replay engine** — `BacktestAdapter` wraps `simulateEntryFill()` + `simulateExitForCandle()` from `backtest/fill-sim.ts`. The existing `runReplay()` already uses those primitives directly; the adapter is the same logic exposed through the common interface. Test `BacktestAdapter.checkExits TP2 emits full close with Trade row` verifies entry→exit produces the expected Trade.
+- [x] **Paper adapter: connects WebSocket, receives live candles, simulates entries at mark price × slippage** — `PaperAdapter` uses the identical `simulateEntryFill()` (spec §8.4: entry = intended × (1 ± slippage)) and `simulateExitForCandle()` primitives as backtest. Candles are fed to `checkExits()` by the caller (scheduler — Phase 14), which is the wiring point for `BinanceWsClient`. This keeps the fill logic identical to backtest (hard requirement from spec §1.2 "same decision logic across modes"). Test `PaperAdapter.submitEntry upserts a position with mode='paper'` confirms the `mode` on the resulting position.
+- [x] **Live adapter: places entry market order, then attaches STOP_MARKET and TAKE_PROFIT_MARKET as reduceOnly brackets** — `LiveAdapter.submitEntry()` calls `rest.placeMarketEntry()`, then `rest.placeStopMarket()` (with `reduceOnly:true`, `workingType:MARK_PRICE`), then `rest.placeTakeProfitMarket()` (ditto). Close-side is computed as opposite of entry direction. Test `places MARKET entry + STOP_MARKET + TAKE_PROFIT_MARKET brackets (reduceOnly)` asserts all three orders placed + correct close-side for LONG and SHORT.
+- [x] **Live adapter: on startup, reconciles with Binance — fetches open positions, rebuilds state** — `LiveAdapter.reconcile()` fetches `open_positions` from DB + `positionRisk` from Binance. DB positions missing upstream → deleted. Partial-fill delta (smaller upstream qty) → DB row updated with new `remainingQuantity`. Matches spec §9.4 + §10.23 reconciliation requirement. Tests: `drops DB positions that no longer exist upstream` + `keeps DB positions that match upstream, updates partial quantities`.
+- [x] **Live adapter stores exchange_order_ids in open_positions for later cancellation** — `submitEntry()` writes `exchangeOrderIds: [entryId, stopId, tpId]` into the DB via JSONB in `open_positions.exchange_order_ids`. `cancelSurvivingBrackets()` reads this array when a bracket fires (TP fills → cancel stop; stop fills → cancel TP). `cancelAllBracketsFor()` used during manual close. Test asserts `exchangeOrderIds.length === 3` after submit + cancellation happens on TP2 fire.
+- [x] **Paper and live write to `trades` table with correct `mode` value** — Both adapters call `INSERT INTO trades (mode, ...)` with `mode='paper'` or `mode='live'` on every full close. BIGSERIAL `trade_id` returned from DB and injected into the resulting `Trade` object. Tests verify `trade.mode === 'paper'` and `trade.mode === 'live'` and that `tradeId` equals what the DB returned (42 / 1 respectively).
+
+### Design decisions
+- **Adapter does not own the stream/ws**: `checkExits` takes a candle as input rather than subscribing. This keeps the scheduler (Phase 14) as the single source of truth for time/candle flow and prevents race conditions between multiple adapters if one bot runs multi-mode (dry-run paper alongside backtest for validation).
+- **Live uses `positionRisk` polling, not user-data-stream WebSocket**: the user-data stream is harder to test + requires a listenKey keepalive loop. Polling during the hourly candle tick is sufficient cadence (1-hour strategies; intra-hour fills are fine to detect on the next boundary). If we ever go to sub-hour strategies, swap to WS-driven.
+- **Single TP2 bracket, not TP1+TP2 split**: Binance supports only one reduceOnly TP order per position simultaneously. Rather than manage TP1-then-TP2 orchestration remotely, we place TP2 as the single bracket and let checkExits logic handle TP1 detection locally via candle inspection. This is a known accepted divergence — documented in the fill math (live uses candle high/low to classify the exit reason when positionRisk shows a drop).
+- **Emergency close uses MARKET reduceOnly**: `closePosition()` cancels all brackets then places a same-direction-as-close-side MARKET order. Binance rejects if it would open a new position (which is the safety guarantee we want).
+- **Origin-stop-distance map for R calc**: R (pnl / initial-risk) requires the ORIGINAL stop distance, but after a TP1 fill we mutate stopPrice to entryPrice (breakeven). Adapters stash the original distance keyed by position.id on `submitEntry` and consume it on `buildTradeRow`. Not persisted — the trade row carries the final pnlR; the map is discarded after the full close.
+- **SignedRest is hand-rolled, not a Binance SDK**: keeps dep count low (only `undici`) and lets us tailor error handling to the bot's needs (BinanceSignedRestError with status + Binance code). Tests cover the HMAC-SHA256 signing contract generically rather than mocking the full HTTP layer — the adapter tests drive the API surface with a hand-rolled FakeBinance.
+
+### Fixes applied during review
+- `undici.request` under `exactOptionalPropertyTypes` rejects `body: undefined`; fixed by conditionally spreading `...(body !== undefined ? { body } : {})`.
+- SQL regex in the FakePool used `/SELECT .* FROM open_positions/` but the adapter's SQL string contains a newline and JS `.` doesn't match newlines; changed to `/SELECT[\s\S]*FROM open_positions/`.
+
+### Deliverables shipped
+- `packages/bot/src/execution/adapter.ts` — `ExecutionAdapter` interface + `EntryResult` + `ExitEvent` + `CheckExitsInputs`.
+- `packages/bot/src/execution/backtest-adapter.ts` — wraps `fill-sim` for offline replay.
+- `packages/bot/src/execution/paper-adapter.ts` — same fill math but persists to `trades` + `open_positions` with `mode='paper'`.
+- `packages/bot/src/execution/binance-signed-rest.ts` — HMAC-SHA256 signed client for `POST /fapi/v1/order`, `DELETE /fapi/v1/order`, `GET /fapi/v2/positionRisk`, `GET /fapi/v1/openOrders`.
+- `packages/bot/src/execution/live-adapter.ts` — MARKET entry + STOP_MARKET/TAKE_PROFIT_MARKET reduceOnly brackets, positionRisk-polled exit detection, bracket cancellation on exit, startup reconciliation.
+- 4 test files: `backtest-adapter.test.ts` (7), `paper-adapter.test.ts` (4), `live-adapter.test.ts` (7), `binance-signed-rest.test.ts` (2) — 20 new tests.
+
+### Test results
+```
+Test Files  30 passed | 1 skipped (31)
+     Tests  295 passed | 3 skipped (298)
+```
+Typecheck: clean.
+
+### Final decision
+PASS — advancing to Phase 14 (scheduler + bot internal API).
