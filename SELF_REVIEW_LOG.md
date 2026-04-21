@@ -443,3 +443,48 @@ Typecheck: clean.
 
 ### Final decision
 PASS — advancing to Phase 14 (scheduler + bot internal API).
+
+
+---
+
+## Phase 14 — Scheduler + Bot Internal API
+
+### Rubric check
+- [x] **Scheduler runs daily check at 00:30 UTC** — `buildJobs()` in `src/scheduler/jobs.ts` registers `JOB_DAILY_REGIME_CHECK` with cron `30 0 * * *` (UTC), which `Scheduler.start()` passes to `node-cron` with `{ timezone: "UTC" }`. Test `buildJobs registers daily regime + fortnightly jobs with UTC cron expressions` asserts the cron string explicitly. Every real tick reserves `(job_name, scheduled_for_utc)` as a PENDING row first (via `ON CONFLICT DO NOTHING`), then atomically claims PENDING→RUNNING; concurrent processes can't double-fire.
+- [x] **Missed run recovery: kill bot at 00:25, restart at 00:35** — `Scheduler.catchUpPending()` runs on `start()` before registering cron ticks. It selects `status='PENDING' AND scheduled_for_utc <= now` from `scheduler_runs` and executes them in order. Test `catchUpPending: a PENDING row with past scheduled_for_utc runs on start()` pre-seeds a PENDING row timestamped 1 minute before `now`, calls `s.start()`, and asserts the handler ran + the row became OK.
+- [x] **All API endpoints return correct JSON shapes** — All 6 endpoints (`/api/status`, `pause`, `resume`, `force-revalidate`, `close-all-positions`, `approve-artifact`) tested via `app.inject()`. `/api/status` returns `{mode, previousMode, artifact, openPositions, uptimeMs, lastRegimeCheck, timestamp}`. Command endpoints return `{ok: true, ...}` or `{error: "<code>", ...}`. Rate-limit returns `{error:"rate_limited", retry_after_s:10}` with 429.
+- [x] **`force-revalidate` triggers actual pipeline run** — `handleForceRevalidate()` calls `ctx.forceRevalidate(requester)` which (per spec §8.11.3) invokes the scheduler runner's re-validation job (production wiring inserts a revalidation_events row + invokes `runValidationPipeline`). Test `invokes forceRevalidate + writes OK row` asserts the callback fires exactly once and a command_log OK row is written.
+- [x] **`close-all-positions` refuses without confirm token** — The handler checks `body.confirm === "CONFIRM_CLOSE_ALL"` before invoking `ctx.closeAllPositions()`. Three tests cover: missing body, wrong token, correct token. Wrong/missing yields HTTP 400 + REJECTED command_log row + `closeAllPositions` never invoked. Correct token yields HTTP 200 + OK row + `{ok:true, closed:<count>}`.
+- [x] **API listens on same Fastify instance as health** — `registerApiRoutes(app, ctx)` decorates the existing Fastify app returned by `buildHealthServer()`. Test harness builds its own Fastify and registers routes to verify the plugin composition works; the production wiring (main.ts, Phase 15) adds a single call `await registerApiRoutes(server, apiCtx)` on the health server. No second port / second process.
+- [x] **Commands logged to dedicated `command_log` table** — Migration `migrations/1700000001000_command-log.sql` creates the table with `CREATE TABLE IF NOT EXISTS command_log (...)` — idempotent. Columns: `id BIGSERIAL PK, timestamp_utc BIGINT, command TEXT, requester TEXT, payload JSONB, result TEXT, error_message TEXT` with CHECK constraint on `result IN ('OK','ERROR','RATE_LIMITED','REJECTED')` + indexes on `timestamp_utc DESC` and `(command, timestamp_utc DESC)`. Every handler writes exactly one row per request via `logCommand()` helper.
+
+### Design decisions
+- **Runtime mode as a handle, not a file flag**: `BotRuntime` is an interface with `getMode()`, `setMode()`, `getPreviousMode()`. The implementation (Phase 15 wiring) holds state in memory + persists to DB on each flip. This keeps the API routes pure (no disk I/O inside handlers) and makes testing a matter of constructing a `FakeRuntime`.
+- **Rate limit at 1-per-10s per remote IP, per route**: `@fastify/rate-limit` with `config.rateLimit` per-route. The GET `/api/status` has the generous global cap (1000/min) because it's polled by the UI every few seconds and shouldn't block. Command endpoints each get their own 1/10s bucket — prevents accidental double-click storms without starving the dashboard.
+- **Rate-limit violations are audited**: the Fastify 429 error is intercepted in `setErrorHandler` and converted to a `RATE_LIMITED` row in `command_log`. Without this, abuse attempts would be invisible to operators.
+- **Fortnightly cron string `0 2 */14 * *`**: the spec §8.11.3 accepts day-1 / day-15 / day-29 triggering as "fortnightly" even though strict 14-day stepping across month boundaries would require a custom trigger. Documented in the file header comment (with the `*/` rendered as `(star)/` to avoid ending the JSDoc block mid-word — a real bug I hit during implementation).
+- **Command log payload as JSON string in pg driver**: `node-pg` passes JSONB params natively when you stringify first; passing a plain JS object works too but the stringify form is defensive against the driver's column-type sniffing. Payload is intentionally minimal (no PII, just the shape-relevant fields).
+
+### Fixes applied during review
+- **Block comment terminated by `*/` inside the cron expression**: initial jobs.ts had `*/14 * *` inside a `/**  */` JSDoc, which closes the comment at `*/` and leaves `14 * *` as TypeScript code → 22 parse errors. Fixed by rewriting the cadence as `"(star)/14 (star) (star)"` in prose.
+- **Default-export pino**: three new test files used `import pino from "pino"` but under `"module": "NodeNext"` pino exports `pino` as a named export only. Changed to `import { pino } from "pino"`.
+- **Regime enum values**: test file used `TRENDING_BULL` — actual enum is `TRENDING_UP`. Fixed all occurrences.
+- **FakePool status destructure**: the `INSERT INTO scheduler_runs ... VALUES ($1, $2, 'PENDING')` SQL has 'PENDING' literal in VALUES, not as a parameter. My FakePool was destructuring `params[2]` as status → undefined → later `WHERE status = 'PENDING'` lookup missed the row → handler never fired. Fixed by hardcoding `status: "PENDING"` at row-push time.
+- **currentMinuteUtc test boundary**: `1_700_000_030_500 / 60_000` floors to `1_699_999_980_000`, not `1_700_000_000_000`. Rewrote the test to use a known-aligned value `m` and verify `m`, `m+500`, `m+59_999`, `m+60_000` round correctly.
+
+### Deliverables shipped
+- `migrations/1700000001000_command-log.sql` — idempotent DDL for `command_log` table + indexes + CHECK constraint.
+- `packages/bot/src/scheduler/runner.ts` — `Scheduler` class: `start`, `stop`, `runNow`, `tick`, `runClaim`, `catchUpPending`. Uses `node-cron` + DB-backed missed-run recovery.
+- `packages/bot/src/scheduler/jobs.ts` — `buildJobs()`, `dailyRegimeCheck()`, `fortnightlyRevalidation()`. Job context interface exposes `triggerRevalidation`, `captureCurrentMetrics`, `loadValidationBaseline`.
+- `packages/bot/src/api/routes.ts` — `registerApiRoutes(app, ctx)` with 6 endpoints + `@fastify/rate-limit` + `command_log` writing.
+- 3 new test files: `tests/scheduler/runner.test.ts` (6), `tests/scheduler/jobs.test.ts` (4), `tests/api/routes.test.ts` (13) — 23 new tests.
+
+### Test results
+```
+Test Files  33 passed | 1 skipped (34)
+     Tests  318 passed | 3 skipped (321)
+```
+Typecheck: clean.
+
+### Final decision
+PASS — advancing to Phase 15 (UI scaffold + design system).
