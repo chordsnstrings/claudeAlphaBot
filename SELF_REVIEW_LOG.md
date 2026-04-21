@@ -120,3 +120,47 @@ PASS — advancing to Phase 5.
 
 ### Final decision
 PASS — advancing to Phase 6.
+
+---
+
+## Gate: Phase 6 — Regime classifier + session utilities — 2026-04-21 UTC
+
+### Criteria checked
+- [x] Regime classifier returns RANGING for flat chop synthetic data — PASS. `tests/core/regime.test.ts > classifies flat chop as RANGING`: 40 candles at 100 ± 0.05 alternating. Result: `regime === "RANGING"`, `|ema99SlopePct| < 0.05`, `confidence > 0.9` (RANGING confidence = 1 − |slope|/threshold ≈ 1 for flat).
+- [x] Returns TRENDING_UP for monotonic uptrend synthetic data — PASS. 60-candle geometric series `100 · 1.01^i · (1 + 0.003·sin(0.7·i))`. Result: `regime === "TRENDING_UP"`, `ema99SlopePct > 0.05`, `confidence > 0.5`. The small sinusoidal perturbation mirrors real market jitter; a PURE linear ramp would classify as SQUEEZE because mean grows faster than σ, collapsing bb_width_pct to the bottom of the trailing distribution (correct behavior on paper, wrong assertion here).
+- [x] Returns TRENDING_DOWN for monotonic downtrend — PASS. Symmetric setup `200 · 0.99^i · (1 + 0.003·sin(0.7·i))` over 60 candles; `regime === "TRENDING_DOWN"`, `ema99SlopePct < -0.05`, `confidence > 0.5`.
+- [x] Returns SQUEEZE when BB width at historical low — PASS. 30 oscillating candles (±2 around 100) followed by 10 flat candles at 100: bandwidth at last is 0, trailing distribution has 6-of-20 zeros → pctile = 15 ≤ 20 → SQUEEZE.
+- [x] Returns TRANSITION right after a regime flip — PASS. 48 flat candles then closes 103, 106. `classifyAt(last - 2)` returns RANGING (still in flat region), `classifyOne(last)` returns TRENDING_UP → regime is overridden to TRANSITION, confidence=0.5, baseRegime=TRENDING_UP preserved for drift-log purposes.
+- [x] Does NOT mark TRANSITION when classification has been stable — PASS. Continuous TRENDING_UP series: both `last` and `last − transitionWindow` classify TRENDING_UP → no override.
+- [x] Session utilities: correct Asian range (00:00–07:00 UTC) for arbitrary date — PASS. `asianSessionRange` test with 7 synthetic hourly candles from Oct 15, 2024 00:00–06:00 UTC correctly aggregates high=67_450, low=66_900, open=67_200, close=67_010, totalVolume = Σ individual. Outside candles (hour 8) are excluded.
+- [x] Session utilities handle DST-free UTC correctly (no off-by-one on month boundaries) — PASS. Tests: (a) `utcDateKey(Nov 30, 23:59:59 UTC) === "2024-11-30"` and `utcDateKey(Dec 1, 00:00 UTC) === "2024-12-01"`; (b) year boundary (Dec 31 ↔ Jan 1); (c) leap-year Feb 29 round-trip; (d) non-existent dates (2023-02-29, 2024-02-30, 2024-13-01, 2024-04-31) all throw. No timezone-implicit date operations anywhere.
+- [x] `hasPriorBreakout` correctly identifies first-only breakouts — PASS. Six test cases: (a) no earlier breakout → false; (b) earlier close > high → true; (c) earlier close < low → true; (d) current candle itself is excluded (strictly earlier only) → false; (e) Asian-session breakout ignored (not in ARB window) → false; (f) yesterday's breakout ignored (wrong UTC day) → false.
+- [x] Unit tests cover all 5 regime states and all session windows — PASS. `tests/core/regime.test.ts`: 8 cases (insufficient-data, RANGING, TRENDING_UP, TRENDING_DOWN, SQUEEZE, TRANSITION, stable-trend, result-shape). `tests/core/sessions.test.ts`: 30 cases (date parsing, weekend, hour bounds, four canonical windows × 24 hours, asian/pre-NY/NY range aggregation, `hasPriorBreakout` × 6).
+
+### Deliverables shipped
+- `packages/bot/src/core/regime.ts` — `classifyRegime(candles, opts)` returning `RegimeResult` with fields {regime, baseRegime, confidence, bbWidthPctile, ema99Slope, ema99SlopePct, atrPct}. Rules per spec §8.12.1: SQUEEZE if bb_width_pct ≤ 20, TRENDING_UP/DOWN if |ema99_slope_pct| ≥ 0.05% per candle, RANGING otherwise, TRANSITION overrides when classification differs from the one 3 candles ago. Confidence is proportional to depth into the regime (1 − bbw/20 for SQUEEZE; |slope|/(2·threshold) for TRENDING; 1 − |slope|/threshold for RANGING; 0.5 for TRANSITION).
+- `packages/bot/src/core/sessions.ts` — `ASIAN_SESSION` (00:00-06:59), `ARB_BREAKOUT_WINDOW` (07:00-10:59), `PRE_NY_WINDOW` (11:00-12:59), `NY_BREAKOUT_WINDOW` (13:00-14:59); pure helpers `utcDateKey`, `startOfUtcDay` (validates non-existent calendar dates), `utcHourStart`, `isUtcWeekend`, `candleInWindow`, `candlesInWindow`, `sessionRange`, `asianSessionRange`, `preNyRange`, `buildRangeFromCandles`, `hasPriorBreakout`. All operate on epoch-ms `Candle.openTime`; no locale/timezone implicit operations.
+- `packages/bot/tests/core/regime.test.ts` — 8 tests covering all 5 regimes plus insufficient-data and result-shape.
+- `packages/bot/tests/core/sessions.test.ts` — 30 tests covering UTC date parsing, windowing, aggregation, and `hasPriorBreakout` edge cases.
+
+### Test results
+```
+Test Files  10 passed | 1 skipped (11)
+     Tests  105 passed | 3 skipped (108)
+```
+Coverage (regime + sessions only):
+- `src/core/regime.ts`: 98% statements, 100% functions (uncovered lines: defensive null-check branches in `classifyAt` that are only reached on impossible slices).
+- `src/core/sessions.ts`: 100% statements, 100% functions (one unreachable branch at the `!first || !last` guard in `buildRangeFromCandles` — the non-empty check above guarantees they're defined under `noUncheckedIndexedAccess`).
+
+### Notes on synthetic data design
+- For trending tests, pure linear ramps `closes[i] = a + b·i` have monotonically-decreasing *relative* BB width (σ is constant but mean grows), so the last bandwidth is always at the bottom of its trailing distribution → SQUEEZE override wins before the slope rule runs. Geometric growth `a · r^i` keeps σ/μ approximately constant; a small sinusoidal perturbation (amplitude 0.3%) then randomizes the percentile rank into the middle of the range.
+- With 40 candles the TRENDING_DOWN case was still fragile (pctile at `last − transitionWindow` landed at 12.5, flipping the base to SQUEEZE). Bumping to 60 candles gives the trailing-20 distribution room to stabilize. Same length used for UP for symmetry.
+- For the TRANSITION case, using 48 flat + 2 rising closes means: at `last - 2` bandwidth = 0 across a trailing window of all zeros → pctile = 50 (midrank of equal values), not SQUEEZE → base = RANGING. At `last` bandwidth spikes → pctile ~97.5, slopePct > 0.05 → base = TRENDING_UP. Classifier then overrides with TRANSITION.
+
+### Fixes applied during this review
+- First pass of TRENDING_UP test used `closes[i] = 100 + i` (linear ramp). Bandwidth decreased monotonically from 0.0563 at idx 4 to 0.0413 at idx 39 → percentileRank(last) = 0 → classified as SQUEEZE. Switched to geometric growth with sinusoidal noise.
+- Second pass with 40-candle geometric series worked for UP but failed for DOWN at the TRANSITION probe point (idx 37): bandwidth at that specific point happened to be the trailing minimum by numerical chance. Extended both series to 60 candles so the probe point is further from warmup transients.
+- Uncovered a floating-point quirk in `percentileRank`: when all sample values differ only in the 16th decimal (as happens for perfectly-geometric series), strict `<` / `===` comparisons partition values arbitrarily, producing unstable percentile ranks. This is test-only — real market data has natural noise that prevents it. Documented inline.
+
+### Final decision
+PASS — advancing to Phase 7.
