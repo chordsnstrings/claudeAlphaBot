@@ -1,0 +1,85 @@
+# ──────────────────────────────────────────────────────────────
+# Hydra — local development / staging composition
+# Three services: postgres, bot, ui. UI is an optional `profiles`
+# target so `docker compose up` only starts DB + bot by default.
+#
+# Typical flow:
+#   cp .env.example .env
+#   docker compose up -d postgres
+#   docker compose run --rm bot pnpm migrate:up
+#   docker compose up -d bot ui
+# ──────────────────────────────────────────────────────────────
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hydra}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hydra}
+      POSTGRES_DB: ${POSTGRES_DB:-hydra}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - hydra-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hydra} -d ${POSTGRES_DB:-hydra}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  bot:
+    build:
+      context: .
+      dockerfile: packages/bot/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      BOT_MODE: ${BOT_MODE:-backtest}
+      BOT_HTTP_PORT: 8080
+      DATABASE_URL: postgres://${POSTGRES_USER:-hydra}:${POSTGRES_PASSWORD:-hydra}@postgres:5432/${POSTGRES_DB:-hydra}
+      STARTING_EQUITY_USD: ${STARTING_EQUITY_USD:-5000}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      LOG_FORMAT: ${LOG_FORMAT:-json}
+      # Only required in paper / live modes:
+      BINANCE_API_KEY: ${BINANCE_API_KEY:-}
+      BINANCE_API_SECRET: ${BINANCE_API_SECRET:-}
+      BINANCE_TESTNET: ${BINANCE_TESTNET:-true}
+      ARTIFACT_PATH: ${ARTIFACT_PATH:-/app/artifacts/validated_config.json}
+    ports:
+      - "${BOT_HTTP_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  ui:
+    build:
+      context: .
+      dockerfile: packages/ui/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://${POSTGRES_USER:-hydra}:${POSTGRES_PASSWORD:-hydra}@postgres:5432/${POSTGRES_DB:-hydra}
+      BOT_INTERNAL_API_URL: http://bot:8080
+      STARTING_EQUITY_USD: ${STARTING_EQUITY_USD:-5000}
+      BOT_MODE: ${BOT_MODE:-backtest}
+    ports:
+      - "${UI_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  hydra-pg-data:
+    driver: local

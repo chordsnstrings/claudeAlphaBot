@@ -3,7 +3,10 @@
  * only — the UI never talks to the bot from the browser; every call goes
  * through a Next.js route handler that uses this helper.
  */
-const BOT_URL = process.env["BOT_API_URL"] ?? "http://localhost:8787";
+const BOT_URL =
+  process.env["BOT_INTERNAL_API_URL"] ??
+  process.env["BOT_API_URL"] ??
+  "http://localhost:8080";
 
 export interface BotCallResult {
   readonly ok: boolean;

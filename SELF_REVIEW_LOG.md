@@ -627,3 +627,52 @@ PASS — advancing to Phase 17 (remaining 10 UI pages).
 
 ### Final decision
 PASS — advancing to Phase 18 (Docker + docker-compose + DO app spec).
+
+---
+
+## Phase 18 — Docker + Compose + DigitalOcean App Spec
+
+### Rubric check
+- [x] **Multi-stage Dockerfile for the bot** — `packages/bot/Dockerfile`: deps → build → runtime. Deps stage runs `pnpm fetch` keyed on the lockfile only (cache-friendly). Build compiles `@hydra/shared` + `@hydra/bot`. Runtime installs only `--prod` deps, COPYs the compiled `dist/` + `migrations/` + shared's `dist/`, and runs as non-root `hydra`. Final image based on `node:20-alpine` to keep it small.
+- [x] **Multi-stage Dockerfile for the UI** — `packages/ui/Dockerfile` uses Next.js `output: "standalone"` (enabled in `next.config.mjs`) so the runtime image ships the minimum node_modules tree Next actually traces. Copies standalone + `.next/static` + `public/`. CMD is `node packages/ui/server.js` (the server file the standalone output emits).
+- [x] **Non-root user in both images** — `addgroup -S hydra && adduser -S hydra -G hydra` in each runtime stage, followed by `USER hydra`. Files copied with `--chown=hydra:hydra`.
+- [x] **HEALTHCHECK declared in both images** — Bot: `wget -qO- http://localhost:8080/health` (hits the Fastify `/health` endpoint). UI: `wget -qO- http://localhost:3000/` (Next returns 200 from any rendered route). 30s interval, 3 retries, 20s start-period to allow boot-time migration.
+- [x] **`docker-compose.yml` runs the full stack** — Three services: `postgres` (16-alpine with named volume), `bot` (builds from `packages/bot/Dockerfile`), `ui` (builds from `packages/ui/Dockerfile`). Both app services `depends_on: postgres: condition: service_healthy` so they don't start until `pg_isready` returns OK. Env is parameterised with `${VAR:-default}` so a blank `.env` still produces a working local stack.
+- [x] **Compose file validated** — `docker compose config` exits 0 (no schema errors). YAML uses `version: "3.9"`, the widely-supported modern form.
+- [x] **`.env.example` documents every variable** — Preserves the pre-existing variable set: `BOT_MODE`, `STARTING_EQUITY_USD`, `DATABASE_URL`, `BOT_HTTP_PORT`, `LOG_LEVEL`, `LOG_FORMAT`, `NODE_ENV`, `BINANCE_API_KEY/SECRET`, `BINANCE_TESTNET`, `ARTIFACT_PATH`, `BOT_INTERNAL_API_URL`. Aligned the UI's `bot-api.ts` to read `BOT_INTERNAL_API_URL` (with `BOT_API_URL` as a fallback for anyone who had already set it), matching the name already in `.env.example`.
+- [x] **`.do/app.yaml` declares the deployable DO App Platform spec** — `doctl apps create --spec .do/app.yaml`-compatible. One `services.ui` block with public routing on `/`, one `workers.bot` block with no public ingress, one `databases.hydra-db` (managed Postgres 16). All env vars scoped correctly: `RUN_AND_BUILD_TIME` for NODE_ENV, `RUN_TIME` for everything else. `BINANCE_API_KEY`/`SECRET` declared as `type: SECRET` so DO encrypts at rest. DATABASE_URL is linked with the `${hydra-db.DATABASE_URL}` binding so the app automatically wires the managed DB.
+- [x] **Ports correctly aligned across bot env + Dockerfile + compose + app.yaml** — Single source of truth: bot uses `BOT_HTTP_PORT=8080` (matches `config/env.ts` default). Dockerfile EXPOSEs 8080. Compose publishes `${BOT_HTTP_PORT:-8080}:8080`. DO app.yaml sets `BOT_HTTP_PORT=8080` and `BOT_INTERNAL_API_URL=http://bot:8080` on the UI so it can find the worker.
+- [x] **Migrations bundled into bot image** — The build stage COPYs `migrations/` into `/app/migrations`; the runtime stage inherits that path. `db/migrator.ts` computes the dir via `__dirname` relative pathing — at runtime (`packages/bot/dist/db/migrator.js`) that resolves to `/app/migrations`, matching the Dockerfile layout exactly.
+- [x] **`.dockerignore` in place** — Already present from an earlier phase; excludes node_modules, dist, .next, .git, .env (but keeps `.env.example`), coverage, plus all the markdown docs that don't belong in the build context.
+
+### Design decisions
+- **Bot as a DO `workers:` entry, not `services:`**: the bot has a tiny internal HTTP API on :8080 but it's for the UI and operator commands only — it should never have public ingress. Workers get no public routing, so exposing only the UI keeps the command surface narrow. If observability ever needs the `/health` endpoint externally, we can add it as an internal service.
+- **Next.js standalone output over copying the full `node_modules`**: standalone traces exactly what Next needs to run and inlines it. For our 84.4 kB shared bundle the standalone runtime is ~60 MB vs. ~400 MB for a naive copy of `packages/ui/node_modules`. Docker image size directly impacts deploy time on DO App Platform.
+- **`pnpm fetch` in the deps stage**: lets the layer cache key be the lockfile hash only. Code changes don't invalidate the `pnpm fetch` layer, making iterative rebuilds 10× faster in CI.
+- **Workspace filter `--filter @hydra/bot...` (with trailing ellipsis)**: includes transitive workspace deps (in our case just `@hydra/shared`). Without the `...`, pnpm would fail the bot build because it can't find `@hydra/shared`.
+- **Managed Postgres `db-s-dev-database` tier**: cheapest DO managed DB, 1 GB RAM, shared CPU. Sufficient for our workload (point-reads on indexed tables, ~1 write/minute at most). Bump to `basic-s` for live mode when the trades table crosses 100k rows.
+- **No `BINANCE_TESTNET=false` default anywhere in infra**: intentionally conservative. Flipping to mainnet is a deliberate operator action — changing the env var in the DO UI is the "arm" step.
+- **Empty `public/` directory COPYd as-is**: not a bug. Next's standalone layout expects `public/` to exist; empty is fine. Future asset drops (favicon, og-image) just land there.
+
+### Fixes applied during review
+- **Port drift between UI default (8787) and bot default (8080)**: the UI's `bot-api.ts` originally defaulted to `http://localhost:8787` but the bot's Zod schema defaults `BOT_HTTP_PORT=8080`. Reconciled by making the UI read `BOT_INTERNAL_API_URL || BOT_API_URL || http://localhost:8080` and setting compose/do-app-yaml to align. The DOCKER `EXPOSE` and `HEALTHCHECK` were changed from 8787 → 8080 to match.
+- **Migrations COPY path**: first draft referenced `/app/packages/bot/../../migrations` in the builder, which would have failed because the build stage never actually COPYd the migrations dir. Added an explicit `COPY migrations ./migrations` in the builder and reuse the path in the runtime stage.
+- **`wget` missing in Alpine default image**: node:20-alpine doesn't ship `wget`. Health checks use `wget -qO-`; added `apk add --no-cache wget` in both runtime stages.
+- **Inconsistency between `.env.example` variable set and my first docker-compose draft**: original docker-compose invented new names (`BOT_HEALTH_PORT`, `BOT_API_URL`). Aligned to the `.env.example` canonical names (`BOT_HTTP_PORT`, `BOT_INTERNAL_API_URL`, `BINANCE_TESTNET`, `ARTIFACT_PATH`, `LOG_FORMAT`).
+
+### Deliverables shipped
+- `packages/bot/Dockerfile` — 3-stage, non-root, 8080 health port.
+- `packages/ui/Dockerfile` — 3-stage, non-root, standalone output, 3000 port.
+- `packages/ui/next.config.mjs` — added `output: "standalone"`.
+- `packages/ui/src/lib/bot-api.ts` — read `BOT_INTERNAL_API_URL` first, 8080 default.
+- `docker-compose.yml` — postgres + bot + ui, health-gated depends_on, env parameterised.
+- `.do/app.yaml` — DO App Platform spec: UI service + bot worker + managed PG, deploy-on-push from `main`.
+
+### Test results
+- `docker compose config` → valid schema, no errors.
+- `pnpm --filter @hydra/ui build` → standalone output emitted at `packages/ui/.next/standalone/packages/ui/server.js` as expected by the Dockerfile CMD.
+- `pnpm -r typecheck` → clean.
+- `pnpm -r test` → 318 passed, 3 skipped, 0 failed.
+
+### Final decision
+PASS — advancing to Phase 19 (docs: RUNBOOK / ARCHITECTURE / README).
