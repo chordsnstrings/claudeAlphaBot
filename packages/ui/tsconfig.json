@@ -2,24 +2,52 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "jsx": "preserve",
     "allowJs": false,
     "incremental": true,
-    "plugins": [{ "name": "next" }],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@hydra/shared": ["../shared/src/index.ts"],
-      "@hydra/shared/*": ["../shared/src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@hydra/shared": [
+        "../shared/src/index.ts"
+      ],
+      "@hydra/shared/*": [
+        "../shared/src/*"
+      ]
     },
     "baseUrl": ".",
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "noEmit": true,
     "composite": false,
     "moduleResolution": "Bundler",
     "module": "ESNext"
   },
-  "references": [{ "path": "../shared" }],
-  "include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts"],
-  "exclude": ["node_modules", ".next"]
+  "references": [
+    {
+      "path": "../shared"
+    }
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next"
+  ]
 }

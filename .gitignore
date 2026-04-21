@@ -19,3 +19,8 @@ coverage/
 .tmp/
 packages/*/dist/
 packages/shared/dist/
+# test emissions should never be checked in — vitest runs .ts directly via tsx
+packages/bot/tests/**/*.js
+packages/bot/tests/**/*.d.ts
+packages/bot/tests/**/*.js.map
+packages/bot/tests/**/*.d.ts.map

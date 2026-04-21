@@ -39,3 +39,26 @@ PASS — advancing to Phase 2.
 
 ### Final decision
 PASS — advancing to Phase 3.
+
+---
+
+## Gate: Phase 3 — Environment, logging, health server — 2026-04-21 UTC
+
+### Criteria checked
+- [x] `pnpm --filter bot build` succeeds, no TS errors — PASS. Evidence: `tsc -p tsconfig.json` exits 0; `dist/main.js` + `dist/config`, `dist/db`, `dist/core`, `dist/monitoring`, `dist/util`, `dist/cli` all produced with source maps and declarations.
+- [x] `BOT_MODE=backtest node packages/bot/dist/main.js` starts without error — PASS. Evidence: bot booted, ran migrations (all skipped — idempotent), computed code hash `sha256:f45ba19266c…`, started health server on :8080, logged `mode=backtest: idle`, and cleanly shut down on SIGTERM.
+- [x] `curl localhost:8080/health` returns 200 with valid JSON — PASS. Evidence: `HTTP 200` with body `{"status":"ok","mode":"backtest","uptime_ms":2825,"timestamp":"2026-04-21T03:38:33.252Z"}`.
+- [x] Logger outputs structured JSON in production mode, pretty in dev — PASS. Evidence: with `NODE_ENV=production`, every line is single-line JSON (`{"level":30,"time":"…","pid":…,"hostname":"…","msg":"…"}`); with `NODE_ENV=development` + `LOG_FORMAT=pretty`, lines render with ANSI timestamps and level tags (`[03:38:30.435] INFO: hydra boot`).
+- [x] Env loader rejects missing required vars with clear messages — PASS. Evidence: vitest `tests/config/env.test.ts` (6/6 passing) covers missing `DATABASE_URL`, paper mode missing `BINANCE_API_KEY`, paper mode missing `ARTIFACT_PATH`, live mode missing `BINANCE_API_SECRET`, and numeric coercion of `BOT_HTTP_PORT`; all error paths assert zod / guard messages that name the missing variable.
+- [x] Artifact verification enforces §8.11.3 (blocks stale / code-hash mismatch / `deployment_allowed=false`) — PASS. Evidence: vitest `tests/core/artifact.test.ts` (8/8 passing) covers clean artifact, `deploymentAllowed=false` rejection, stale-threshold (>30d) rejection, `code_hash` mismatch rejection, boundary fresh artifact, multi-error aggregation (no short-circuit), missing file, and round-trip through a real temp file. Integration smoke: `BOT_MODE=paper ARTIFACT_PATH=/nonexistent/artifact.json` exits with code 1 and prints `ArtifactVerificationError: Artifact verification failed: • Artifact file not found at path: /nonexistent/artifact.json. Run validation pipeline first.`
+- [x] All 3 packages typecheck + lint clean — PASS. Evidence: `pnpm -r typecheck` shows `packages/shared typecheck: Done`, `packages/ui typecheck: Done`, `packages/bot typecheck: Done` (using split `tsconfig.test.json` so tests type-check under a non-composite project while `tsconfig.json` stays clean for the build).
+
+### Fixes applied during this review
+- Initial `tsconfig.test.json` inherited `rootDir: "./src"` from the build config and tried to include `tests/**/*.ts`, which produced TS6059 errors; then overriding with `"rootDir": "."` broke the `@hydra/shared` path alias (shared package is outside `packages/bot`). Resolved by having `tsconfig.test.json` extend `../../tsconfig.base.json` directly (not the build tsconfig), re-declare the `@hydra/shared` paths, and set `noEmit: true`. Build (`tsconfig.json`) stays composite + emits to `dist/`; typecheck/lint (`tsconfig.test.json`) covers src + tests with no emit.
+
+### Notes
+- Pino 8 ESM subpath requires `import { pino } from "pino"` (named), not the default export, otherwise `pino(opts)` throws "This expression is not callable". Code already uses the named form.
+- `exactOptionalPropertyTypes: true` rejects `{ base: undefined }`; we omit the `base` key entirely from `LoggerOptions` instead.
+
+### Final decision
+PASS — advancing to Phase 4.
