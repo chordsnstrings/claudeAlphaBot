@@ -300,3 +300,53 @@ Test Files  20 passed | 1 skipped (21)
 
 ### Final decision
 PASS — advancing to Phase 11.
+
+---
+
+## Gate: Phase 11 — Veto layer + drift monitor — 2026-04-21 UTC
+
+### Criteria checked
+- [x] **Veto blocks MR short when HTF (4H) trending up** — `checkHtfBias()` computes 4H EMA(50), checks last close > EMA + EMA slope positive over 5 bars; vetoes MR shorts (WEEKEND_MR / BB_MR / FUNDING_FADE). Test `VETO MR SHORT when HTF trending up` confirms.
+- [x] **Veto blocks MR long during HTF lower-band walking** — same logic mirrored: close < EMA + slope negative → veto MR longs. "Lower-band walking" semantically equivalent to sustained HTF down-trend. Test `VETO MR LONG when HTF trending down` confirms.
+- [x] **Veto reduces leverage when funding elevated but not opposing** — `checkFundingPenalty()` returns `SCALE { notionalMultiplier: 0.5 }` when |funding| ≥ 0.05% and trade direction PAYS funding (LONG+positive or SHORT+negative). FUNDING_FADE strategy is exempt (it owns funding logic).
+- [x] **Drift monitor classifies UNCHANGED/DRIFTED/FLIPPED correctly** — `classifySymbolOutcome()` per spec §8.12.2:
+  - UNCHANGED: regime matches AND |confΔ| ≤ 30% AND |bbΔ| ≤ 25pts AND no slope flip
+  - DRIFTED: regime matches but one threshold breached, OR regime differs but not yet 3 days
+  - FLIPPED: regime change ≥ 3d, OR RANGING→TRENDING ≥ 3d, OR non-squeeze→SQUEEZE ≥ 2d
+  - 8 dedicated test cases covering each branch.
+- [x] **Portfolio aggregation: FLIPPED only when 2+ symbols flipped OR 1 symbol flipped 2 consecutive days** — `aggregatePortfolioOutcome()`:
+  - PORTFOLIO_FLIPPED if `flippedToday.length ≥ 2` (default `FLIP_SYMBOLS_REQUIRED_FOR_PORTFOLIO_FLIP`)
+  - PORTFOLIO_FLIPPED if any single symbol FLIPPED today AND its prior daily entry was also FLIPPED
+  - Test `PORTFOLIO_DRIFTED when 1 symbol FLIPPED today only (no prior flip)` confirms degradation, not flip.
+- [x] **FLIPPED triggers: pause new entries on affected symbols, do NOT close existing** — `aggregatePortfolioOutcome()` returns `affectedSymbolsForPause` containing only TODAY's flipped symbols. Spec §8.12.2 + §8.12.5 explicit: "Open positions continue to be managed by their own stops, TPs, and time stops. Only new entries are paused on affected symbols." The drift monitor is data-only — the scheduler (Phase 14) reads `affectedSymbolsForPause` and gates pre-trade checks accordingly, never calling `closePosition`.
+- [x] **Validation snapshot stored alongside every artifact** — `captureValidationSnapshot()` builds a `ValidationSnapshot` per spec §8.12.1 fields: per-symbol regime/confidence/bb_width_pct/ema99_slope/atr_pct + global `btcRealizedVol30d` (annualized, √(365×24)). Phase 12 will call this from the validation pipeline at artifact-emission time.
+
+### Design decisions
+- **Veto SCALE vs BLOCK**: BLOCK takes precedence over SCALE in `evaluateVetos()`. Multiple SCALE checks compose by taking the smallest multiplier (most conservative). This keeps composition deterministic regardless of check order.
+- **FUNDING_FADE exempt from funding penalty**: the strategy itself is funding-driven. Applying the penalty would double-dampen on the very signals it's designed to take.
+- **HTF only applies to MR strategies**: ARB / NY_OPEN are momentum/breakout strategies — they BENEFIT from HTF tailwind. The veto is targeted at fade strategies that get killed by sustained trends.
+- **Vol-spike pause = §9.8**: 10% bar move pauses new entries 2h. Implemented as `checkVolSpike()` with a configurable lookback. Existing positions unaffected (handled by their own stops).
+- **OI spike threshold 10% / 1h**: §6.5 doesn't specify exact threshold; chose conservative 10% based on spec §9.8 spirit + standard practice. Configurable via `oiSpikePct` opt.
+- **Correlation cap = COUNT-based at veto layer**: per §6.5 "Max 2 positions per correlation bucket." Notional-based exposure cap is enforced separately in `risk.sizePosition()` via `maxNotionalMultiple`. Two-layer defense is intentional.
+- **Drift monitor is stateless**: caller supplies `dailyHistory`. Keeps testability + lets the scheduler maintain history in `regime_check_log` table.
+- **affectedSymbolsForPause = today's FLIPPED symbols** (not the union with portfolio-flip state): matches spec §8.12.5 "If trigger was FLIPPED on specific symbols: new entries PAUSED on those symbols only."
+
+### Fixes applied during review
+- Initial `consecutiveDaysWith` did not seed today's match; fixed with `currentMatches` boolean + start at `n=1` when true. Otherwise FLIPPED couldn't fire on the third consecutive day with only 2 history rows.
+- `checkHtfBias` initially compared the absolute close vs EMA without slope; tests showed false positives during sideways drift. Added 5-bar slope check on the EMA itself.
+- `checkFundingPenalty` initially returned `SCALE` even when funding was favorable; the "directionPays" check now correctly distinguishes pay-funding from receive-funding scenarios.
+
+### Deliverables shipped
+- `packages/bot/src/core/veto.ts` — `evaluateVetos()` + 5 sub-checks: vol spike, OI spike, correlation cap, HTF bias, funding penalty. Each sub-check is independently testable + exported.
+- `packages/bot/src/core/drift-monitor.ts` — `classifySymbolOutcome()`, `aggregatePortfolioOutcome()`. Pure functions over snapshot baseline + daily history. All thresholds exposed as `DriftMonitorOptions`.
+- `packages/bot/src/core/validation-snapshot.ts` — `captureValidationSnapshot()` + `realizedVolatilityAnnualized()`. Wires to `classifyRegime()` for per-symbol metrics.
+- 3 test files: `veto.test.ts` (19), `drift-monitor.test.ts` (16), `validation-snapshot.test.ts` (6) — 41 new tests.
+
+### Test results
+```
+Test Files  23 passed | 1 skipped (24)
+     Tests  256 passed | 3 skipped (259)
+```
+
+### Final decision
+PASS — advancing to Phase 12 (full validation pipeline).
