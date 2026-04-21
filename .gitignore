@@ -1,0 +1,21 @@
+node_modules/
+dist/
+build/
+.next/
+out/
+coverage/
+*.log
+.env
+.env.local
+.env.*.local
+!.env.example
+.DS_Store
+.turbo/
+.pnpm-store/
+*.tsbuildinfo
+# local artifacts are fine to commit into artifacts/ explicitly;
+# anything else scratch goes here
+.scratch/
+.tmp/
+packages/*/dist/
+packages/shared/dist/

@@ -1,0 +1,19 @@
+{
+  "name": "hydra-trading",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hydra — systematic crypto perpetual futures trading bot + dashboard",
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter './packages/*' build",
+    "typecheck": "pnpm -r --filter './packages/*' typecheck",
+    "lint": "pnpm -r --filter './packages/*' lint",
+    "test": "pnpm -r --filter './packages/*' test"
+  },
+  "devDependencies": {
+    "typescript": "5.3.3"
+  }
+}
