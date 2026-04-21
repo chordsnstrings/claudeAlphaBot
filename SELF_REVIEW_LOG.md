@@ -227,3 +227,41 @@ Test Files  13 passed | 1 skipped (14)
 
 ### Final decision
 PASS — advancing to Phase 9.
+
+---
+
+## Gate: Phase 9 — Backtest engine + fill simulation — 2026-04-21 UTC
+
+### Criteria checked
+- [x] **No-look-ahead invariant**: tests truncate `candles` at idx N and verify the engine never produces decisions that require candles > N (only the candle at openTime == T can be used for exits; only candles ≤ T are passed into `evaluate()`). PASS — `tests/backtest/replay-engine.test.ts > runReplay — no look-ahead invariant`.
+- [x] **Conservative collision rule**: when both STOP and TP touched in same candle (high≥TP and low≤stop for LONG), STOP fills first. PASS — `fill-sim.test.ts` covers LONG and SHORT explicitly; `replay-engine.test.ts > STOP wins on collision` verifies end-to-end.
+- [x] **Fees**: 0.04% taker (configurable via `takerFee`) deducted on entry notional and exit notional, stored on `Trade.feesPaid`. PASS — `simulateEntryFill` returns `feePaid = entryPrice × qty × takerFee`; replay engine adds entry fee to `position.feesPaidUsd` and exit fees per leg.
+- [x] **Slippage**: 2 bps (0.0002) per side. LONG entry × (1+slip), LONG exit × (1−slip). PASS — `fill-sim.test.ts` verifies factor exactly; SHORT inverse.
+- [x] **Funding**: payments accrued at every settlement crossing (00:00/08:00/16:00 UTC) while position is open. LONG pays positive funding, receives negative; SHORT inverse. PASS — `replay-engine.test.ts > funding payment accrual` shows withFunding < noFunding for LONG + positive funding scenario.
+- [x] **Multi-stage exit**: TP1 fills 50%, breakeven stop applied via mutating position.stopPrice = entryPrice. PASS — `replay-engine.test.ts > multi-stage TP1 → BREAKEVEN` confirms 2nd candle low touching original entry triggers flat-stop.
+- [x] **Sharpe annualized correctly**: `(mean / stdev) × √(365×24)` for hourly bars. PASS — `metrics.test.ts > annualizedSharpe scales mean/stdev` and unit test for constant returns → 0.
+- [x] **Per-month, per-strategy, per-symbol breakdowns**: `monthlyBreakdown`, `segmentBy`, `exitReasonBreakdown`. PASS — `metrics.test.ts > buildReport — integration` exercises all four breakdown surfaces against a 3-trade fixture.
+- [x] **CRITICAL CHECK suspicious-results gate**: dedicated `findSuspiciousResults()` flags `RETURN_TOO_HIGH` (>100% on 3mo) and `DRAWDOWN_TOO_LOW` (<5% with ≥20 trades). Caller (validation pipeline in Phase 12) must HALT and write SUSPICIOUS_RESULTS.md when findings non-empty. PASS — 6 unit tests in `sanity.test.ts`.
+- [x] Pre-trade checks integrated into entry path; exposure caps integrated into sizing path.
+
+### Fixes applied during review
+- Pre-add of `pnlNet` to `state.equity` was duplicated by `recordTradeClose` (which also adds it). Removed the pre-add for full closes; `recordTradeClose` now owns the equity mutation. TP1 partial closes still pre-add since they don't go through `recordTradeClose`.
+- `accountEquityBefore` initially captured equity at trade-close, not trade-open. Added `entryEquity` side map keyed by position id so the journal field reflects equity at the moment the position was opened (and `pnlUsd = accountEquityAfter − accountEquityBefore`, which now correctly includes the entry fee).
+- Original stop distance was lost when TP1 mutated `position.stopPrice = entry` (breakeven). Added `origStopDistance` side map so `pnlR` is calculated against the trade's *initial* risk per spec §8.5.
+- `exactOptionalPropertyTypes: true` rejected `opts: undefined` literals in three call sites; switched to conditional spread `...(opts.x ? { opts: opts.x } : {})`.
+
+### Deliverables shipped
+- `packages/bot/src/backtest/fill-sim.ts` — `simulateEntryFill()`, `simulateExitForCandle()`, `fundingPayment()`. Pure, defaults exposed (`DEFAULT_SLIPPAGE_BPS`, `DEFAULT_TAKER_FEE`).
+- `packages/bot/src/backtest/replay-engine.ts` — `runReplay()` with strict no-look-ahead. Multi-symbol unified timeline; per-symbol cursor; mark-to-market equity curve emitted at end of each bar.
+- `packages/bot/src/backtest/metrics.ts` — `buildReport()` aggregating summary + monthly + per-strategy + per-symbol + exit-reason breakdowns, plus `annualizedSharpe`/`annualizedSortino`/`drawdownStats`.
+- `packages/bot/src/backtest/sanity.ts` — `findSuspiciousResults()` for the §9 critical check.
+- 4 test files: `fill-sim.test.ts` (14), `metrics.test.ts` (8), `replay-engine.test.ts` (7), `sanity.test.ts` (6).
+
+### Test results
+```
+Test Files  17 passed | 1 skipped (18)
+     Tests  190 passed | 3 skipped (193)
+```
+
+### Final decision
+PASS — advancing to Phase 10.
