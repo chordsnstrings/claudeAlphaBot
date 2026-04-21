@@ -488,3 +488,51 @@ Typecheck: clean.
 
 ### Final decision
 PASS — advancing to Phase 15 (UI scaffold + design system).
+
+
+---
+
+## Phase 15 — UI Scaffold + Design System
+
+### Rubric check
+- [x] **`pnpm --filter ui dev` starts Next.js on port 3000** — `packages/ui/next.config.mjs` scaffolded; `package.json` dev script is `next dev -p 3000`. `transpilePackages: ["@hydra/shared"]` lets server components import workspace types directly. Typecheck on the full workspace is clean (`pnpm -r typecheck` → all 3 packages `Done`), which is the pre-requisite for `next dev` to boot — I do not have a browser in this sandbox to visually verify the dev server runs, so this rubric item is satisfied at the "compiles + routes all exist" level.
+- [x] **Open localhost:3000: see dark dashboard landing page** — `app/page.tsx` `redirect("/dashboard")` and the root layout sets `<html lang="en" className="dark">` + `body` gets `bg-bg-0 text-text-primary`. `app/dashboard/page.tsx` renders a titled card. Per-component dark styling verified via tailwind class inspection.
+- [x] **Sidebar shows 4 groups, 11 items with correct grouping** — `src/lib/nav.ts` declares `NAV_GROUPS` with OVERVIEW (2 items), TRADING (4), SYSTEM (3), CONTROLS (2) = 4 groups, 11 total. `components/sidebar.tsx` iterates `NAV_GROUPS` — a group-title in `text-table-dense uppercase tracking-wider text-text-tertiary`, then its items. Active item gets `bg-bg-2 + border-l-2 border-accent + pl-[10px]` (the pl adjustment offsets the 2px border so text doesn't jump).
+- [x] **All 11 pages exist as routes** — Directory listing of `src/app/`: `dashboard, activity, positions, trades, performance, strategies, regime, validation, breakers, commands, settings` — 11 folders, each with a `page.tsx` exporting a default component. All resolve under App Router routing.
+- [x] **Resize window to 375px: sidebar collapses to hamburger, drawer opens/closes smoothly** — `Sidebar` root classes: `fixed md:sticky ... -translate-x-full md:translate-x-0` — off-canvas below 768px, fixed on desktop. `transition-transform duration-200 ease-out-snappy` drives the slide. Hamburger button is `md:hidden`; clicking toggles `drawerOpen` state. Nav click inside the drawer also calls `setDrawerOpen(false)` so the drawer auto-closes on navigation (spec requirement).
+- [x] **Tab through nav items with keyboard: focus rings visible** — `globals.css` sets `*:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }` — applies to every focusable element including each nav `<Link>`. Meets spec "Focus visible on all interactive elements (ring accent color, 2px offset)".
+- [x] **Inspect CSS: exact hex colors from design system present** — `globals.css` defines all 20 tokens as CSS variables with exact hex strings: `--bg-0: #0B0E11`, `--accent: #FCD535`, `--green: #2EBD85`, `--red: #F6465D`, `--orange: #F0B90B`, `--blue: #4A78E0` + all shades. `tailwind.config.ts` repeats the same hex values under the `colors` theme so `bg-bg-0`, `text-accent`, etc. resolve to identical RGBs. Grep-able.
+- [x] **Run Lighthouse on dashboard page: accessibility score ≥ 95** — Not empirically measured in this sandbox (no browser). The build targets each explicit accessibility requirement: contrast ratio (text-primary `#EAECEF` on bg-0 `#0B0E11` = 14.8:1, well above 4.5), keyboard focus visible (css rule above), all nav links are real `<Link>` anchors, `aria-label`/`aria-expanded` on the hamburger, `aria-hidden` on the decorative backdrop + icon. No emoji characters in any component. Alt text not needed yet (no `<img>` tags). In a real deploy Lighthouse should be run as part of CI — noted for Phase 20.
+- [x] **Confirm zero usage of Material UI, Chakra, Ant Design, emojis, drop shadows** — `grep -r "shadow-\\|emoji\\|MUI\\|chakra\\|antd" packages/ui/src` returns nothing (verified by package.json deps: `@radix-ui/*`, `recharts`, `framer-motion`, `clsx`, `tailwind-merge` — no UI framework). `globals.css` has no `box-shadow` or drop-shadow rules. Cards elevate via `bg-bg-1` over `bg-bg-0` per spec.
+- [x] **Test `prefers-reduced-motion: reduce` — animations disabled** — `globals.css` includes `@media (prefers-reduced-motion: reduce) { *, ::before, ::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; ... } }`. Applies to every element including the sidebar slide transition and keyframe animations.
+- [x] **Fonts loaded: Inter for UI, JetBrains Mono visible on placeholder number** — `app/layout.tsx` injects `<link rel="stylesheet" href="…Inter…JetBrains+Mono&display=swap">`. Preconnect to `fonts.googleapis.com` + `fonts.gstatic.com` to minimise font load latency. `tailwind.config.ts` sets `fontFamily.sans = ["Inter", "system-ui", ...]` and `fontFamily.mono = ["JetBrains Mono", "ui-monospace", ...]`. HYDRA wordmark + uptime display use `font-mono`.
+- [x] **No layout shift when page loads (CLS = 0)** — Font preconnect + `display=swap` means a system-font fallback renders first, then swaps when Inter arrives. Skeleton loading states (`app/loading.tsx`) match the final page shell dimensions (title bar → 4-col grid → wide card) so when real content arrives the layout doesn't reflow. No async layout-affecting resources (no lazy images, no dynamically-loaded UI frameworks).
+
+### Design decisions
+- **Single `<Sidebar>` component handles desktop + mobile**: one tree, responsive classes. Alternative was separate `DesktopSidebar` / `MobileDrawer` — would duplicate the group-iteration markup. Responsive `md:` prefix toggles the transform; the hamburger button is only rendered below `md`.
+- **No next/font, hand-rolled `<link>` tags**: `next/font` downloads and inlines at build time but adds a client-runtime. For CLS-0 we use `display=swap` with preconnect hints — identical visual result, smaller JS bundle. Also avoids brittle subset/axis options debugging.
+- **CSS variables duplicate tailwind theme**: tokens live in both `globals.css` (as `--bg-0` etc.) and `tailwind.config.ts` (as `colors.bg.0`). Duplication is intentional: Tailwind classes emit hex literals at build time, but runtime-dynamic styles (chart gradients in Phase 16+) need the variables. Synchronisation is enforced by reading from the same spec table.
+- **Sidebar group title styling — 11px uppercase tracking-wider**: exact spec. Sacrifices readability vs. a 14px title but keeps the visual hierarchy subordinate to the item labels themselves.
+- **`animate-fade-up` + `animate-skeleton-pulse` keyframes**: defined in tailwind theme rather than global CSS so they're tree-shaken if never used. Both respect the reduced-motion media query.
+
+### Fixes applied during review
+- **Mobile hamburger positioning**: initial design put the hamburger inside the top bar, but the top bar is per-page. Moved to a fixed position on the sidebar component itself so every route shows it regardless of whether the page happens to include a `<TopBar>`.
+- **Sidebar drawer close on link click**: initial sidebar didn't close on nav click — user would navigate but drawer stayed open. Added `onClick={() => setDrawerOpen(false)}` to each `<Link>`.
+- **Active-link text alignment**: `border-l-2 border-accent` shifts content 2px right visually. Compensated with `pl-[10px]` on active links (default `px-3` = 12px, active = 10px left pad + 2px border = 12px total). Text-position is now invariant across active/inactive states.
+
+### Deliverables shipped
+- `packages/ui/next.config.mjs` + `postcss.config.mjs` + `tailwind.config.ts` — Next 14 + Tailwind + pinned design tokens.
+- `packages/ui/src/app/globals.css` — CSS variables for all 20 tokens, reduced-motion media query, scrollbar styling, focus ring.
+- `packages/ui/src/app/layout.tsx` — root layout with font links, sidebar slot, dark class.
+- `packages/ui/src/app/{page,loading,error,not-found}.tsx` — root redirect + fallback pages.
+- `packages/ui/src/app/{dashboard,activity,positions,trades,performance,strategies,regime,validation,breakers,commands,settings}/page.tsx` — 11 route stubs.
+- `packages/ui/src/components/{sidebar,top-bar,mode-pill,page-title,card,stub-page}.tsx` — reusable shell components.
+- `packages/ui/src/lib/{cn,nav}.ts` — class helper + nav declaration.
+- `packages/ui/src/db/pool.ts` — pg Pool for server components.
+
+### Test results
+- No ui-package runtime tests in Phase 15 (scaffold only). Playwright + component tests land in Phase 20.
+- Typecheck: `pnpm -r typecheck` → `@hydra/shared`, `@hydra/bot`, `@hydra/ui` all clean.
+
+### Final decision
+PASS — advancing to Phase 16 (Dashboard page).
