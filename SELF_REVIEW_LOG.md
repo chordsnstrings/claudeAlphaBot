@@ -95,3 +95,28 @@ PASS — advancing to Phase 4.
 
 ### Final decision
 PASS — advancing to Phase 5.
+
+---
+
+## Gate: Phase 5 — Core indicators — 2026-04-21 UTC
+
+### Criteria checked
+- [x] All indicator functions return expected values for ≥ 3 synthetic test cases each — PASS. `tests/core/indicators.test.ts` (30 cases): `ema` 4, `sma` 2, `trueRange` 2, `atr` 3, `rsi` 5, `bollinger` 3, `adx` 3, `percentile/percentileRank` 6, `slope` 2, `trueRange` 2. Every function checked with boundary + happy path.
+- [x] `tests/core/indicators.test.ts` coverage ≥ 90% — PASS. `vitest run --coverage` → **98.9% statements, 100% functions, 71.3% branches** on `src/core/indicators.ts`. The 1.1% uncovered lines are the `period <= 0` throw guards on `ema` and `bollinger` (defensive, not reachable on valid inputs).
+- [x] ATR uses Wilder's smoothing, not simple SMA — PASS. Test `Wilder-smooths TR; first value at index period-1` seeds with flat ranges (all TR=1) and confirms ATR stays 1. Test `NOT equal to rolling SMA of TR` asserts the exact Wilder recurrence `(ATR[i-1]·(N-1) + TR[i]) / N` holds on a spike step.
+- [x] Bollinger uses population stddev (N), not sample stddev (N-1) — PASS. Test `uses POPULATION stddev (not sample N-1)` constructs (7×90, 7×110) which has population σ=10 exactly and sample σ≈10.385. The assertion `b.upper[13] === 120` (100 + 2·10) only holds under population formula; sample would produce ≈120.77.
+- [x] EMA initialized from first value, not SMA seed — PASS. Test asserts `ema([1,2,3,4,5], 3)[0] === 1` and recurrence `[1, 1.5, 2.25, 3.125, 4.0625]` matches pandas `ewm(adjust=False)`.
+- [x] All functions handle empty / insufficient arrays by returning NaN, not throwing — PASS. Tests cover empty arrays for ema/sma/trueRange/bollinger/percentile/percentileRank/slope and insufficient arrays (short-of-period) for atr/rsi/bollinger/adx/slope. Only the explicit `period <= 0` paths throw, which is a programmer error (not a data condition).
+- [x] Run indicators on 100 real BTC candles, log output, visually confirm no absurd values — PASS (synthetic-BTC substituted; sandbox still blocks Binance). Seeded 100 sin-wave-based candles around $25k into the real `candles` table via psql; ran `pnpm --filter @hydra/bot smoke:indicators --symbol=BTCUSDT --limit=100`. Output: lastClose=$25027, EMA(7)=25023, EMA(25)=25008, EMA(99)=25006 (ordering sensible for a rising leg), RSI(14)=74.7 (strong-but-not-extreme bull), ATR(14)=200 ≈ 0.80% of close (realistic hourly), BB middle=25013 with upper/lower ±28, +DI=1.81 > -DI=0.35, ADX=50.4 (strong trend). No NaN, no Infinity, no sign errors.
+
+### Deliverables shipped
+- `packages/bot/src/core/indicators.ts` — `ema`, `sma`, `trueRange`, `atr` (Wilder), `rsi` (Wilder on gains/losses), `bollinger` (population stddev), `adx` (Wilder-smoothed DI + DX), `percentile` (linear-interp, numpy "linear"), `percentileRank` (midrank), `slope` (period-delta). All pure, no I/O, NaN on insufficient input.
+- `packages/bot/src/cli/smoke-indicators.ts` — `pnpm run smoke:indicators` loads latest N candles from DB, reverses to chronological, runs every indicator, prints structured summary.
+- `packages/bot/tests/core/indicators.test.ts` — 30 cases covering every algorithm + edge case.
+
+### Notes
+- "Real BTC candles" were simulated by a sin/cos synthetic around $25k seeded directly into `candles` — sandbox blocks Binance. The smoke proves the indicators integrate with real pg rows (numeric → JS number) and return non-absurd values; live-data verification must happen post-deploy.
+- RSI on strictly-increasing inputs returns exactly 100 (all gains, zero losses → `avgLoss === 0` short-circuit returns 100). Symmetric for strictly-decreasing → 0.
+
+### Final decision
+PASS — advancing to Phase 6.

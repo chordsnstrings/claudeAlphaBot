@@ -15,6 +15,7 @@
     "migrate:up": "tsx src/cli/migrate.ts up",
     "migrate:down": "tsx src/cli/migrate.ts down",
     "backfill": "tsx src/cli/backfill.ts",
+    "smoke:indicators": "tsx src/cli/smoke-indicators.ts",
     "validate-pipeline": "tsx src/cli/run-validation.ts",
     "clean": "rm -rf dist"
   },
