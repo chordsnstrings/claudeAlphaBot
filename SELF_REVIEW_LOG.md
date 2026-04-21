@@ -164,3 +164,29 @@ Coverage (regime + sessions only):
 
 ### Final decision
 PASS — advancing to Phase 7.
+
+---
+
+## Gate: Phase 7 — Strategy A (Asian Range Breakout) — 2026-04-21 UTC
+
+### Criteria checked
+- [x] Positive: Asian range 0.8%, London candle close > high with 1.5× volume → fires LONG. Reproduces spec §2.4 worked example (entry 67_520, asian_low 66_900, asian_high 67_450).
+- [x] Negative: same setup but volume 1.0× → SKIP "VOLUME_INSUFFICIENT".
+- [x] Negative: Saturday UTC (2024-10-12) → SKIP "WEEKEND".
+- [x] Negative: hour 12 UTC (past breakout window) → SKIP "OUTSIDE_WINDOW".
+- [x] Stop = asian_low − 0.5·ATR(14) for LONG; matches worked example $66,690 exactly.
+- [x] TP1=1.5R=68_765, TP2=3.0R=70_010, breakeven=68_350 — all exact to spec §2.4.
+- [x] First-breakout-only: candle at hour 7 closes 67_500 (above high), candle at hour 9 closes 67_600 → SKIP "PRIOR_BREAKOUT".
+- [x] Signal includes timeStopUtc = 20:00 UTC same day (Date.UTC(2024,9,15,20)).
+
+### Deliverables shipped
+- `packages/bot/src/core/signals-arb.ts` — `evaluateArb()` returning `{type:"FIRE",signal} | {type:"SKIP",reason,detail?}`. Pure function; consumes precomputed ATR. All 8 spec gates encoded as ordered checks (cheap rejects first: weekend → existing position → window → asian range → range filter → breakout → first-only → volume).
+- `packages/bot/tests/core/signals-arb.test.ts` — 14 tests covering the full rubric plus SHORT path, range-too-wide, range-too-tight, no-breakout, insufficient ATR.
+
+### Test results
+```
+Test Files  1 passed; Tests 14 passed
+```
+
+### Final decision
+PASS — advancing to Phase 8.
