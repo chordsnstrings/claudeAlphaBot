@@ -265,3 +265,38 @@ Test Files  17 passed | 1 skipped (18)
 
 ### Final decision
 PASS — advancing to Phase 10.
+
+---
+
+## Gate: Phase 10 — Strategies B / C / D — 2026-04-21 UTC
+
+### Criteria checked
+- [x] **Each strategy has positive + ≥3 negative test cases** — NY_OPEN: 3 positive + 7 negative; WEEKEND_MR: 2 positive + 5 negative; FUNDING_FADE: 2 positive + 6 negative.
+- [x] **NY Open** — pre-NY range 11:00–12:59 UTC; breakout window 13:00–14:59 UTC; volume threshold 1.4× verified by reproducing spec §3.4 worked example exactly (entry $2,590, stop $2,624.80, TP1 $2,537.80, TP2 $2,503.00).
+- [x] **NY Open** time-stop 20:00 UTC same day; weekend filter; first-breakout-only via `hasPriorBreakout`.
+- [x] **Weekend MR** — fires only on Monday 00:00 UTC (NOT_MONDAY_OPEN otherwise); requires 48 weekend hourly bars + Friday 23:00 + Sunday 23:00 candles. Reproduces spec §4.4 worked example (entry $2,706, stop $2,733.60, tp1 $2,652.50, tp2 $2,600, time stop Tue 08:00 UTC).
+- [x] **Weekend MR** gap filter: |monday_open − sunday_close| > 1% blocks (spec §4 Step 5).
+- [x] **Funding Fade** — 30-min confirmation wait + 0.2% confirmation move; 0.8% stop, 1.5% target; reproduces spec §5.5 worked example (entry $67_650, stop $68_191.20, target $66_635.25).
+- [x] **Funding Fade** skipped when account equity < $3,000 (spec §5 Step 4).
+- [x] **Funding Fade** max-3-trades-per-day enforced via `tradesToday` counter input (caller responsibility per spec §5 Step 5).
+- [x] **No-two-strategies-on-same-candle**: not enforced at strategy level — handled by replay engine's `hasOpenPosition` check (one position per symbol, EXISTING_POSITION fires for any second strategy that would open the same symbol).
+
+### Fixes applied during review
+- Strategy B initially shared the ARB session functions; PRE_NY_WINDOW + NY_BREAKOUT_WINDOW already in `sessions.ts` from Phase 6, so reuse was clean.
+- Weekend MR fixture initially used 25 weekend bars; needed exactly 48 (Sat 00:00 → Sun 23:00 inclusive) plus the Friday 23:00 + Monday 00:00 endpoints.
+- Funding Fade `confirmationPriceOverride` parameter exposed because 1-hour bars don't naturally contain a +30-min sample. The replay engine will use either: (a) sub-hour data when present, or (b) the next bar's open as proxy.
+
+### Deliverables shipped
+- `packages/bot/src/core/signals-ny-open.ts` — `evaluateNyOpen()`. Reuses `PRE_NY_WINDOW`, `NY_BREAKOUT_WINDOW`, `preNyRange`, `hasPriorBreakout`, `isUtcWeekend` from sessions. SKIP reasons mirror ARB's. Tighter parameters per spec §3.
+- `packages/bot/src/core/signals-weekend-mr.ts` — `evaluateWeekendMr()`. Pure: takes 48+ hourly weekend bars + Friday 23:00 + Monday 00:00 candle. Targets per §4.3: tp1 = midpoint friday/sunday, tp2 = friday close, allocation 70/30, time stop +32h.
+- `packages/bot/src/core/signals-funding-fade.ts` — `evaluateFundingFade()`. Inputs include funding history, current account equity, and tradesToday (for daily cap). Single target → tp1=tp2, allocation 100%, time stop = settlement + 8h.
+- 3 test files: `signals-ny-open.test.ts` (10), `signals-weekend-mr.test.ts` (7), `signals-funding-fade.test.ts` (8).
+
+### Test results
+```
+Test Files  20 passed | 1 skipped (21)
+     Tests  215 passed | 3 skipped (218)
+```
+
+### Final decision
+PASS — advancing to Phase 11.
