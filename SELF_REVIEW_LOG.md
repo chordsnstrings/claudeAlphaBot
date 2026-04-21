@@ -190,3 +190,40 @@ Test Files  1 passed; Tests 14 passed
 
 ### Final decision
 PASS — advancing to Phase 8.
+
+---
+
+## Gate: Phase 8 — Risk module + circuit breakers — 2026-04-21 UTC
+
+### Criteria checked
+- [x] `sizePosition` formula: $5K equity, 1% stop, $50K price → notional $10K, qty 0.2 BTC, margin $500. PASS.
+- [x] Reproduces spec §2.4 example exactly: equity $5K, entry 67_520, stop 66_690 → riskUsd $100, qty 0.120 (floor of 0.1205 to 0.001 step), notional $8_102.4, margin $405.12. PASS.
+- [x] Quantity rounds DOWN to step size, never up — verified with stepSize 0.001 (0.1205 → 0.120) and stepSize 1 (0.02 → REJECT QUANTITY_ROUNDS_TO_ZERO).
+- [x] `BELOW_MIN_NOTIONAL` rejection when post-rounding notional < $5 (uses $0.5 equity / $1000 price / 1% stop scenario to land at $1 notional).
+- [x] Exposure cap (§6.5): full size when desired ≤ headroom; scales to headroom partial when 0.2 ≤ ratio < 1; REJECT EXPOSURE_HEADROOM_TOO_SMALL when ratio < 0.2 or headroom = 0.
+- [x] `preTradeChecks` ordering matches §7.4: MANUAL_HALT > DAILY_LOSS_CAP > WEEKLY_LOSS_CAP > SYMBOL_COOLDOWN > EXISTING_POSITION > MAX_POSITIONS — verified by stacking multiple violations and asserting which one fires.
+- [x] Daily loss cap blocks at -5% equity (uses startingEquity, not current equity); does NOT block at -4.99%; resets next UTC day automatically.
+- [x] Weekly loss cap halts (sets `state.halted = true`) at -12% — requires manual reset (no auto-clear).
+- [x] Daily breach blocks new entries but does NOT halt — state.halted stays false; next UTC day's pre-trade check returns OK.
+- [x] Consecutive-loss cooldown: increments ONLY on STOP exit; resets on TP1/TP2/BREAKEVEN/TIME_STOP; triggers 12h cooldown on 3rd consecutive STOP.
+- [x] Cooldown is per-symbol — BTCUSDT triple-stop does NOT cooldown ETHUSDT.
+- [x] TP1 between STOPs resets the consecutive-loss counter (verified: STOP, STOP, TP1, STOP → counter = 1, no cooldown).
+- [x] `utcDayKey` formats YYYY-MM-DD UTC including leap day; `isoWeekKey` correct for 2024-01-01 (W01), 2024-12-30 (W01 of 2025), 2023-01-01 (W52 of 2022).
+
+### Fixes applied during review
+- `isoWeekKey` initially anchored to Jan 1 of `isoYear`, which gave wrong result for 2023-01-01 (returned W53 instead of W52) when the prior year's Jan 1 fell on Sat-Sun. Re-anchored to **Thursday of week 1**, located via Jan 4 (which is always in ISO week 1 by definition). All ISO-week tests now pass.
+
+### Deliverables shipped
+- `packages/bot/src/core/risk.ts` — `sizePosition()` returning `{type:"OK",quantity,notionalUsd,riskUsd,marginUsd,leverage,partial} | {type:"REJECT",reason}`. Implements §6.2 sizing formula, §6.5 exposure caps, step-size flooring, min-notional filter. Plus `DEFAULT_SYMBOL_META` for the three supported pairs.
+- `packages/bot/src/core/circuit-breakers.ts` — `preTradeChecks()` (§7.4 ordered gate), `recordTradeClose()` (mutates AccountState: equity, daily/weekly P&L, consecutive losses on STOP only, cooldown on threshold, halt on weekly cap), `utcDayKey()`, `isoWeekKey()` (ISO 8601 with Jan-4 anchoring), `createAccountState()`.
+- `packages/bot/tests/core/risk.test.ts` — 10 tests.
+- `packages/bot/tests/core/circuit-breakers.test.ts` — 26 tests.
+
+### Test results
+```
+Test Files  13 passed | 1 skipped (14)
+     Tests  155 passed | 3 skipped (158)
+```
+
+### Final decision
+PASS — advancing to Phase 9.
