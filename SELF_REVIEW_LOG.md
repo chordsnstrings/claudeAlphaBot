@@ -578,3 +578,52 @@ PASS — advancing to Phase 16 (Dashboard page).
 
 ### Final decision
 PASS — advancing to Phase 17 (remaining 10 UI pages).
+
+---
+
+## Phase 17 — Remaining Pages
+
+### Rubric check
+- [x] **All 10 remaining pages functional, not stubs** — Activity, Positions, Trades, Performance, Strategies, Regime Monitor, Validation, Circuit Breakers, Commands, Settings each replaced with full implementations that render real server-side data. The Phase 15 `StubPage` placeholder is no longer imported from any page file.
+- [x] **Each page uses shared TopBar + PageTitle layout** — Introduced `components/page-shell.tsx`, a server component that wraps `TopBar` + `PageTitle` and streams children. Every non-dashboard page renders `<PageShell title subtitle>` so header data (mode, uptime, last regime check) is consistent site-wide without duplicating fetch logic.
+- [x] **Graceful empty states where DB has no rows** — Every loader in `queries-ext.ts` wraps its query in try/catch returning an empty array or zero-valued shape. Every page renders a meaningful "No X yet" block at py-10 text-center when the result is empty. Applies to: activity (no events), positions (no open), trades (no match), strategies (no trades per strategy), regime log, validation artifacts, breakers history, commands log.
+- [x] **Trade History filters work via URL searchParams** — `/trades?symbol=BTCUSDT&strategy=NY_OPEN&direction=LONG`. Server component reads `searchParams`, filters client-side from the full 500-row window (so the form is a plain HTML `<form method="GET">` with no client JS). Filters: symbol (ALL/BTC/ETH/SOL), strategy (ALL + 5 strategies), direction (ALL/LONG/SHORT). Reset link clears.
+- [x] **Performance page has range picker (7d/30d/90d/365d)** — Top-of-page tab strip, selected tab shows accent bg. `loadPerformance(fromUtc, toUtc)` receives the windowed range; `loadEquityCurve(days)` follows the same window so the chart matches. 8 metric cards: trades, win rate, total PnL, profit factor, avg R, best R, worst R, window label.
+- [x] **Strategies page shows all 5 strategies (even if no trades)** — `ALL_STRATEGIES` constant keeps ARB/NY_OPEN/WEEKEND_MR/FUNDING_FADE/BB_MR visible; `byStrategy` map lookup gracefully shows "—" for metrics when a strategy has no rows. Per-card: trades, win rate, avg R, expectancy, and the last 5 recent trades for the strategy.
+- [x] **Regime page shows 3 per-symbol cards + full check log** — Re-uses `RegimeCard`. Below the cards, full `regime_check_log` table (200 rows max) with time / symbol / current / validation / outcome pill / Δ confidence columns.
+- [x] **Commands page posts to Next route handlers that proxy to the bot** — Five Next.js API routes under `/api/commands/*` proxy to the bot's Fastify endpoints via `lib/bot-api.ts` (reads `BOT_API_URL` env, default `http://localhost:8787`). Rate-limit feedback bubbles up: on 429 the UI shows "Rate-limited (wait 10s)". Destructive buttons (close-all, force-revalidate) use `window.confirm` before firing; close-all sends `{ confirm: "CONFIRM_CLOSE_ALL" }` to match the Phase 14 API contract.
+- [x] **Command log table renders below the buttons** — `loadCommandLog(50)` reads the `command_log` table that Phase 14 writes to on every call. Result pill colour-coded: OK=green, RATE_LIMITED=orange, ERROR/REJECTED=red.
+- [x] **Settings page is read-only** — `<dl>` of 10 rows with label/value, pulled from env + DB (starting equity, current equity, mode, crons, rate-limit, last regime check). No editable inputs — footer explains this is intentional.
+- [x] **Typecheck + build are clean** — `pnpm -r typecheck` passes for @hydra/shared, @hydra/bot, @hydra/ui. `pnpm --filter @hydra/ui build` succeeds with 15 routes (static + dynamic mix), zero type errors, First Load JS 84.4 kB for the static shell. Static: 11 pages. Dynamic: 5 command route handlers + /trades + /performance (due to `searchParams`).
+- [x] **All 318 bot tests still pass** — `pnpm -r test` green end-to-end, no regressions from Phase 16.
+
+### Design decisions
+- **Server component `PageShell` as the layout primitive**: alternative was a `<RootLayout>` that loads status — but `loadStatus()` hits the DB, and doing it in RootLayout would fire on every page including static error pages. Localised `PageShell` keeps the DB call on pages that want the top-bar.
+- **Trade filters via URL, not client state**: the page is a server component, and URL params make filters bookmarkable + shareable. The `<form method="GET">` requires zero client JS and plays correctly with the back button.
+- **Client-side filter on the 500-row window, not a DB WHERE**: 500 rows is under 200 KB serialised. Filtering in JS avoids a round-trip per filter change, and parameterising the SQL would require dynamic query-building. If the trade count grows past ~5k, swap to a `WHERE strategy = $1 ...` loader.
+- **Commands via Next route handler proxy, not direct client-to-bot fetch**: the bot's Fastify server is inside the private network in production; the UI server can reach it, the browser cannot. Proxying also centralises the `BOT_API_URL` config in one env var instead of leaking it to every client bundle.
+- **Destructive buttons use `window.confirm`**: a native confirm is boring but zero-dependency and the user's muscle memory is correct. A custom modal would be nicer visually but adds ~1 kB and state-management complexity for no functional gain. Defer to Phase-19 polish if desired.
+- **Per-strategy card vs. flat table for strategies page**: cards show recent-trades context inline, more scannable than a 5-row table. The strategies table still exists on the Performance page for head-to-head comparison.
+
+### Fixes applied during review
+- **Schema column mismatches**: Queries-ext.ts initially used `exit_time_utc`, `entry_time_utc`, `fees_paid_usd`, `reasoning`, `raw_json`, `resolved_at_utc` — none of those exist. Read `migrations/1700000000000_initial-schema.sql` and corrected to `exit_time`, `entry_time`, `fees_paid`, removed `reasoning` (no column), `created_at_utc` (not `created_at`) on validated_artifacts, removed `raw_json` (use `validation_results` JSONB if needed later), `released_at_utc` (not `resolved_at_utc`) on circuit_breaker_events. Also `account_equity_history.ts_utc` (not `timestamp_utc`) — fixed in both `queries.ts` and `queries-ext.ts`.
+- **exactOptionalPropertyTypes with conditional undefined**: TS strict mode rejects `{ foo: undefined }` as assignable to `{ foo?: string }`. Replaced `<Stat valueClassName={b ? signColor(b.avgR) : undefined}>` with conditional spread `{...(b ? { valueClassName: signColor(b.avgR) } : {})}` so the prop is either present with a defined value, or absent. Same pattern applied to `<FilterBar symbol strategy direction>` props and to `fetch`'s `body` field in `bot-api.ts` and `commands-panel.tsx` (built a `RequestInit` var and assigned `.body` only when defined).
+- **Added orange-bg color token**: `tailwind.config.ts` only had `orange.DEFAULT`. Regime DRIFTED + command RATE_LIMITED pills needed `bg-orange-bg`; added `orange.bg: #F0B90B15` (15% alpha) to match the green/red token shape.
+
+### Deliverables shipped
+- `packages/ui/src/db/queries-ext.ts` — 7 new loaders: `loadActivityFeed`, `loadAllTrades`, `loadPerformance`, `loadStrategyBreakdown`, `loadRegimeLog`, `loadArtifacts`, `loadBreakerEvents`, `loadCommandLog`.
+- `packages/ui/src/lib/bot-api.ts` — typed fetch wrapper for the bot's internal API, reads `BOT_API_URL`.
+- `packages/ui/src/components/page-shell.tsx` — shared TopBar+PageTitle wrapper.
+- `packages/ui/src/components/full-trades-table.tsx` — full trades table with all 11 columns.
+- `packages/ui/src/components/commands-panel.tsx` — client component with 5 command buttons, confirmation dialogs, and rate-limit feedback.
+- `packages/ui/src/app/api/commands/{pause,resume,force-revalidate,close-all-positions,approve-artifact}/route.ts` — 5 Next.js route handlers proxying to the bot API.
+- Replaced 10 stub pages with full implementations: `activity/`, `positions/`, `trades/`, `performance/`, `strategies/`, `regime/`, `validation/`, `breakers/`, `commands/`, `settings/`.
+- Tailwind config: added `orange.bg` color token.
+
+### Test results
+- `pnpm -r typecheck` → 3 packages clean.
+- `pnpm -r test` → 318 passed, 3 skipped (pre-existing integration skips), 0 failed.
+- `pnpm --filter @hydra/ui build` → 15 routes, 0 warnings, 84.4 kB shared First Load JS.
+
+### Final decision
+PASS — advancing to Phase 18 (Docker + docker-compose + DO app spec).

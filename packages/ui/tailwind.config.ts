@@ -46,7 +46,7 @@ const config: Config = {
           bg: "#F6465D15",
         },
         blue: { DEFAULT: "#4A78E0" },
-        orange: { DEFAULT: "#F0B90B" },
+        orange: { DEFAULT: "#F0B90B", bg: "#F0B90B15" },
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],

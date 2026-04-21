@@ -27,15 +27,15 @@ export async function loadKpis(startingEquityUsd: number): Promise<KpiSnapshot> 
     const [eq, trades] = await Promise.all([
       db().query<{ equity_usd: string }>(
         `SELECT equity_usd FROM account_equity_history
-          ORDER BY timestamp_utc DESC LIMIT 1`,
+          ORDER BY ts_utc DESC LIMIT 1`,
       ),
       db().query<{
         pnl_usd: string;
-        exit_time_utc: string;
+        exit_time: string;
         exit_reason: string;
       }>(
-        `SELECT pnl_usd::text, exit_time_utc::text, exit_reason
-           FROM trades ORDER BY exit_time_utc DESC LIMIT 500`,
+        `SELECT pnl_usd::text, exit_time::text, exit_reason
+           FROM trades ORDER BY exit_time DESC LIMIT 500`,
       ),
     ]);
     const latestEquity = eq.rows[0]
@@ -43,7 +43,7 @@ export async function loadKpis(startingEquityUsd: number): Promise<KpiSnapshot> 
       : startingEquityUsd;
     const tradesList = trades.rows.map((r) => ({
       pnl: Number(r.pnl_usd),
-      exit: Number(r.exit_time_utc),
+      exit: Number(r.exit_time),
       reason: r.exit_reason,
     }));
     const todayTrades = tradesList.filter((t) => t.exit >= dayAgo);
@@ -88,15 +88,15 @@ export interface EquityPoint {
 export async function loadEquityCurve(days: number): Promise<EquityPoint[]> {
   try {
     const sinceMs = Date.now() - days * 86_400_000;
-    const res = await db().query<{ timestamp_utc: string; equity_usd: string }>(
-      `SELECT timestamp_utc::text, equity_usd::text
+    const res = await db().query<{ ts_utc: string; equity_usd: string }>(
+      `SELECT ts_utc::text, equity_usd::text
          FROM account_equity_history
-        WHERE timestamp_utc >= $1
-        ORDER BY timestamp_utc ASC`,
+        WHERE ts_utc >= $1
+        ORDER BY ts_utc ASC`,
       [sinceMs],
     );
     return res.rows.map((r) => ({
-      timestampUtc: Number(r.timestamp_utc),
+      timestampUtc: Number(r.ts_utc),
       equityUsd: Number(r.equity_usd),
     }));
   } catch {
@@ -167,21 +167,21 @@ export async function loadRecentTrades(limit = 10): Promise<RecentTradeRow[]> {
   try {
     const res = await db().query<{
       trade_id: string;
-      exit_time_utc: string;
+      exit_time: string;
       symbol: string;
       strategy: string;
       direction: "LONG" | "SHORT";
       pnl_usd: string;
       exit_reason: string;
     }>(
-      `SELECT trade_id::text, exit_time_utc::text, symbol, strategy, direction,
+      `SELECT trade_id::text, exit_time::text, symbol, strategy, direction,
               pnl_usd::text, exit_reason
-         FROM trades ORDER BY exit_time_utc DESC LIMIT $1`,
+         FROM trades ORDER BY exit_time DESC LIMIT $1`,
       [limit],
     );
     return res.rows.map((r) => ({
       tradeId: Number(r.trade_id),
-      exitTimeUtc: Number(r.exit_time_utc),
+      exitTimeUtc: Number(r.exit_time),
       symbol: r.symbol,
       strategy: r.strategy,
       direction: r.direction,
