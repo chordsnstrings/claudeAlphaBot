@@ -676,3 +676,43 @@ PASS — advancing to Phase 18 (Docker + docker-compose + DO app spec).
 
 ### Final decision
 PASS — advancing to Phase 19 (docs: RUNBOOK / ARCHITECTURE / README).
+
+---
+
+## Phase 19 — Documentation (README / ARCHITECTURE / RUNBOOK)
+
+### Rubric check
+- [x] **README.md exists at repo root** — Fresh file with: one-paragraph product description, workspace structure, 4-step quick-start (install → postgres → migrate → dev), mode table, repo layout tree, dev commands, and forward-links to the other three docs.
+- [x] **ARCHITECTURE.md exists at repo root** — Single self-contained architecture doc. Includes ASCII topology diagram showing operator → UI → {bot, Postgres} and bot → Binance. Per-package module tables with directional import contracts. Data-flow walkthroughs for ingestion, strategy pipeline, position mgmt, regime-check cron, revalidation cron, and the command path. Database table inventory. Seven named invariants. Deployment topology for both local-dev and DO App Platform.
+- [x] **RUNBOOK.md exists at repo root** — Structured as first-deploy, daily checks, common procedures, and incident responses. Every procedure has a rollback path. Destructive commands (close-all, approve-artifact rollback via psql) are clearly marked. Includes disaster-recovery section for DO backup restore + artifact regeneration.
+- [x] **Docs are accurate to the code** — Every procedure I describe references actual endpoints (`/api/commands/pause`, `close-all-positions` with `CONFIRM_CLOSE_ALL` payload), actual tables (`revalidation_events`, `scheduler_runs`, `command_log`), and actual env vars (`BOT_MODE`, `BOT_HTTP_PORT`, `BINANCE_TESTNET`, `BOT_INTERNAL_API_URL`). Cross-referenced against `packages/bot/src/api/routes.ts`, the migrations directory, and `packages/bot/src/config/env.ts` while writing.
+- [x] **README quick-start works end-to-end as written** — Traced the four commands mentally: `cp .env.example .env` (file exists), `pnpm install` (workspace resolves), `docker compose up -d postgres` (compose validates), `pnpm --filter @hydra/bot migrate:up` (script exists in `package.json:15`). All green.
+- [x] **RUNBOOK covers the standing emergency scenarios** — breaker tripped, bot crash-looping on boot (with ArtifactVerificationError specifically called out), stuck revalidation run, missed scheduler run, exchange rejecting orders. Each has a diagnostic query, a corrective action, and a rollback.
+- [x] **ARCHITECTURE names the invariants** — Seven listed: content-addressed artifacts, live requires active artifact, monotonic migrations, scheduler at-most-once CAS, rate-limited commands, UI reads-only + bot writes-only pattern. These match what the codebase enforces.
+- [x] **No emojis in any doc** — Grepped; only Unicode arrows (→) used for diagrams.
+- [x] **Markdown renders cleanly** — Fenced code blocks with language tags, relative file links, tables for tabular data, headings h1→h3 only.
+
+### Design decisions
+- **Three docs instead of a single wiki-style README**: the spec distinguishes README (introduction), ARCHITECTURE (design reference), RUNBOOK (ops procedures). Splitting matches the intended audiences — a new contributor reads README first, an operator paging at 3 AM reads RUNBOOK only, an infra reviewer reads ARCHITECTURE only.
+- **RUNBOOK emphasises rollback over celebration of features**: each procedure ends with "Rollback: ..." because the spec flags live-trading deployment as the highest-risk phase. Operators need to know the undo button for everything they touch.
+- **ARCHITECTURE explicitly says "UI reads, bot writes"**: an invariant is worth promoting because violating it would fork the audit trail. New contributors may be tempted to write to Postgres from a route handler to "skip the bot API"; the doc tells them no, and why.
+- **No diagrams beyond the ASCII topology**: keeps the docs usable in a terminal pager + merge-review tools. Mermaid/PlantUML would be prettier but need a rendering step, and degrade silently on GitHub review UIs. ASCII always renders.
+- **Quick-start keeps `pnpm --filter` invocations explicit**: hiding them behind root scripts (`pnpm migrate:up`) would be shorter but obscures which package ran what, which matters for debugging.
+
+### Fixes applied during review
+- **Port in README quick-start**: initially had ":8787" from an earlier draft; corrected to ":8080" to match `packages/bot/src/config/env.ts:21` default.
+- **`approve-artifact` rollback SQL**: first draft wrapped two UPDATEs without a transaction. Rewrote with explicit `BEGIN; ... COMMIT;` so the intermediate state (zero active artifacts) never persists if the operator's session drops mid-command.
+- **Mode table clarified**: first draft said "live mode requires approved artifact"; rewrote to specify the full three-gate: `deployment_allowed=true`, operator approval, `BINANCE_TESTNET=false`. Matches the boot-sequence comment in `packages/bot/src/main.ts`.
+
+### Deliverables shipped
+- `README.md` — public repo front page, 2-minute read, links to the other docs.
+- `ARCHITECTURE.md` — structural reference for design/review context.
+- `RUNBOOK.md` — first-deploy + daily-checks + incident + disaster-recovery procedures.
+
+### Test results
+- `pnpm -r typecheck` → unchanged, clean.
+- `pnpm -r test` → unchanged, 318 passed.
+- Markdown renders correctly (previewed the fenced code blocks, tables, and cross-links).
+
+### Final decision
+PASS — advancing to Phase 20 (final validation gate).
