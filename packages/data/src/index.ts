@@ -1,8 +1,9 @@
-/**
- * @trading/data
- *
- * Phase 1 stub — implementations land in their respective phases. See
- * trading_system_docs.md section 4.2 for the role of this package.
- */
+/** Top-level barrel for the data package. */
 
 export const PACKAGE_NAME = "@trading/data";
+
+export * from "./db.js";
+export * from "./health.js";
+export * from "./migrate.js";
+export * from "./schema/index.js";
+export * from "./repos/index.js";
