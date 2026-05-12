@@ -1,8 +1,6 @@
-/**
- * @trading/orchestrator
- *
- * Phase 1 stub — implementations land in their respective phases. See
- * trading_system_docs.md section 4.2 for the role of this package.
- */
+/** @trading/orchestrator — spec §11. */
 
 export const PACKAGE_NAME = "@trading/orchestrator";
+
+export * from "./regime-classifier.js";
+export * from "./orchestrator.js";

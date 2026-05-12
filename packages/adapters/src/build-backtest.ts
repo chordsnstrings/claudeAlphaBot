@@ -71,6 +71,11 @@ export interface BuildBacktestResult {
 export interface BuildBacktestOpts {
   /** Pre-built strategies. The CLI wires real ones; tests can pass []. */
   strategies?: Strategy[];
+  /**
+   * Optional orchestrator override (default: passthrough). Inject the
+   * @trading/orchestrator implementation for multi-strategy runs.
+   */
+  orchestrator?: Orchestrator;
 }
 
 export async function buildBacktestDeps(
@@ -129,7 +134,7 @@ export async function buildBacktestDeps(
     execution,
     clock,
     strategies: opts.strategies ?? [],
-    orchestrator: passthroughOrchestrator,
+    orchestrator: opts.orchestrator ?? passthroughOrchestrator,
     riskManager,
     metrics,
     auditLog: new AuditLog(repos, config.sessionId),
