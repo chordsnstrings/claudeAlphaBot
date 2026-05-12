@@ -24,3 +24,12 @@ packages/bot/tests/**/*.js
 packages/bot/tests/**/*.d.ts
 packages/bot/tests/**/*.js.map
 packages/bot/tests/**/*.d.ts.map
+
+# Python pipeline artifacts
+dukascopy_pipeline/output/
+dukascopy_pipeline/sample_output/
+dukascopy_pipeline/**/__pycache__/
+dukascopy_pipeline/**/*.pyc
+.python-version
+venv/
+.venv/
