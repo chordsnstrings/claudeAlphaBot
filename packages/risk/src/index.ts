@@ -1,8 +1,7 @@
-/**
- * @trading/risk
- *
- * Phase 1 stub — implementations land in their respective phases. See
- * trading_system_docs.md section 4.2 for the role of this package.
- */
+/** @trading/risk — spec §3.4 + §4.4 + §9.10. */
 
 export const PACKAGE_NAME = "@trading/risk";
+
+export * from "./position-sizing.js";
+export * from "./risk-manager.js";
+export * from "./audit-log.js";

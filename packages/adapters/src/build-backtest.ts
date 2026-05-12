@@ -16,25 +16,11 @@
  * `buildSystem`. The CLI does this on its own; tests can call it directly.
  */
 
-import {
-  logger,
-  type AuditLog,
-  type Orchestrator,
-  type OrderResult,
-  type RiskManager,
-  type Signal,
-  type Strategy,
-  type SystemConfig,
-} from "@trading/core";
-import {
-  buildRepos,
-  createDb,
-  type NewAuditEventRow,
-  type NewSignalLogRow,
-  type Repos,
-} from "@trading/data";
+import { logger, type Orchestrator, type Strategy, type SystemConfig } from "@trading/core";
+import { buildRepos, createDb, type Repos } from "@trading/data";
 import { registerAdapters, type TradingSystemDeps } from "@trading/engine";
 import { MetricsCollector } from "@trading/metrics";
+import { AuditLog, RiskManager } from "@trading/risk";
 import type pg from "pg";
 
 import { FrictionModel } from "./friction/friction-model.js";
@@ -66,68 +52,10 @@ const passthroughOrchestrator: Orchestrator = {
   },
 };
 
-const permissiveRiskManager: RiskManager = {
-  /** Stub until Phase 10: pass everything; real enforcement lands then. */
-  canExecute: () => ({ allowed: true, reason: null, adjustedLotSize: null }),
-  shouldHalt: () => ({ halt: false, reason: null }),
-};
-
-// MetricsCollector lives in @trading/metrics (Phase 9). buildBacktestDeps
-// uses it directly; the CLI reads `metrics.snapshot()` post-run to populate
+// MetricsCollector lives in @trading/metrics (Phase 9); RiskManager and
+// AuditLog in @trading/risk (Phase 10). buildBacktestDeps wires them
+// directly; the CLI reads `metrics.snapshot()` post-run to populate
 // session.aggregateMetrics.
-
-class DbAuditLog implements AuditLog {
-  constructor(private readonly repos: Repos, private readonly sessionId: string) {}
-
-  async recordSignal(args: {
-    signal: Signal;
-    becameTrade: boolean;
-    result?: OrderResult;
-    rejectedReason?: string;
-  }): Promise<void> {
-    const tradeId = args.result?.brokerPositionId ?? null;
-    const row: NewSignalLogRow = {
-      sessionId: this.sessionId,
-      originatingStrategy: args.signal.originatingStrategy,
-      instrument: args.signal.instrument,
-      direction: args.signal.direction,
-      proposedEntryPrice: args.signal.proposedEntryPrice.toFixed(6),
-      proposedStopPrice: args.signal.proposedStopPrice.toFixed(6),
-      proposedTargetPrice: args.signal.proposedTargetPrice.toFixed(6),
-      proposedSizeFraction: args.signal.proposedSizeFractionOfAllocation.toFixed(4),
-      urgencyScore: args.signal.urgencyScore.toFixed(4),
-      signalType: args.signal.signalType,
-      entryReason: args.signal.entryReason,
-      generatedAtBar: args.signal.generatedAtBar,
-      metadata: args.signal.metadata,
-    };
-    if (args.becameTrade && tradeId !== null) {
-      row.becameTradeId = tradeId;
-    }
-    if (args.rejectedReason !== undefined) {
-      row.rejectedReason = args.rejectedReason;
-    }
-    await this.repos.signals.insert(row);
-  }
-
-  async recordEvent(args: {
-    severity: "info" | "warn" | "error" | "fatal";
-    category: string;
-    description: string;
-    metadata?: Record<string, unknown>;
-  }): Promise<void> {
-    const row: NewAuditEventRow = {
-      sessionId: this.sessionId,
-      severity: args.severity,
-      category: args.category,
-      description: args.description,
-    };
-    if (args.metadata !== undefined) {
-      row.metadata = args.metadata;
-    }
-    await this.repos.audit.insert(row);
-  }
-}
 
 // --------------------------------------------------------- factory itself
 
@@ -191,15 +119,20 @@ export async function buildBacktestDeps(
     seed: Number(config.backtest.randomSeed & 0xffffffffn),
   });
 
+  const riskManager = new RiskManager({
+    config: config.riskConfig,
+    initialEquityUsd: config.backtest.initialEquityUsd,
+  });
+
   const deps: TradingSystemDeps = {
     dataFeed,
     execution,
     clock,
     strategies: opts.strategies ?? [],
     orchestrator: passthroughOrchestrator,
-    riskManager: permissiveRiskManager,
+    riskManager,
     metrics,
-    auditLog: new DbAuditLog(repos, config.sessionId),
+    auditLog: new AuditLog(repos, config.sessionId),
     sessionId: config.sessionId,
     mode: "backtest",
     subscriptions,

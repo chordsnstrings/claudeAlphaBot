@@ -50,6 +50,9 @@ importers:
       '@trading/metrics':
         specifier: workspace:*
         version: link:../metrics
+      '@trading/risk':
+        specifier: workspace:*
+        version: link:../risk
       pg:
         specifier: 8.12.0
         version: 8.12.0
@@ -196,6 +199,9 @@ importers:
       '@trading/core':
         specifier: workspace:*
         version: link:../core
+      '@trading/data':
+        specifier: workspace:*
+        version: link:../data
     devDependencies:
       typescript:
         specifier: 5.5.3
