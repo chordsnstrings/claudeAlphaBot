@@ -162,12 +162,11 @@ export async function runBacktest(opts: BacktestCliOpts): Promise<number> {
     const stats = system.getStats();
     const trades = await ctx.repos.trades.findBySession(sessionId);
     const accountInfo = await built.deps.execution.getAccountInfo();
+    // Spec §9.9 — write the full metrics snapshot to session.aggregateMetrics.
+    const metricsSnapshot = built.metrics.snapshot();
     const aggregate = {
       barsProcessed: stats.length,
-      tradesClosed: trades.length,
-      finalEquityUsd: accountInfo.equityUsd,
-      finalReturnPct:
-        ((accountInfo.equityUsd - 100_000) / 100_000) * 100,
+      ...metricsSnapshot,
     };
 
     await ctx.repos.sessions.updateStatus(sessionId, "completed", {

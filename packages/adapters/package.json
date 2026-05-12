@@ -19,6 +19,7 @@
     "@trading/core": "workspace:*",
     "@trading/data": "workspace:*",
     "@trading/engine": "workspace:*",
+    "@trading/metrics": "workspace:*",
     "pg": "8.12.0"
   },
   "devDependencies": {

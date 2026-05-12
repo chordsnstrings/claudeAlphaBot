@@ -47,6 +47,9 @@ importers:
       '@trading/engine':
         specifier: workspace:*
         version: link:../engine
+      '@trading/metrics':
+        specifier: workspace:*
+        version: link:../metrics
       pg:
         specifier: 8.12.0
         version: 8.12.0

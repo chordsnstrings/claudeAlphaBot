@@ -21,6 +21,7 @@ export interface MetricsCollector {
   /** Called once per bar after orders + position events have been processed. */
   update(state: MarketState, closedThisBar: ClosedTradeRecord[]): void;
 
-  /** Snapshot of accumulated metrics for reporting. */
-  snapshot(): Record<string, unknown>;
+  /** Snapshot of accumulated metrics for reporting. Implementations
+   * return their own concrete shape; consumers narrow at the call site. */
+  snapshot(): unknown;
 }

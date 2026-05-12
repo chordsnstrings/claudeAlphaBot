@@ -1,8 +1,10 @@
-/**
- * @trading/metrics
- *
- * Phase 1 stub — implementations land in their respective phases. See
- * trading_system_docs.md section 4.2 for the role of this package.
- */
+/** @trading/metrics — spec §8. */
 
 export const PACKAGE_NAME = "@trading/metrics";
+
+export * from "./stats.js";
+export * from "./wilson-ci.js";
+export * from "./equity-curve.js";
+export * from "./sharpe.js";
+export * from "./monte-carlo.js";
+export * from "./metrics-collector.js";

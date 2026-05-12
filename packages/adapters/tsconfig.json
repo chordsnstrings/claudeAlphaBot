@@ -9,6 +9,7 @@
   "references": [
     { "path": "../core" },
     { "path": "../data" },
-    { "path": "../engine" }
+    { "path": "../engine" },
+    { "path": "../metrics" }
   ]
 }

@@ -19,7 +19,6 @@
 import {
   logger,
   type AuditLog,
-  type MetricsCollector,
   type Orchestrator,
   type OrderResult,
   type RiskManager,
@@ -35,6 +34,7 @@ import {
   type Repos,
 } from "@trading/data";
 import { registerAdapters, type TradingSystemDeps } from "@trading/engine";
+import { MetricsCollector } from "@trading/metrics";
 import type pg from "pg";
 
 import { FrictionModel } from "./friction/friction-model.js";
@@ -72,17 +72,9 @@ const permissiveRiskManager: RiskManager = {
   shouldHalt: () => ({ halt: false, reason: null }),
 };
 
-class NoOpMetrics implements MetricsCollector {
-  private bars = 0;
-  private closes = 0;
-  update(_state: Parameters<MetricsCollector["update"]>[0], closed: Parameters<MetricsCollector["update"]>[1]): void {
-    this.bars += 1;
-    this.closes += closed.length;
-  }
-  snapshot(): Record<string, unknown> {
-    return { bars: this.bars, closesObserved: this.closes };
-  }
-}
+// MetricsCollector lives in @trading/metrics (Phase 9). buildBacktestDeps
+// uses it directly; the CLI reads `metrics.snapshot()` post-run to populate
+// session.aggregateMetrics.
 
 class DbAuditLog implements AuditLog {
   constructor(private readonly repos: Repos, private readonly sessionId: string) {}
@@ -144,6 +136,7 @@ export interface BuildBacktestResult {
   /** Used by the CLI to update the session row on completion. */
   repos: Repos;
   pool: pg.Pool;
+  metrics: MetricsCollector;
   close(): Promise<void>;
 }
 
@@ -193,6 +186,11 @@ export async function buildBacktestDeps(
     config.backtest.timeframes.map((tf) => ({ instrument: inst, timeframe: tf })),
   );
 
+  const metrics = new MetricsCollector({
+    initialEquityUsd: config.backtest.initialEquityUsd,
+    seed: Number(config.backtest.randomSeed & 0xffffffffn),
+  });
+
   const deps: TradingSystemDeps = {
     dataFeed,
     execution,
@@ -200,7 +198,7 @@ export async function buildBacktestDeps(
     strategies: opts.strategies ?? [],
     orchestrator: passthroughOrchestrator,
     riskManager: permissiveRiskManager,
-    metrics: new NoOpMetrics(),
+    metrics,
     auditLog: new DbAuditLog(repos, config.sessionId),
     sessionId: config.sessionId,
     mode: "backtest",
@@ -223,6 +221,7 @@ export async function buildBacktestDeps(
     deps,
     repos,
     pool: handle.pool,
+    metrics,
     close: () => handle.close(),
   };
 }
