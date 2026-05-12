@@ -27,9 +27,11 @@ import {
   computeIndicators,
   logger,
   type Bar,
+  type ClosedTradeRecord,
   type MarketState,
   type OrderRequest,
   type OrderResult,
+  type OrderUpdate,
   type Position,
   type PositionEvent,
   type SessionContext,
@@ -147,6 +149,21 @@ export class TradingSystem {
     this.recentBars.set(key, buf);
 
     const indicators = computeIndicators(buf);
+
+    // Phase 7+: drive the backtest execution adapter forward — it detects
+    // stop/target hits, closes any triggered positions, and returns the
+    // synthetic order updates so the engine can dispatch them BEFORE
+    // strategies see this bar's state.
+    const positionsBeforeBar = await this.deps.execution.getOpenPositions();
+    let closedThisBar: ClosedTradeRecord[] = [];
+    if (this.deps.execution.processBar !== undefined) {
+      const updates = await this.deps.execution.processBar(bar, {
+        atr14: indicators.atr14,
+        medianAtr14_60d: null,
+      });
+      closedThisBar = await this.fanOutOrderUpdates(updates, positionsBeforeBar, bar);
+    }
+
     const account = await this.deps.execution.getAccountInfo();
     const openPositions = await this.deps.execution.getOpenPositions();
     const positionsByStrategy = new Map<string, Position[]>();
@@ -228,10 +245,7 @@ export class TradingSystem {
       }
     }
 
-    // Drain any order updates queued during this bar (best-effort).
-    await this.notifyPositionEvents(openPositions);
-
-    // Metrics.
+    // Metrics — feed in any closes that happened on this bar.
     this.deps.metrics.update(
       {
         currentBar: bar,
@@ -243,8 +257,7 @@ export class TradingSystem {
         accountEquity: account.equityUsd,
         now: this.deps.clock.now(),
       },
-      // Phase 5 has no exit detection yet; closed-trade list lands in Phase 11.
-      [],
+      closedThisBar,
     );
 
     this.stats.push(stats);
@@ -261,13 +274,69 @@ export class TradingSystem {
   }
 
   /**
-   * Fan-out the most-recently-seen position events to each strategy that
-   * owns the affected position. Phase 5 doesn't have a real
-   * position-event stream yet; this is the hook for Phase 7+ to call.
+   * Convert OrderUpdates emitted by `execution.processBar(...)` into
+   * PositionEvents, dispatch them to the owning strategy, and return the
+   * resulting ClosedTradeRecord list for the MetricsCollector.
    */
-  private async notifyPositionEvents(_positions: Position[]): Promise<void> {
-    // Intentionally empty until Phase 7 wires a real PositionEvent source.
-    // Listed here so the architectural seam is visible.
+  private async fanOutOrderUpdates(
+    updates: readonly OrderUpdate[],
+    positionsBeforeBar: readonly Position[],
+    bar: Bar,
+  ): Promise<ClosedTradeRecord[]> {
+    const byBrokerPositionId = new Map<string, Position>();
+    for (const p of positionsBeforeBar) {
+      if (p.brokerPositionId !== null) {
+        byBrokerPositionId.set(p.brokerPositionId, p);
+      }
+    }
+    const closed: ClosedTradeRecord[] = [];
+    for (const u of updates) {
+      if (u.status !== "filled" && u.status !== "partially_filled") {
+        continue;
+      }
+      if (u.brokerPositionId === null) {
+        continue;
+      }
+      const pos = byBrokerPositionId.get(u.brokerPositionId);
+      if (pos === undefined) {
+        continue;
+      }
+      const exitPrice = u.fillPrice ?? bar.close;
+      const exitTime = u.fillTime ?? bar.timestampUtc;
+      const move = exitPrice - pos.entryPrice;
+      const signedMove = pos.direction === "long" ? move : -move;
+      const realizedPnLUsd =
+        signedMove * pos.lotSize * standardLotUnitsFor(pos.instrument);
+      const realizedPnLPct =
+        pos.initialRiskUsd > 0
+          ? (realizedPnLUsd / pos.initialRiskUsd) * pos.initialRiskPct
+          : 0;
+      const rMultiple = pos.initialRiskUsd > 0 ? realizedPnLUsd / pos.initialRiskUsd : 0;
+      const event: PositionEvent = {
+        type: "closed",
+        position: pos,
+        exitReason: inferExitReason(pos, bar),
+        exitPrice,
+        exitTime,
+        realizedPnLUsd,
+        realizedPnLPct,
+        realizedRMultiple: rMultiple,
+      };
+      for (const s of this.deps.strategies) {
+        if (s.name === pos.originatingStrategy) {
+          await s.onPositionEvent(event);
+        }
+      }
+      closed.push({
+        position: pos,
+        exitPrice,
+        exitTime,
+        realizedPnLUsd,
+        realizedPnLPct,
+        realizedRMultiple: rMultiple,
+      });
+    }
+    return closed;
   }
 
   private async shutdown(): Promise<void> {
@@ -291,4 +360,32 @@ export function emptyPositionEvents(): PositionEvent[] {
 
 function errMsg(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
+}
+
+function standardLotUnitsFor(instrument: string): number {
+  switch (instrument) {
+    case "XAUUSD":
+      return 100;
+    case "XAGUSD":
+      return 5000;
+    case "BRENTCMDUSD":
+    case "LIGHTCMDUSD":
+      return 100;
+    default:
+      return 100_000;
+  }
+}
+
+/** Best-effort exit-reason inference from the bar OHLC vs the position's
+ * stop/target — for live order updates that don't carry a reason. The
+ * SimulatedExecutionAdapter records its own reasons authoritatively. */
+function inferExitReason(p: Position, bar: Bar): "stop" | "target" | "manual_close" {
+  if (p.direction === "long") {
+    if (bar.low <= p.currentStopPrice) {return "stop";}
+    if (bar.high >= p.currentTargetPrice) {return "target";}
+  } else {
+    if (bar.high >= p.currentStopPrice) {return "stop";}
+    if (bar.low <= p.currentTargetPrice) {return "target";}
+  }
+  return "manual_close";
 }
