@@ -11,14 +11,24 @@
       "default": "./dist/index.js"
     }
   },
+  "bin": {
+    "trading-cli": "./dist/bin.js"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "ingest:full": "tsx src/bin.ts ingest:full",
+    "ingest:asset": "tsx src/bin.ts ingest:asset",
+    "ingest:incremental": "tsx src/bin.ts ingest:incremental",
+    "ingest:report": "tsx src/bin.ts ingest:report"
   },
   "dependencies": {
-    "@trading/core": "workspace:*"
+    "@trading/core": "workspace:*",
+    "@trading/data": "workspace:*",
+    "commander": "12.1.0"
   },
   "devDependencies": {
+    "tsx": "4.16.2",
     "typescript": "5.5.3",
     "vitest": "1.6.0"
   }

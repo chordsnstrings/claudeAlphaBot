@@ -7,7 +7,7 @@ Systematic trading system with two startup-selectable modes:
 
 Mode parity is strict: the only differences between modes are the three boundary adapters (`MarketDataFeed`, `ExecutionAdapter`, `Clock`) selected at the composition root. Everything else — strategies, orchestrator, risk, metrics, audit — is mode-invariant.
 
-The spec is `trading_system_docs.md` (v3). Build proceeds in 25 phases; see section 9 of the spec for the per-phase brief. This commit implements **Phase 1** — empty monorepo that builds, tests, and lints.
+The spec is `trading_system_docs.md` (v3). Build proceeds in 25 phases; see section 9 of the spec for the per-phase brief. Phases delivered so far: **1 (skeleton), 2 (DB schema + migrations + repositories), 3 (Dukascopy ingestion + CLI)**.
 
 ## Stack (locked)
 
@@ -67,7 +67,32 @@ pnpm test
 | `pnpm test:watch` | Vitest watch mode |
 | `pnpm format` | Prettier write |
 
-Phase-specific runtime entrypoints (`pnpm dev`, ingestion CLI, etc.) come online from Phase 3.
+Ingestion CLI (Phase 3):
+
+```bash
+# One-off: pull EURUSD daily from 2025-11 to 2026-05.
+cd packages/cli && \
+  DATABASE_URL=postgres://trading:trading@localhost:5432/trading_dev \
+  npx tsx src/bin.ts ingest:asset \
+    --instrument EURUSD --timeframe d1 \
+    --from 2025-11-01 --to 2026-05-12
+
+# Full default ingest (5y daily universe + 6mo M1 active subset).
+DATABASE_URL=... pnpm --filter @trading/cli ingest:full
+
+# Catch up to now without re-pulling history.
+DATABASE_URL=... pnpm --filter @trading/cli ingest:incremental
+
+# Row counts + first/last bar per (instrument, timeframe).
+DATABASE_URL=... pnpm --filter @trading/cli ingest:report
+```
+
+Run migrations against a fresh DB before the first ingest:
+
+```bash
+DATABASE_URL=postgres://trading:trading@localhost:5432/trading_dev \
+  pnpm --filter @trading/data migrate
+```
 
 ## Configuration
 

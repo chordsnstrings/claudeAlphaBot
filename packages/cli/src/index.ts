@@ -1,8 +1,13 @@
 /**
  * @trading/cli
  *
- * Phase 1 stub — implementations land in their respective phases. See
- * trading_system_docs.md section 4.2 for the role of this package.
+ * Exposes the CLI entrypoints as programmatic functions for testing.
+ * The shipped binary is `bin.js`.
  */
 
 export const PACKAGE_NAME = "@trading/cli";
+
+export { runIngestAsset, type IngestAssetOpts } from "./ingest-asset.js";
+export { runIngestFull } from "./ingest-full.js";
+export { runIngestIncremental, type IncrementalOpts } from "./ingest-incremental.js";
+export { runIngestReport } from "./ingest-report.js";

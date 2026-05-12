@@ -7,3 +7,4 @@ export * from "./health.js";
 export * from "./migrate.js";
 export * from "./schema/index.js";
 export * from "./repos/index.js";
+export * from "./ingestion/index.js";
