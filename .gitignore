@@ -1,8 +1,6 @@
 node_modules/
 dist/
 build/
-.next/
-out/
 coverage/
 *.log
 .env
@@ -13,23 +11,27 @@ coverage/
 .turbo/
 .pnpm-store/
 *.tsbuildinfo
-# local artifacts are fine to commit into artifacts/ explicitly;
-# anything else scratch goes here
+
+# vitest
+**/.vitest-cache/
+
+# editor
+.vscode/
+.idea/
+
+# build artifacts
+packages/*/dist/
+packages/*/build/
+
+# generated docs/output
+output/
+artifacts/
 .scratch/
 .tmp/
-packages/*/dist/
-packages/shared/dist/
-# test emissions should never be checked in — vitest runs .ts directly via tsx
-packages/bot/tests/**/*.js
-packages/bot/tests/**/*.d.ts
-packages/bot/tests/**/*.js.map
-packages/bot/tests/**/*.d.ts.map
 
-# Python pipeline artifacts
-dukascopy_pipeline/output/
-dukascopy_pipeline/sample_output/
-dukascopy_pipeline/**/__pycache__/
-dukascopy_pipeline/**/*.pyc
-.python-version
-venv/
-.venv/
+# python (just in case)
+__pycache__/
+*.pyc
+
+# DB local data (we use postgres provided by host)
+data/pgdata/
