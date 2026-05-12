@@ -27,6 +27,7 @@ import {
 } from "@trading/core";
 import { buildBacktestDeps } from "@trading/adapters";
 import { TradingSystem } from "@trading/engine";
+import { AsianRangeSweepStrategy } from "@trading/strategies";
 
 import { buildContext } from "./context.js";
 
@@ -84,6 +85,12 @@ const STRATEGY_REGISTRY: Record<
   (instrument: string, timeframe: Timeframe) => Strategy
 > = {
   noop: buildNoopStrategy,
+  "asian-range-sweep": (instrument, timeframe) => {
+    if (timeframe !== "m1") {
+      throw new Error("asian-range-sweep is an M1 strategy");
+    }
+    return new AsianRangeSweepStrategy(instrument);
+  },
 };
 
 export async function runBacktest(opts: BacktestCliOpts): Promise<number> {

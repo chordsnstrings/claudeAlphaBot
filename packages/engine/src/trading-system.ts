@@ -100,6 +100,8 @@ export class TradingSystem {
         config: s.config,
         mode: this.deps.mode,
         initialEquityUsd: initialAccount.equityUsd,
+        dataFeed: this.deps.dataFeed,
+        clock: this.deps.clock,
       });
     }
 

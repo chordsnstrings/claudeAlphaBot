@@ -81,6 +81,9 @@ importers:
       '@trading/engine':
         specifier: workspace:*
         version: link:../engine
+      '@trading/strategies':
+        specifier: workspace:*
+        version: link:../strategies
       commander:
         specifier: 12.1.0
         version: 12.1.0

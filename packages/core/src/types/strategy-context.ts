@@ -6,6 +6,8 @@
  * Spec §5.1 — StrategyContext.
  */
 
+import type { Clock } from "../interfaces/clock.js";
+import type { MarketDataFeed } from "../interfaces/market-data-feed.js";
 import type { Timeframe } from "./bar.js";
 
 export interface StrategyConfig {
@@ -30,4 +32,8 @@ export interface StrategyContext {
   mode: "backtest" | "live";
   /** Account equity at session start; for normalising position sizes. */
   initialEquityUsd: number;
+  /** Data feed handle for strategies that need bars on other timeframes. */
+  dataFeed?: MarketDataFeed;
+  /** Clock handle for time-of-day checks and session-window math. */
+  clock?: Clock;
 }

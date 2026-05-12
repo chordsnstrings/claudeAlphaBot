@@ -1,8 +1,9 @@
-/**
- * @trading/strategies
- *
- * Phase 1 stub — implementations land in their respective phases. See
- * trading_system_docs.md section 4.2 for the role of this package.
- */
+/** @trading/strategies — spec §10. */
 
 export const PACKAGE_NAME = "@trading/strategies";
+
+export {
+  AsianRangeSweepStrategy,
+  DEFAULT_PARAMS as ASIAN_RANGE_SWEEP_DEFAULTS,
+  type AsianRangeSweepParams,
+} from "./asian-range-sweep.js";

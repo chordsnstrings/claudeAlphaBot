@@ -28,6 +28,7 @@
     "@trading/core": "workspace:*",
     "@trading/data": "workspace:*",
     "@trading/engine": "workspace:*",
+    "@trading/strategies": "workspace:*",
     "commander": "12.1.0"
   },
   "devDependencies": {
