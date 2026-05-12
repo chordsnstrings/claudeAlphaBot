@@ -27,7 +27,12 @@ import {
 } from "@trading/core";
 import { buildBacktestDeps } from "@trading/adapters";
 import { TradingSystem } from "@trading/engine";
-import { AsianRangeSweepStrategy } from "@trading/strategies";
+import {
+  AsianRangeSweepStrategy,
+  BollingerReversalStrategy,
+  DonchianBreakoutStrategy,
+  TrendFollowingStrategy,
+} from "@trading/strategies";
 
 import { buildContext } from "./context.js";
 
@@ -90,6 +95,24 @@ const STRATEGY_REGISTRY: Record<
       throw new Error("asian-range-sweep is an M1 strategy");
     }
     return new AsianRangeSweepStrategy(instrument);
+  },
+  "donchian-breakout": (instrument, timeframe) => {
+    if (timeframe !== "d1") {
+      throw new Error("donchian-breakout is a daily strategy");
+    }
+    return new DonchianBreakoutStrategy(instrument);
+  },
+  "trend-following": (instrument, timeframe) => {
+    if (timeframe !== "d1") {
+      throw new Error("trend-following is a daily strategy");
+    }
+    return new TrendFollowingStrategy(instrument);
+  },
+  "bollinger-reversal": (instrument, timeframe) => {
+    if (timeframe !== "d1") {
+      throw new Error("bollinger-reversal is a daily strategy");
+    }
+    return new BollingerReversalStrategy(instrument);
   },
 };
 
