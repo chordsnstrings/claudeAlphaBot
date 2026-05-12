@@ -75,6 +75,24 @@ function pairKey(instrument: string, timeframe: Timeframe): string {
   return `${instrument}|${timeframe}`;
 }
 
+/** Bar duration in ms; used as the "one-bar ahead" gate allowance. */
+function timeframeAllowanceMs(timeframe: Timeframe): number {
+  switch (timeframe) {
+    case "m1":
+      return 60_000;
+    case "m5":
+      return 5 * 60_000;
+    case "h1":
+      return 3_600_000;
+    case "d1":
+      return 86_400_000;
+    default: {
+      const exhaustive: never = timeframe;
+      throw new Error(`unhandled timeframe ${String(exhaustive)}`);
+    }
+  }
+}
+
 function rowToBar(row: DbBarRow): Bar {
   // pg returns timestamptz as a Date when its default parser is registered,
   // but the raw pool path can hand back ISO strings depending on which
@@ -203,13 +221,21 @@ export class HistoricalDataFeed implements MarketDataFeed {
           `[${this.config.instruments.join(",")}] x [${this.config.timeframes.join(",")}]`,
       );
     }
+    const allowance = timeframeAllowanceMs(timeframe);
     while (true) {
       const bar = await q.next();
       if (bar === null) {
         return;
       }
-      // No-lookahead gate.
-      while (bar.timestampUtc.getTime() > this.deps.clock.now().getTime()) {
+      // No-lookahead gate: yield when bar.ts <= clock.now() + 1 bar period.
+      // The +1-period slack lets the consumer pull the next bar before the
+      // engine advances the clock, which is the normal backtest pattern
+      // (engine processes bar B -> clock.advanceTo(B.ts) -> pulls B+1).
+      // A pinned clock still holds the iterator behind the configured
+      // window, preserving the no-lookahead guarantee in test fixtures.
+      while (
+        bar.timestampUtc.getTime() > this.deps.clock.now().getTime() + allowance
+      ) {
         if (this.stopRequested) {
           return;
         }

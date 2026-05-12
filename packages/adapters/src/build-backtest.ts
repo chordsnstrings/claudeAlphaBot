@@ -1,0 +1,238 @@
+/**
+ * Backtest composition root.
+ *
+ * Spec §1.4 / §9.8. Wires the three backtest-mode adapters together:
+ *   HistoricalDataFeed         — Phase 6
+ *   SimulatedExecutionAdapter  — Phase 7
+ *   SimulatedClock             — Phase 8
+ *
+ * Plus the mode-invariant pieces (orchestrator, risk manager, metrics,
+ * audit log) — these have stub implementations in the engine for now so
+ * an empty backtest can run end-to-end. Real implementations land in
+ * Phases 9 (metrics), 10 (risk + audit), and 14 (orchestrator).
+ *
+ * After importing this module, callers invoke `registerBacktestAdapters()`
+ * once at startup to register the factory with `@trading/engine`'s
+ * `buildSystem`. The CLI does this on its own; tests can call it directly.
+ */
+
+import {
+  logger,
+  type AuditLog,
+  type MetricsCollector,
+  type Orchestrator,
+  type OrderResult,
+  type RiskManager,
+  type Signal,
+  type Strategy,
+  type SystemConfig,
+} from "@trading/core";
+import {
+  buildRepos,
+  createDb,
+  type NewAuditEventRow,
+  type NewSignalLogRow,
+  type Repos,
+} from "@trading/data";
+import { registerAdapters, type TradingSystemDeps } from "@trading/engine";
+import type pg from "pg";
+
+import { FrictionModel } from "./friction/friction-model.js";
+import { loadNewsEvents } from "./friction/news.js";
+import { HistoricalDataFeed } from "./historical-data-feed.js";
+import { SimulatedClock } from "./simulated-clock.js";
+import { SimulatedExecutionAdapter } from "./simulated-execution-adapter.js";
+
+const log = logger("adapters.build-backtest");
+
+// ----------------------------------------------------------- stub helpers
+
+const passthroughOrchestrator: Orchestrator = {
+  /** Stub until Phase 14: pipe signals straight through to orders. */
+  process(signals) {
+    return signals.map((s) => ({
+      clientOrderId: crypto.randomUUID(),
+      signal: s,
+      instrument: s.instrument,
+      direction: s.direction,
+      orderType: "market" as const,
+      lotSize: 1,
+      price: null,
+      stopPrice: s.proposedStopPrice,
+      targetPrice: s.proposedTargetPrice,
+      originatingStrategy: s.originatingStrategy,
+      metadata: {},
+    }));
+  },
+};
+
+const permissiveRiskManager: RiskManager = {
+  /** Stub until Phase 10: pass everything; real enforcement lands then. */
+  canExecute: () => ({ allowed: true, reason: null, adjustedLotSize: null }),
+  shouldHalt: () => ({ halt: false, reason: null }),
+};
+
+class NoOpMetrics implements MetricsCollector {
+  private bars = 0;
+  private closes = 0;
+  update(_state: Parameters<MetricsCollector["update"]>[0], closed: Parameters<MetricsCollector["update"]>[1]): void {
+    this.bars += 1;
+    this.closes += closed.length;
+  }
+  snapshot(): Record<string, unknown> {
+    return { bars: this.bars, closesObserved: this.closes };
+  }
+}
+
+class DbAuditLog implements AuditLog {
+  constructor(private readonly repos: Repos, private readonly sessionId: string) {}
+
+  async recordSignal(args: {
+    signal: Signal;
+    becameTrade: boolean;
+    result?: OrderResult;
+    rejectedReason?: string;
+  }): Promise<void> {
+    const tradeId = args.result?.brokerPositionId ?? null;
+    const row: NewSignalLogRow = {
+      sessionId: this.sessionId,
+      originatingStrategy: args.signal.originatingStrategy,
+      instrument: args.signal.instrument,
+      direction: args.signal.direction,
+      proposedEntryPrice: args.signal.proposedEntryPrice.toFixed(6),
+      proposedStopPrice: args.signal.proposedStopPrice.toFixed(6),
+      proposedTargetPrice: args.signal.proposedTargetPrice.toFixed(6),
+      proposedSizeFraction: args.signal.proposedSizeFractionOfAllocation.toFixed(4),
+      urgencyScore: args.signal.urgencyScore.toFixed(4),
+      signalType: args.signal.signalType,
+      entryReason: args.signal.entryReason,
+      generatedAtBar: args.signal.generatedAtBar,
+      metadata: args.signal.metadata,
+    };
+    if (args.becameTrade && tradeId !== null) {
+      row.becameTradeId = tradeId;
+    }
+    if (args.rejectedReason !== undefined) {
+      row.rejectedReason = args.rejectedReason;
+    }
+    await this.repos.signals.insert(row);
+  }
+
+  async recordEvent(args: {
+    severity: "info" | "warn" | "error" | "fatal";
+    category: string;
+    description: string;
+    metadata?: Record<string, unknown>;
+  }): Promise<void> {
+    const row: NewAuditEventRow = {
+      sessionId: this.sessionId,
+      severity: args.severity,
+      category: args.category,
+      description: args.description,
+    };
+    if (args.metadata !== undefined) {
+      row.metadata = args.metadata;
+    }
+    await this.repos.audit.insert(row);
+  }
+}
+
+// --------------------------------------------------------- factory itself
+
+export interface BuildBacktestResult {
+  deps: TradingSystemDeps;
+  /** Used by the CLI to update the session row on completion. */
+  repos: Repos;
+  pool: pg.Pool;
+  close(): Promise<void>;
+}
+
+export interface BuildBacktestOpts {
+  /** Pre-built strategies. The CLI wires real ones; tests can pass []. */
+  strategies?: Strategy[];
+}
+
+export async function buildBacktestDeps(
+  config: SystemConfig,
+  opts: BuildBacktestOpts = {},
+): Promise<BuildBacktestResult> {
+  if (config.mode !== "backtest") {
+    throw new Error("buildBacktestDeps: config.mode must be 'backtest'");
+  }
+  const handle = createDb({
+    databaseUrl: config.database.connectionString,
+    poolSize: config.database.poolSize,
+  });
+  const repos = buildRepos(handle.db);
+  const clock = new SimulatedClock(config.backtest.startDate);
+
+  const newsEvents = await loadNewsEvents();
+  const friction = new FrictionModel({
+    profile: config.backtest.frictionProfile,
+    randomSeed: config.backtest.randomSeed,
+    newsEvents,
+  });
+
+  const dataFeed = new HistoricalDataFeed(
+    { db: handle.db, pool: handle.pool, clock },
+    {
+      instruments: config.backtest.instruments,
+      timeframes: config.backtest.timeframes,
+      from: config.backtest.startDate,
+      to: config.backtest.endDate,
+    },
+  );
+  const execution = new SimulatedExecutionAdapter({
+    repos,
+    friction,
+    sessionId: config.sessionId,
+    initialEquityUsd: config.backtest.initialEquityUsd,
+  });
+
+  const subscriptions = config.backtest.instruments.flatMap((inst) =>
+    config.backtest.timeframes.map((tf) => ({ instrument: inst, timeframe: tf })),
+  );
+
+  const deps: TradingSystemDeps = {
+    dataFeed,
+    execution,
+    clock,
+    strategies: opts.strategies ?? [],
+    orchestrator: passthroughOrchestrator,
+    riskManager: permissiveRiskManager,
+    metrics: new NoOpMetrics(),
+    auditLog: new DbAuditLog(repos, config.sessionId),
+    sessionId: config.sessionId,
+    mode: "backtest",
+    subscriptions,
+  };
+
+  log.info(
+    {
+      sessionId: config.sessionId,
+      instruments: config.backtest.instruments,
+      timeframes: config.backtest.timeframes,
+      from: config.backtest.startDate,
+      to: config.backtest.endDate,
+      frictionProfile: config.backtest.frictionProfile,
+    },
+    "backtest deps built",
+  );
+
+  return {
+    deps,
+    repos,
+    pool: handle.pool,
+    close: () => handle.close(),
+  };
+}
+
+/** Side-effecting registration with the engine's buildSystem factory. */
+export function registerBacktestAdapters(): void {
+  registerAdapters({
+    buildBacktest: async (cfg: SystemConfig) => {
+      const { deps } = await buildBacktestDeps(cfg);
+      return deps;
+    },
+  });
+}

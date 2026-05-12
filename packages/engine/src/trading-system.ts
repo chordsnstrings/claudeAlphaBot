@@ -140,6 +140,13 @@ export class TradingSystem {
   }
 
   private async processBar(bar: Bar): Promise<void> {
+    // Advance the SimulatedClock to the bar's timestamp before any other
+    // per-bar work; SystemClock (wall time) doesn't implement advanceTo
+    // and the call is skipped.
+    if (this.deps.clock.advanceTo !== undefined) {
+      this.deps.clock.advanceTo(bar.timestampUtc);
+    }
+
     const key = barKey(bar.instrument, bar.timeframe);
     const buf = this.recentBars.get(key) ?? [];
     buf.push(bar);

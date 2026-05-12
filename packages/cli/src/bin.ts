@@ -3,6 +3,7 @@
 
 import { Command } from "commander";
 
+import { runBacktest } from "./backtest.js";
 import { runIngestAsset } from "./ingest-asset.js";
 import { runIngestFull } from "./ingest-full.js";
 import { runIngestIncremental } from "./ingest-incremental.js";
@@ -67,5 +68,36 @@ program
   .action(async () => {
     process.exitCode = await runIngestReport();
   });
+
+program
+  .command("backtest")
+  .description("Run a backtest of <strategy> on <instrument>/<timeframe> for [from..to]")
+  .requiredOption("--strategy <name>", "registered strategy name (e.g. 'noop')")
+  .requiredOption("--instrument <symbol>", "uppercase instrument code")
+  .requiredOption("--timeframe <tf>", "m1 | m5 | h1 | d1")
+  .requiredOption("--from <yyyy-mm-dd>", "inclusive start date")
+  .requiredOption("--to <yyyy-mm-dd>", "inclusive end date")
+  .action(
+    async (opts: {
+      strategy: string;
+      instrument: string;
+      timeframe: string;
+      from: string;
+      to: string;
+    }) => {
+      const tf = opts.timeframe.toLowerCase();
+      if (tf !== "m1" && tf !== "m5" && tf !== "h1" && tf !== "d1") {
+        process.exitCode = 2;
+        return;
+      }
+      process.exitCode = await runBacktest({
+        strategy: opts.strategy,
+        instrument: opts.instrument,
+        timeframe: tf,
+        from: opts.from,
+        to: opts.to,
+      });
+    },
+  );
 
 await program.parseAsync(process.argv);

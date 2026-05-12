@@ -17,14 +17,17 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "backtest": "tsx src/bin.ts backtest",
     "ingest:full": "tsx src/bin.ts ingest:full",
     "ingest:asset": "tsx src/bin.ts ingest:asset",
     "ingest:incremental": "tsx src/bin.ts ingest:incremental",
     "ingest:report": "tsx src/bin.ts ingest:report"
   },
   "dependencies": {
+    "@trading/adapters": "workspace:*",
     "@trading/core": "workspace:*",
     "@trading/data": "workspace:*",
+    "@trading/engine": "workspace:*",
     "commander": "12.1.0"
   },
   "devDependencies": {

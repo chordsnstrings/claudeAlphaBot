@@ -17,8 +17,8 @@ export type OrchestratorMode = "equal_weight" | "risk_parity" | "regime_switched
 
 export type FrictionProfile =
   | "pepperstone_razor"
-  | "pepperstone_standard"
-  | "zero_friction";
+  | "zero_friction"
+  | "pessimistic";
 
 export interface BacktestSettings {
   startDate: Date;

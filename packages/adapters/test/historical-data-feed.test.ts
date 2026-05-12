@@ -265,15 +265,18 @@ describe("HistoricalDataFeed", () => {
     await feed.stop();
   });
 
-  it("enforces no-lookahead: bars beyond clock.now() are not yielded", async () => {
+  it("enforces no-lookahead with a one-bar-period allowance", async () => {
+    // The HDF gate allows bar.ts <= clock.now() + timeframe-period so the
+    // engine can pull "the next bar" before advancing the SimulatedClock.
+    // Pinning the clock further behind keeps the iterator gated.
     tdb = await createTestDb("hdf_lookahead");
     const repos = buildRepos(tdb.db);
     const dates = ["2025-01-01", "2025-01-02", "2025-01-03", "2025-01-04", "2025-01-05"];
     await repos.bars.insertMany(dates.map((d) => dailyBar("EURUSD", d)));
 
-    // Clock pinned at end-of-day Jan 3 — only the first three bars should
-    // make it out of the iterator's clock gate.
-    const clock = new FixedClock(new Date("2025-01-03T23:59:59Z"));
+    // Clock at Jan 2 00:00 -> allowance 1 day -> bars up to Jan 3 00:00
+    // yield. Jan 4+ must block.
+    const clock = new FixedClock(new Date("2025-01-02T00:00:00Z"));
     const feed = new HistoricalDataFeed(
       { db: tdb.db, pool: tdb.pool, clock },
       {
@@ -287,20 +290,22 @@ describe("HistoricalDataFeed", () => {
     await feed.start();
     const iter = feed.subscribe("EURUSD", "d1")[Symbol.asyncIterator]();
     const got: Bar[] = [];
-    // Pull the first three; the fourth must block on the clock gate.
+    // Pull the first three (Jan 1, 2, 3 — all <= clock + 1 day).
     for (let i = 0; i < 3; i += 1) {
       const r = await iter.next();
-      if (r.done) {throw new Error("unexpected end");}
+      if (r.done) {
+        throw new Error("unexpected end");
+      }
       got.push(r.value);
     }
-    // Race the fourth against a 150 ms timeout — it should still be waiting.
+    // The fourth (Jan 4) must block.
     const fourth = iter.next();
     const timeout = new Promise<"timeout">((res) => setTimeout(() => res("timeout"), 150));
     const outcome = await Promise.race([fourth.then(() => "yielded" as const), timeout]);
     expect(outcome).toBe("timeout");
 
-    // Advance the clock past Jan 4 and confirm the fourth bar releases.
-    clock.set(new Date("2025-01-04T23:59:59Z"));
+    // Advance the clock and confirm the fourth bar releases.
+    clock.set(new Date("2025-01-03T00:00:00Z"));
     const r4 = await fourth;
     expect(r4.done).toBe(false);
     if (!r4.done) {

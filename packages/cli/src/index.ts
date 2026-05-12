@@ -7,6 +7,7 @@
 
 export const PACKAGE_NAME = "@trading/cli";
 
+export { runBacktest, type BacktestCliOpts } from "./backtest.js";
 export { runIngestAsset, type IngestAssetOpts } from "./ingest-asset.js";
 export { runIngestFull } from "./ingest-full.js";
 export { runIngestIncremental, type IncrementalOpts } from "./ingest-incremental.js";

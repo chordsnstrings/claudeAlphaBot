@@ -52,7 +52,7 @@ const backtestShape = z.object({
   BACKTEST_END_DATE: dateString,
   BACKTEST_INITIAL_EQUITY_USD: positiveNumber,
   BACKTEST_FRICTION_PROFILE: z
-    .enum(["pepperstone_razor", "pepperstone_standard", "zero_friction"])
+    .enum(["pepperstone_razor", "zero_friction", "pessimistic"])
     .default("pepperstone_razor"),
   BACKTEST_RANDOM_SEED: bigintCoerce.default(BigInt(42) as unknown as bigint),
 });

@@ -44,6 +44,9 @@ importers:
       '@trading/data':
         specifier: workspace:*
         version: link:../data
+      '@trading/engine':
+        specifier: workspace:*
+        version: link:../engine
       pg:
         specifier: 8.12.0
         version: 8.12.0
@@ -60,12 +63,18 @@ importers:
 
   packages/cli:
     dependencies:
+      '@trading/adapters':
+        specifier: workspace:*
+        version: link:../adapters
       '@trading/core':
         specifier: workspace:*
         version: link:../core
       '@trading/data':
         specifier: workspace:*
         version: link:../data
+      '@trading/engine':
+        specifier: workspace:*
+        version: link:../engine
       commander:
         specifier: 12.1.0
         version: 12.1.0
