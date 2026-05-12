@@ -16,6 +16,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@reiryoku/ctrader-layer": "2.2.0",
     "@trading/core": "workspace:*",
     "@trading/data": "workspace:*",
     "@trading/engine": "workspace:*",
