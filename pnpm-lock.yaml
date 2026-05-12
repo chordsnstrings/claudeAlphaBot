@@ -120,6 +120,9 @@ importers:
       '@trading/core':
         specifier: workspace:*
         version: link:../core
+      '@trading/data':
+        specifier: workspace:*
+        version: link:../data
     devDependencies:
       typescript:
         specifier: 5.5.3

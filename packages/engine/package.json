@@ -16,7 +16,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@trading/core": "workspace:*"
+    "@trading/core": "workspace:*",
+    "@trading/data": "workspace:*"
   },
   "devDependencies": {
     "typescript": "5.5.3",

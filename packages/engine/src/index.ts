@@ -1,8 +1,8 @@
-/**
- * @trading/engine
- *
- * Phase 1 stub — implementations land in their respective phases. See
- * trading_system_docs.md section 4.2 for the role of this package.
- */
+/** @trading/engine — TradingSystem event loop + composition root. */
 
 export const PACKAGE_NAME = "@trading/engine";
+
+export { TradingSystem, emptyPositionEvents } from "./trading-system.js";
+export { buildSystem, registerAdapters } from "./build-system.js";
+export type { TradingSystemDeps, PerBarStats } from "./types.js";
+export { isCompleteBar, barKey } from "./types.js";

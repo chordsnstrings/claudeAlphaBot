@@ -1,5 +1,10 @@
 /**
- * Zod-validated configuration loaded from environment variables.
+ * Zod-validated environment configuration loaded on startup.
+ *
+ * Returns an {@link EnvConfig} — the env-derived foundation. The engine
+ * takes a richer runtime {@link SystemConfig} (defined in types/) that
+ * extends this with the strategies, riskConfig and orchestratorMode that
+ * don't fit cleanly in env vars; `resolveSystemConfig()` composes the two.
  *
  * Mode-conditional: when MODE=backtest the BACKTEST_* fields are required
  * and CTRADER_* are ignored; when MODE=live the CTRADER_* fields are
@@ -65,13 +70,13 @@ const liveShape = z.object({
 
 // ---- Discriminated config types -------------------------------------------
 
-export type BacktestConfig = z.infer<typeof backtestShape>;
-export type LiveConfig = z.infer<typeof liveShape>;
-export type BaseConfig = z.infer<typeof baseShape>;
+export type BacktestEnvConfig = z.infer<typeof backtestShape>;
+export type LiveEnvConfig = z.infer<typeof liveShape>;
+export type BaseEnvConfig = z.infer<typeof baseShape>;
 
-export type SystemConfig =
-  | (BaseConfig & { MODE: "backtest"; backtest: BacktestConfig; live: null })
-  | (BaseConfig & { MODE: "live"; live: LiveConfig; backtest: null });
+export type EnvConfig =
+  | (BaseEnvConfig & { MODE: "backtest"; backtest: BacktestEnvConfig; live: null })
+  | (BaseEnvConfig & { MODE: "live"; live: LiveEnvConfig; backtest: null });
 
 // ---- Loader ---------------------------------------------------------------
 
@@ -79,7 +84,7 @@ export type SystemConfig =
  * Load + validate config from `process.env` (or a supplied record). Throws
  * a {@link ConfigValidationError} with a human-friendly message on failure.
  */
-export function loadConfig(env: NodeJS.ProcessEnv = process.env): SystemConfig {
+export function loadEnvConfig(env: NodeJS.ProcessEnv = process.env): EnvConfig {
   const base = parseOrThrow("base", baseShape, env);
 
   if (base.MODE === "backtest") {
