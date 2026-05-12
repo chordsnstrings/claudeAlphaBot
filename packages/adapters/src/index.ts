@@ -1,8 +1,6 @@
-/**
- * @trading/adapters
- *
- * Phase 1 stub — implementations land in their respective phases. See
- * trading_system_docs.md section 4.2 for the role of this package.
- */
+/** @trading/adapters — boundary-adapter implementations. */
 
 export const PACKAGE_NAME = "@trading/adapters";
+
+export { HistoricalDataFeed, type HistoricalDataFeedConfig } from "./historical-data-feed.js";
+export { AsyncQueue } from "./async-queue.js";

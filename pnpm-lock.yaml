@@ -41,7 +41,16 @@ importers:
       '@trading/core':
         specifier: workspace:*
         version: link:../core
+      '@trading/data':
+        specifier: workspace:*
+        version: link:../data
+      pg:
+        specifier: 8.12.0
+        version: 8.12.0
     devDependencies:
+      '@types/pg':
+        specifier: 8.11.6
+        version: 8.11.6
       typescript:
         specifier: 5.5.3
         version: 5.5.3

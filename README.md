@@ -7,7 +7,7 @@ Systematic trading system with two startup-selectable modes:
 
 Mode parity is strict: the only differences between modes are the three boundary adapters (`MarketDataFeed`, `ExecutionAdapter`, `Clock`) selected at the composition root. Everything else — strategies, orchestrator, risk, metrics, audit — is mode-invariant.
 
-The spec is `trading_system_docs.md` (v3). Build proceeds in 25 phases; see section 9 of the spec for the per-phase brief. Phases delivered so far: **1 (skeleton), 2 (DB schema + migrations + repositories), 3 (Dukascopy ingestion + CLI), 4 (indicator library), 5 (boundary interfaces + TradingSystem)**.
+The spec is `trading_system_docs.md` (v3). Build proceeds in 25 phases; see section 9 of the spec for the per-phase brief. Phases delivered so far: **1 (skeleton), 2 (DB schema + migrations + repositories), 3 (Dukascopy ingestion + CLI), 4 (indicator library), 5 (boundary interfaces + TradingSystem), 6 (HistoricalDataFeed)**.
 
 ## Stack (locked)
 
