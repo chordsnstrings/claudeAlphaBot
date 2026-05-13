@@ -5,3 +5,4 @@ export const PACKAGE_NAME = "@trading/risk";
 export * from "./position-sizing.js";
 export * from "./risk-manager.js";
 export * from "./audit-log.js";
+export * from "./runtime-ops.js";
