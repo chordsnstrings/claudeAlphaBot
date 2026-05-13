@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import type { Db } from "../db.js";
 import { session, type NewSessionRow, type SessionRow } from "../schema/session.js";
@@ -18,6 +18,10 @@ export class SessionRepo {
   async findById(id: string): Promise<SessionRow | null> {
     const rows = await this.db.select().from(session).where(eq(session.id, id)).limit(1);
     return rows[0] ?? null;
+  }
+
+  async findRecent(limit = 50): Promise<SessionRow[]> {
+    return this.db.select().from(session).orderBy(desc(session.createdAt)).limit(limit);
   }
 
   async updateStatus(

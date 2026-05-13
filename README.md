@@ -7,7 +7,11 @@ Systematic trading system with two startup-selectable modes:
 
 Mode parity is strict: the only differences between modes are the three boundary adapters (`MarketDataFeed`, `ExecutionAdapter`, `Clock`) selected at the composition root. Everything else — strategies, orchestrator, risk, metrics, audit — is mode-invariant.
 
-The spec is `trading_system_docs.md` (v3). Build proceeds in 25 phases; see section 9 of the spec for the per-phase brief. Phases delivered so far: **1 (skeleton), 2 (DB schema + migrations + repositories), 3 (Dukascopy ingestion + CLI), 4 (indicator library), 5 (boundary interfaces + TradingSystem), 6 (HistoricalDataFeed), 7 (Friction model + SimulatedExecutionAdapter), 8 (SimulatedClock + backtest composition + `pnpm backtest` CLI), 9 (MetricsCollector with Wilson CI, bootstrap Sharpe, Monte Carlo), 10 (RiskManager + AuditLog), 11 (AsianRangeSweep strategy), 12 (walk-forward windows + summariser), 13 (Donchian / Trend / Bollinger Reversal strategies), 14 (Orchestrator: equal-weight / risk-parity / regime-switched), 15-17 (cTrader live-mode code: data feed, execution adapter, system clock, OAuth callback — code-only, no broker connection), 22 (parameter sweep + Bonferroni correction), 23 (health endpoint scaffolding)**.
+The spec is `trading_system_docs.md` (v3). Build proceeds in 25 phases; see section 9 of the spec for the per-phase brief.
+
+**Phases 1-17, 19, 20-21, 22, 23 (subset), 25 delivered** in this branch: the full backtest engine, the full live-mode code path (no broker connection until operator runs Phase 18 OAuth), the operational UI (Fastify-rendered), runtime ops (pause/resume/kill/emergency-stop/manual orders/risk hot-reload), parameter sweep with Bonferroni correction, health endpoint, and operator handoff docs (`DEVELOPER.md`, `OPERATIONS.md`, `ARCHITECTURE.md`, `DEPLOYMENT.md`).
+
+Outstanding: **Phase 18** (cTrader application registration + first OAuth round-trip — requires live broker credentials), **Phase 24** (7-day demo validation — requires running on a live demo account for a week), the production-deployment portions of Phase 17 + 23 (PM2 ecosystem, Caddy TLS, alerting, backups — operator territory documented in `DEPLOYMENT.md`).
 
 ## Stack (locked)
 

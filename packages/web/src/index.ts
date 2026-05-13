@@ -1,7 +1,12 @@
-/**
- * @trading/web
- *
- * Phase 1 stub — operational UI (Next.js) arrives in Phase 20.
- */
+/** @trading/web — operational UI (spec §9.20-§9.21). */
 
 export const PACKAGE_NAME = "@trading/web";
+
+export { buildServer, type ServerDeps } from "./server.js";
+export {
+  type AuthConfig,
+  hashPassword,
+  issueSession,
+  verifyCredentials,
+  verifySession,
+} from "./auth.js";
