@@ -1,0 +1,4661 @@
+{
+  "cost_model": {
+    "txn_bps": 5.999999999999999,
+    "funding_bps_day": 0.5
+  },
+  "gate": {
+    "min_oos_sharpe": 0.8,
+    "min_fold_pass": 0.55,
+    "min_cagr": 0.3,
+    "max_dd_floor": -0.55
+  },
+  "assets": {
+    "BTC": {
+      "asset": "BTC",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold": {
+        "cagr": 0.4518,
+        "ann_vol": 0.6761,
+        "sharpe": 0.892,
+        "sortino": 1.1922,
+        "max_dd": -0.8378,
+        "calmar": 0.5392,
+        "total_return": 100.7748,
+        "avg_exposure": 1.0,
+        "ann_turnover": 0.0806,
+        "n_trades": 0,
+        "win_rate_days": 0.5232,
+        "n_days": 4526,
+        "final_equity": 101.7748
+      },
+      "summaries": [
+        {
+          "asset": "BTC",
+          "family": "tsmom_blend",
+          "n_folds": 22,
+          "oos_cagr": 0.7621,
+          "oos_sharpe": 1.451,
+          "oos_sortino": 1.594,
+          "oos_max_dd": -0.5031,
+          "oos_calmar": 1.515,
+          "oos_vol": 0.463,
+          "avg_exposure": 0.512,
+          "ann_turnover": 37.96,
+          "fold_pass_rate": 0.636,
+          "avg_fold_sharpe": 0.95,
+          "param_stability_pct": 73.15,
+          "oos_days": 3960
+        },
+        {
+          "asset": "BTC",
+          "family": "tsmom",
+          "n_folds": 22,
+          "oos_cagr": 0.5999,
+          "oos_sharpe": 1.379,
+          "oos_sortino": 1.656,
+          "oos_max_dd": -0.519,
+          "oos_calmar": 1.156,
+          "oos_vol": 0.3967,
+          "avg_exposure": 0.554,
+          "ann_turnover": 26.22,
+          "fold_pass_rate": 0.727,
+          "avg_fold_sharpe": 1.374,
+          "param_stability_pct": 132.94,
+          "oos_days": 3960
+        },
+        {
+          "asset": "BTC",
+          "family": "donchian",
+          "n_folds": 22,
+          "oos_cagr": 0.4881,
+          "oos_sharpe": 1.166,
+          "oos_sortino": 1.429,
+          "oos_max_dd": -0.6475,
+          "oos_calmar": 0.754,
+          "oos_vol": 0.4102,
+          "avg_exposure": 0.509,
+          "ann_turnover": 16.54,
+          "fold_pass_rate": 0.591,
+          "avg_fold_sharpe": 0.995,
+          "param_stability_pct": 131.58,
+          "oos_days": 3960
+        },
+        {
+          "asset": "BTC",
+          "family": "rsi_mr",
+          "n_folds": 22,
+          "oos_cagr": -0.0588,
+          "oos_sharpe": -0.243,
+          "oos_sortino": -0.104,
+          "oos_max_dd": -0.6435,
+          "oos_calmar": -0.091,
+          "oos_vol": 0.1806,
+          "avg_exposure": 0.081,
+          "ann_turnover": 7.55,
+          "fold_pass_rate": 0.455,
+          "avg_fold_sharpe": 0.094,
+          "param_stability_pct": 42.11,
+          "oos_days": 3960
+        },
+        {
+          "asset": "BTC",
+          "family": "macross",
+          "n_folds": 22,
+          "oos_cagr": 0.1222,
+          "oos_sharpe": 0.489,
+          "oos_sortino": 0.498,
+          "oos_max_dd": -0.8146,
+          "oos_calmar": 0.15,
+          "oos_vol": 0.4223,
+          "avg_exposure": 0.589,
+          "ann_turnover": 13.82,
+          "fold_pass_rate": 0.5,
+          "avg_fold_sharpe": 0.327,
+          "param_stability_pct": 131.58,
+          "oos_days": 3960
+        },
+        {
+          "asset": "BTC",
+          "family": "trend_flat",
+          "n_folds": 22,
+          "oos_cagr": 0.142,
+          "oos_sharpe": 0.519,
+          "oos_sortino": 0.545,
+          "oos_max_dd": -0.7773,
+          "oos_calmar": 0.183,
+          "oos_vol": 0.4441,
+          "avg_exposure": 0.536,
+          "ann_turnover": 10.73,
+          "fold_pass_rate": 0.409,
+          "avg_fold_sharpe": 0.486,
+          "param_stability_pct": 138.22,
+          "oos_days": 3960
+        },
+        {
+          "asset": "BTC",
+          "family": "mr_z",
+          "n_folds": 22,
+          "oos_cagr": -0.1564,
+          "oos_sharpe": -0.598,
+          "oos_sortino": -0.251,
+          "oos_max_dd": -0.895,
+          "oos_calmar": -0.175,
+          "oos_vol": 0.2352,
+          "avg_exposure": 0.123,
+          "ann_turnover": 12.62,
+          "fold_pass_rate": 0.364,
+          "avg_fold_sharpe": -0.181,
+          "param_stability_pct": 69.23,
+          "oos_days": 3960
+        }
+      ],
+      "winner": {
+        "asset": "BTC",
+        "family": "tsmom_blend",
+        "n_folds": 22,
+        "oos_cagr": 0.7621,
+        "oos_sharpe": 1.451,
+        "oos_sortino": 1.594,
+        "oos_max_dd": -0.5031,
+        "oos_calmar": 1.515,
+        "oos_vol": 0.463,
+        "avg_exposure": 0.512,
+        "ann_turnover": 37.96,
+        "fold_pass_rate": 0.636,
+        "avg_fold_sharpe": 0.95,
+        "param_stability_pct": 73.15,
+        "oos_days": 3960
+      },
+      "winner_passes_gate": true,
+      "n_gated": 2,
+      "winner_folds": [
+        {
+          "train_start": "2014-01-02",
+          "test_start": "2015-06-26",
+          "test_end": "2015-12-23",
+          "params": {
+            "lbs": [
+              30,
+              60,
+              120,
+              200
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.679,
+          "test_sharpe": 1.426,
+          "test_return": 0.5334,
+          "test_max_dd": -0.5031,
+          "test_days": 180
+        },
+        {
+          "train_start": "2014-07-01",
+          "test_start": "2015-12-23",
+          "test_end": "2016-06-20",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.591,
+          "test_sharpe": 2.247,
+          "test_return": 0.576,
+          "test_max_dd": -0.1634,
+          "test_days": 180
+        },
+        {
+          "train_start": "2014-12-28",
+          "test_start": "2016-06-20",
+          "test_end": "2016-12-17",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.65,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.184,
+          "test_sharpe": 1.196,
+          "test_return": 0.2486,
+          "test_max_dd": -0.1587,
+          "test_days": 180
+        },
+        {
+          "train_start": "2015-06-26",
+          "test_start": "2016-12-17",
+          "test_end": "2017-06-15",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.65,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.357,
+          "test_sharpe": 4.305,
+          "test_return": 4.0891,
+          "test_max_dd": -0.291,
+          "test_days": 180
+        },
+        {
+          "train_start": "2015-12-23",
+          "test_start": "2017-06-15",
+          "test_end": "2017-12-12",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.822,
+          "test_sharpe": 4.373,
+          "test_return": 0.6643,
+          "test_max_dd": -0.079,
+          "test_days": 180
+        },
+        {
+          "train_start": "2016-06-20",
+          "test_start": "2017-12-12",
+          "test_end": "2018-06-10",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 3.414,
+          "test_sharpe": -1.236,
+          "test_return": -0.0374,
+          "test_max_dd": -0.0633,
+          "test_days": 180
+        },
+        {
+          "train_start": "2016-12-17",
+          "test_start": "2018-06-10",
+          "test_end": "2018-12-07",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 3.224,
+          "test_sharpe": -2.733,
+          "test_return": -0.1558,
+          "test_max_dd": -0.184,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-06-15",
+          "test_start": "2018-12-07",
+          "test_end": "2019-06-05",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.565,
+          "test_sharpe": 2.026,
+          "test_return": 0.2947,
+          "test_max_dd": -0.0994,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-12-12",
+          "test_start": "2019-06-05",
+          "test_end": "2019-12-02",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.282,
+          "test_sharpe": 1.044,
+          "test_return": 0.1336,
+          "test_max_dd": -0.1225,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-06-10",
+          "test_start": "2019-12-02",
+          "test_end": "2020-05-30",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.625,
+          "test_sharpe": 0.056,
+          "test_return": -0.0266,
+          "test_max_dd": -0.1492,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-12-07",
+          "test_start": "2020-05-30",
+          "test_end": "2020-11-26",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.78,
+          "test_sharpe": 3.385,
+          "test_return": 2.2353,
+          "test_max_dd": -0.2724,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-06-05",
+          "test_start": "2020-11-26",
+          "test_end": "2021-05-25",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.65,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.969,
+          "test_sharpe": 2.671,
+          "test_return": 1.0392,
+          "test_max_dd": -0.207,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-12-02",
+          "test_start": "2021-05-25",
+          "test_end": "2021-11-21",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.398,
+          "test_sharpe": 0.494,
+          "test_return": 0.0247,
+          "test_max_dd": -0.056,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-05-30",
+          "test_start": "2021-11-21",
+          "test_end": "2022-05-20",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.547,
+          "test_sharpe": -0.405,
+          "test_return": -0.0119,
+          "test_max_dd": -0.0363,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-11-26",
+          "test_start": "2022-05-20",
+          "test_end": "2022-11-16",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.63,
+          "test_sharpe": -2.211,
+          "test_return": -0.0387,
+          "test_max_dd": -0.0388,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-05-25",
+          "test_start": "2022-11-16",
+          "test_end": "2023-05-15",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.216,
+          "test_sharpe": 1.078,
+          "test_return": 0.1108,
+          "test_max_dd": -0.0715,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-11-21",
+          "test_start": "2023-05-15",
+          "test_end": "2023-11-11",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.775,
+          "test_sharpe": 2.193,
+          "test_return": 0.0986,
+          "test_max_dd": -0.0585,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-05-20",
+          "test_start": "2023-11-11",
+          "test_end": "2024-05-09",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.358,
+          "test_sharpe": 1.751,
+          "test_return": 0.6991,
+          "test_max_dd": -0.281,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-11-16",
+          "test_start": "2024-05-09",
+          "test_end": "2024-11-05",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.869,
+          "test_sharpe": -0.459,
+          "test_return": -0.0971,
+          "test_max_dd": -0.2013,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-05-15",
+          "test_start": "2024-11-05",
+          "test_end": "2025-05-04",
+          "params": {
+            "lbs": [
+              30,
+              60,
+              120,
+              200
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.478,
+          "test_sharpe": 1.422,
+          "test_return": 0.4218,
+          "test_max_dd": -0.3727,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-11-11",
+          "test_start": "2025-05-04",
+          "test_end": "2025-10-31",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.361,
+          "test_sharpe": -0.292,
+          "test_return": -0.0791,
+          "test_max_dd": -0.2433,
+          "test_days": 180
+        },
+        {
+          "train_start": "2024-05-09",
+          "test_start": "2025-10-31",
+          "test_end": "2026-04-29",
+          "params": {
+            "lbs": [
+              30,
+              60,
+              120,
+              200
+            ],
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.417,
+          "test_sharpe": -1.428,
+          "test_return": -0.0003,
+          "test_max_dd": 0.0,
+          "test_days": 180
+        }
+      ]
+    },
+    "ETH": {
+      "asset": "ETH",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold": {
+        "cagr": 0.654,
+        "ann_vol": 0.9371,
+        "sharpe": 1.0053,
+        "sortino": 1.4534,
+        "max_dd": -0.94,
+        "calmar": 0.6958,
+        "total_return": 151.0059,
+        "avg_exposure": 1.0,
+        "ann_turnover": 0.1002,
+        "n_trades": 0,
+        "win_rate_days": 0.5071,
+        "n_days": 3644,
+        "final_equity": 152.0059
+      },
+      "summaries": [
+        {
+          "asset": "ETH",
+          "family": "tsmom_blend",
+          "n_folds": 17,
+          "oos_cagr": 0.3566,
+          "oos_sharpe": 1.082,
+          "oos_sortino": 1.235,
+          "oos_max_dd": -0.4008,
+          "oos_calmar": 0.89,
+          "oos_vol": 0.3316,
+          "avg_exposure": 0.239,
+          "ann_turnover": 17.52,
+          "fold_pass_rate": 0.647,
+          "avg_fold_sharpe": 0.848,
+          "param_stability_pct": 107.91,
+          "oos_days": 3060
+        },
+        {
+          "asset": "ETH",
+          "family": "trend_flat",
+          "n_folds": 17,
+          "oos_cagr": 0.3899,
+          "oos_sharpe": 1.058,
+          "oos_sortino": 1.214,
+          "oos_max_dd": -0.4573,
+          "oos_calmar": 0.852,
+          "oos_vol": 0.378,
+          "avg_exposure": 0.35,
+          "ann_turnover": 6.29,
+          "fold_pass_rate": 0.471,
+          "avg_fold_sharpe": 0.463,
+          "param_stability_pct": 100.0,
+          "oos_days": 3060
+        },
+        {
+          "asset": "ETH",
+          "family": "donchian",
+          "n_folds": 17,
+          "oos_cagr": 0.1856,
+          "oos_sharpe": 0.747,
+          "oos_sortino": 0.826,
+          "oos_max_dd": -0.3676,
+          "oos_calmar": 0.505,
+          "oos_vol": 0.28,
+          "avg_exposure": 0.28,
+          "ann_turnover": 10.5,
+          "fold_pass_rate": 0.588,
+          "avg_fold_sharpe": 0.602,
+          "param_stability_pct": 109.59,
+          "oos_days": 3060
+        },
+        {
+          "asset": "ETH",
+          "family": "rsi_mr",
+          "n_folds": 17,
+          "oos_cagr": 0.0309,
+          "oos_sharpe": 0.295,
+          "oos_sortino": 0.114,
+          "oos_max_dd": -0.2181,
+          "oos_calmar": 0.142,
+          "oos_vol": 0.1329,
+          "avg_exposure": 0.046,
+          "ann_turnover": 4.91,
+          "fold_pass_rate": 0.353,
+          "avg_fold_sharpe": 0.208,
+          "param_stability_pct": 36.0,
+          "oos_days": 3060
+        },
+        {
+          "asset": "ETH",
+          "family": "tsmom",
+          "n_folds": 17,
+          "oos_cagr": 0.1375,
+          "oos_sharpe": 0.528,
+          "oos_sortino": 0.548,
+          "oos_max_dd": -0.5936,
+          "oos_calmar": 0.232,
+          "oos_vol": 0.3844,
+          "avg_exposure": 0.342,
+          "ann_turnover": 14.69,
+          "fold_pass_rate": 0.471,
+          "avg_fold_sharpe": 0.427,
+          "param_stability_pct": 120.61,
+          "oos_days": 3060
+        },
+        {
+          "asset": "ETH",
+          "family": "macross",
+          "n_folds": 17,
+          "oos_cagr": 0.1387,
+          "oos_sharpe": 0.538,
+          "oos_sortino": 0.64,
+          "oos_max_dd": -0.538,
+          "oos_calmar": 0.258,
+          "oos_vol": 0.3626,
+          "avg_exposure": 0.387,
+          "ann_turnover": 9.27,
+          "fold_pass_rate": 0.412,
+          "avg_fold_sharpe": 0.316,
+          "param_stability_pct": 142.86,
+          "oos_days": 3060
+        },
+        {
+          "asset": "ETH",
+          "family": "mr_z",
+          "n_folds": 17,
+          "oos_cagr": -0.1824,
+          "oos_sharpe": -0.759,
+          "oos_sortino": -0.328,
+          "oos_max_dd": -0.8285,
+          "oos_calmar": -0.22,
+          "oos_vol": 0.2292,
+          "avg_exposure": 0.108,
+          "ann_turnover": 10.29,
+          "fold_pass_rate": 0.176,
+          "avg_fold_sharpe": -0.536,
+          "param_stability_pct": 51.43,
+          "oos_days": 3060
+        }
+      ],
+      "winner": {
+        "asset": "ETH",
+        "family": "tsmom_blend",
+        "n_folds": 17,
+        "oos_cagr": 0.3566,
+        "oos_sharpe": 1.082,
+        "oos_sortino": 1.235,
+        "oos_max_dd": -0.4008,
+        "oos_calmar": 0.89,
+        "oos_vol": 0.3316,
+        "avg_exposure": 0.239,
+        "ann_turnover": 17.52,
+        "fold_pass_rate": 0.647,
+        "avg_fold_sharpe": 0.848,
+        "param_stability_pct": 107.91,
+        "oos_days": 3060
+      },
+      "winner_passes_gate": true,
+      "n_gated": 1,
+      "winner_folds": [
+        {
+          "train_start": "2016-06-02",
+          "test_start": "2017-11-24",
+          "test_end": "2018-05-23",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.969,
+          "test_sharpe": 2.12,
+          "test_return": 0.873,
+          "test_max_dd": -0.2568,
+          "test_days": 180
+        },
+        {
+          "train_start": "2016-11-29",
+          "test_start": "2018-05-23",
+          "test_end": "2018-11-19",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 3.222,
+          "test_sharpe": 0.0,
+          "test_return": 0.0,
+          "test_max_dd": 0.0,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-05-28",
+          "test_start": "2018-11-19",
+          "test_end": "2019-05-18",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.51,
+          "test_sharpe": 1.72,
+          "test_return": 0.4739,
+          "test_max_dd": -0.1792,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-11-24",
+          "test_start": "2019-05-18",
+          "test_end": "2019-11-14",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.734,
+          "test_sharpe": -0.537,
+          "test_return": -0.0616,
+          "test_max_dd": -0.1765,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-05-23",
+          "test_start": "2019-11-14",
+          "test_end": "2020-05-12",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.085,
+          "test_sharpe": 1.203,
+          "test_return": 0.2057,
+          "test_max_dd": -0.2323,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-11-19",
+          "test_start": "2020-05-12",
+          "test_end": "2020-11-08",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.367,
+          "test_sharpe": 2.109,
+          "test_return": 0.2012,
+          "test_max_dd": -0.0968,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-05-18",
+          "test_start": "2020-11-08",
+          "test_end": "2021-05-07",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.416,
+          "test_sharpe": 4.528,
+          "test_return": 0.5883,
+          "test_max_dd": -0.0428,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-11-14",
+          "test_start": "2021-05-07",
+          "test_end": "2021-11-03",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.65,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.862,
+          "test_sharpe": 1.673,
+          "test_return": 0.4032,
+          "test_max_dd": -0.2168,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-05-12",
+          "test_start": "2021-11-03",
+          "test_end": "2022-05-02",
+          "params": {
+            "lbs": [
+              30,
+              60,
+              120,
+              200
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 3.116,
+          "test_sharpe": -1.152,
+          "test_return": -0.1125,
+          "test_max_dd": -0.1456,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-11-08",
+          "test_start": "2022-05-02",
+          "test_end": "2022-10-29",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.65,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.399,
+          "test_sharpe": 1.031,
+          "test_return": 0.0898,
+          "test_max_dd": -0.0759,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-05-07",
+          "test_start": "2022-10-29",
+          "test_end": "2023-04-27",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.195,
+          "test_sharpe": -0.822,
+          "test_return": -0.0705,
+          "test_max_dd": -0.1356,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-11-03",
+          "test_start": "2023-04-27",
+          "test_end": "2023-10-24",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.392,
+          "test_sharpe": -0.787,
+          "test_return": -0.0602,
+          "test_max_dd": -0.0942,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-05-02",
+          "test_start": "2023-10-24",
+          "test_end": "2024-04-21",
+          "params": {
+            "lbs": [
+              30,
+              60,
+              120,
+              200
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.214,
+          "test_sharpe": 2.161,
+          "test_return": 0.248,
+          "test_max_dd": -0.092,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-10-29",
+          "test_start": "2024-04-21",
+          "test_end": "2024-10-18",
+          "params": {
+            "lbs": [
+              30,
+              60,
+              120,
+              200
+            ],
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.1,
+          "test_sharpe": 0.281,
+          "test_return": 0.0162,
+          "test_max_dd": -0.0901,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-04-27",
+          "test_start": "2024-10-18",
+          "test_end": "2025-04-16",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.103,
+          "test_sharpe": 0.685,
+          "test_return": 0.0269,
+          "test_max_dd": -0.0467,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-10-24",
+          "test_start": "2025-04-16",
+          "test_end": "2025-10-13",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.476,
+          "test_sharpe": 1.52,
+          "test_return": 0.4372,
+          "test_max_dd": -0.3779,
+          "test_days": 180
+        },
+        {
+          "train_start": "2024-04-21",
+          "test_start": "2025-10-13",
+          "test_end": "2026-04-11",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.052,
+          "test_sharpe": -1.318,
+          "test_return": -0.0248,
+          "test_max_dd": -0.0368,
+          "test_days": 180
+        }
+      ]
+    },
+    "DOT": {
+      "asset": "DOT",
+      "wf_params": {
+        "train_days": 420,
+        "test_days": 150
+      },
+      "buy_hold": {
+        "cagr": -0.1294,
+        "ann_vol": 1.0126,
+        "sharpe": 0.3581,
+        "sortino": 0.5752,
+        "max_dd": -0.9785,
+        "calmar": -0.1322,
+        "total_return": -0.5498,
+        "avg_exposure": 1.0,
+        "ann_turnover": 0.1736,
+        "n_trades": 0,
+        "win_rate_days": 0.4831,
+        "n_days": 2103,
+        "final_equity": 0.4502
+      },
+      "summaries": [
+        {
+          "asset": "DOT",
+          "family": "donchian",
+          "n_folds": 11,
+          "oos_cagr": 0.0101,
+          "oos_sharpe": 0.199,
+          "oos_sortino": 0.23,
+          "oos_max_dd": -0.4154,
+          "oos_calmar": 0.024,
+          "oos_vol": 0.3383,
+          "avg_exposure": 0.364,
+          "ann_turnover": 11.57,
+          "fold_pass_rate": 0.455,
+          "avg_fold_sharpe": -0.056,
+          "param_stability_pct": 49.43,
+          "oos_days": 1650
+        },
+        {
+          "asset": "DOT",
+          "family": "rsi_mr",
+          "n_folds": 11,
+          "oos_cagr": -0.0318,
+          "oos_sharpe": -0.153,
+          "oos_sortino": -0.081,
+          "oos_max_dd": -0.3225,
+          "oos_calmar": -0.099,
+          "oos_vol": 0.1436,
+          "avg_exposure": 0.069,
+          "ann_turnover": 8.12,
+          "fold_pass_rate": 0.182,
+          "avg_fold_sharpe": -0.491,
+          "param_stability_pct": 46.67,
+          "oos_days": 1650
+        },
+        {
+          "asset": "DOT",
+          "family": "tsmom_blend",
+          "n_folds": 11,
+          "oos_cagr": -0.0006,
+          "oos_sharpe": 0.143,
+          "oos_sortino": 0.139,
+          "oos_max_dd": -0.4438,
+          "oos_calmar": -0.001,
+          "oos_vol": 0.294,
+          "avg_exposure": 0.248,
+          "ann_turnover": 16.59,
+          "fold_pass_rate": 0.182,
+          "avg_fold_sharpe": -0.362,
+          "param_stability_pct": 76.54,
+          "oos_days": 1650
+        },
+        {
+          "asset": "DOT",
+          "family": "macross",
+          "n_folds": 11,
+          "oos_cagr": -0.1572,
+          "oos_sharpe": -0.309,
+          "oos_sortino": -0.35,
+          "oos_max_dd": -0.6346,
+          "oos_calmar": -0.248,
+          "oos_vol": 0.3519,
+          "avg_exposure": 0.397,
+          "ann_turnover": 10.06,
+          "fold_pass_rate": 0.273,
+          "avg_fold_sharpe": -0.717,
+          "param_stability_pct": 83.33,
+          "oos_days": 1650
+        },
+        {
+          "asset": "DOT",
+          "family": "mr_z",
+          "n_folds": 11,
+          "oos_cagr": -0.0771,
+          "oos_sharpe": -0.29,
+          "oos_sortino": -0.17,
+          "oos_max_dd": -0.5459,
+          "oos_calmar": -0.141,
+          "oos_vol": 0.2042,
+          "avg_exposure": 0.12,
+          "ann_turnover": 14.15,
+          "fold_pass_rate": 0.273,
+          "avg_fold_sharpe": -0.448,
+          "param_stability_pct": 106.25,
+          "oos_days": 1650
+        },
+        {
+          "asset": "DOT",
+          "family": "trend_flat",
+          "n_folds": 11,
+          "oos_cagr": -0.1214,
+          "oos_sharpe": -0.224,
+          "oos_sortino": -0.209,
+          "oos_max_dd": -0.6503,
+          "oos_calmar": -0.187,
+          "oos_vol": 0.3316,
+          "avg_exposure": 0.288,
+          "ann_turnover": 7.0,
+          "fold_pass_rate": 0.182,
+          "avg_fold_sharpe": -0.487,
+          "param_stability_pct": 101.08,
+          "oos_days": 1650
+        },
+        {
+          "asset": "DOT",
+          "family": "tsmom",
+          "n_folds": 11,
+          "oos_cagr": -0.1288,
+          "oos_sharpe": -0.133,
+          "oos_sortino": -0.141,
+          "oos_max_dd": -0.6938,
+          "oos_calmar": -0.186,
+          "oos_vol": 0.4091,
+          "avg_exposure": 0.367,
+          "ann_turnover": 19.18,
+          "fold_pass_rate": 0.273,
+          "avg_fold_sharpe": -0.39,
+          "param_stability_pct": 136.71,
+          "oos_days": 1650
+        }
+      ],
+      "winner": {
+        "asset": "DOT",
+        "family": "donchian",
+        "n_folds": 11,
+        "oos_cagr": 0.0101,
+        "oos_sharpe": 0.199,
+        "oos_sortino": 0.23,
+        "oos_max_dd": -0.4154,
+        "oos_calmar": 0.024,
+        "oos_vol": 0.3383,
+        "avg_exposure": 0.364,
+        "ann_turnover": 11.57,
+        "fold_pass_rate": 0.455,
+        "avg_fold_sharpe": -0.056,
+        "param_stability_pct": 49.43,
+        "oos_days": 1650
+      },
+      "winner_passes_gate": false,
+      "n_gated": 0,
+      "winner_folds": [
+        {
+          "train_start": "2020-08-21",
+          "test_start": "2021-10-15",
+          "test_end": "2022-03-14",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.268,
+          "test_sharpe": -1.561,
+          "test_return": -0.106,
+          "test_max_dd": -0.1379,
+          "test_days": 150
+        },
+        {
+          "train_start": "2021-01-18",
+          "test_start": "2022-03-14",
+          "test_end": "2022-08-11",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 0.559,
+          "test_sharpe": 0.548,
+          "test_return": 0.0314,
+          "test_max_dd": -0.1095,
+          "test_days": 150
+        },
+        {
+          "train_start": "2021-06-17",
+          "test_start": "2022-08-11",
+          "test_end": "2023-01-08",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 1.201,
+          "test_sharpe": -0.472,
+          "test_return": -0.0815,
+          "test_max_dd": -0.1894,
+          "test_days": 150
+        },
+        {
+          "train_start": "2021-11-14",
+          "test_start": "2023-01-08",
+          "test_end": "2023-06-07",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 0.714,
+          "test_sharpe": -0.371,
+          "test_return": -0.1118,
+          "test_max_dd": -0.3416,
+          "test_days": 150
+        },
+        {
+          "train_start": "2022-04-13",
+          "test_start": "2023-06-07",
+          "test_end": "2023-11-04",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 0.077,
+          "test_sharpe": 0.682,
+          "test_return": 0.0948,
+          "test_max_dd": -0.2831,
+          "test_days": 150
+        },
+        {
+          "train_start": "2022-09-10",
+          "test_start": "2023-11-04",
+          "test_end": "2024-04-02",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 0.245,
+          "test_sharpe": 1.564,
+          "test_return": 0.3322,
+          "test_max_dd": -0.2865,
+          "test_days": 150
+        },
+        {
+          "train_start": "2023-02-07",
+          "test_start": "2024-04-02",
+          "test_end": "2024-08-30",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.094,
+          "test_sharpe": -1.58,
+          "test_return": -0.0191,
+          "test_max_dd": -0.0002,
+          "test_days": 150
+        },
+        {
+          "train_start": "2023-07-07",
+          "test_start": "2024-08-30",
+          "test_end": "2025-01-27",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.382,
+          "test_sharpe": 1.796,
+          "test_return": 0.1525,
+          "test_max_dd": -0.0634,
+          "test_days": 150
+        },
+        {
+          "train_start": "2023-12-04",
+          "test_start": "2025-01-27",
+          "test_end": "2025-06-26",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.542,
+          "test_sharpe": -0.647,
+          "test_return": -0.0306,
+          "test_max_dd": -0.0704,
+          "test_days": 150
+        },
+        {
+          "train_start": "2024-05-02",
+          "test_start": "2025-06-26",
+          "test_end": "2025-11-23",
+          "params": {
+            "entry": 40,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 1.148,
+          "test_sharpe": -1.078,
+          "test_return": -0.1688,
+          "test_max_dd": -0.3319,
+          "test_days": 150
+        },
+        {
+          "train_start": "2024-09-29",
+          "test_start": "2025-11-23",
+          "test_end": "2026-04-22",
+          "params": {
+            "entry": 40,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 0.787,
+          "test_sharpe": 0.502,
+          "test_return": 0.0474,
+          "test_max_dd": -0.1373,
+          "test_days": 150
+        }
+      ]
+    },
+    "LINK": {
+      "asset": "LINK",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold": {
+        "cagr": 0.4282,
+        "ann_vol": 1.1906,
+        "sharpe": 0.8848,
+        "sortino": 1.4172,
+        "max_dd": -0.9012,
+        "calmar": 0.4751,
+        "total_return": 20.8165,
+        "avg_exposure": 1.0,
+        "ann_turnover": 0.1156,
+        "n_trades": 0,
+        "win_rate_days": 0.5027,
+        "n_days": 3157,
+        "final_equity": 21.8165
+      },
+      "summaries": [
+        {
+          "asset": "LINK",
+          "family": "trend_flat",
+          "n_folds": 14,
+          "oos_cagr": 0.2275,
+          "oos_sharpe": 0.843,
+          "oos_sortino": 1.042,
+          "oos_max_dd": -0.4565,
+          "oos_calmar": 0.498,
+          "oos_vol": 0.2936,
+          "avg_exposure": 0.205,
+          "ann_turnover": 3.73,
+          "fold_pass_rate": 0.571,
+          "avg_fold_sharpe": 0.539,
+          "param_stability_pct": 127.5,
+          "oos_days": 2520
+        },
+        {
+          "asset": "LINK",
+          "family": "tsmom",
+          "n_folds": 14,
+          "oos_cagr": 0.348,
+          "oos_sharpe": 0.991,
+          "oos_sortino": 1.117,
+          "oos_max_dd": -0.4942,
+          "oos_calmar": 0.704,
+          "oos_vol": 0.37,
+          "avg_exposure": 0.232,
+          "ann_turnover": 13.41,
+          "fold_pass_rate": 0.571,
+          "avg_fold_sharpe": 0.591,
+          "param_stability_pct": 161.54,
+          "oos_days": 2520
+        },
+        {
+          "asset": "LINK",
+          "family": "rsi_mr",
+          "n_folds": 14,
+          "oos_cagr": 0.001,
+          "oos_sharpe": 0.069,
+          "oos_sortino": 0.027,
+          "oos_max_dd": -0.2144,
+          "oos_calmar": 0.005,
+          "oos_vol": 0.1188,
+          "avg_exposure": 0.035,
+          "ann_turnover": 3.81,
+          "fold_pass_rate": 0.571,
+          "avg_fold_sharpe": 0.31,
+          "param_stability_pct": 44.0,
+          "oos_days": 2520
+        },
+        {
+          "asset": "LINK",
+          "family": "macross",
+          "n_folds": 14,
+          "oos_cagr": 0.1018,
+          "oos_sharpe": 0.481,
+          "oos_sortino": 0.612,
+          "oos_max_dd": -0.5168,
+          "oos_calmar": 0.197,
+          "oos_vol": 0.2865,
+          "avg_exposure": 0.235,
+          "ann_turnover": 5.36,
+          "fold_pass_rate": 0.571,
+          "avg_fold_sharpe": 0.349,
+          "param_stability_pct": 141.38,
+          "oos_days": 2520
+        },
+        {
+          "asset": "LINK",
+          "family": "mr_z",
+          "n_folds": 14,
+          "oos_cagr": -0.0519,
+          "oos_sharpe": -0.204,
+          "oos_sortino": -0.094,
+          "oos_max_dd": -0.5742,
+          "oos_calmar": -0.09,
+          "oos_vol": 0.18,
+          "avg_exposure": 0.071,
+          "ann_turnover": 7.1,
+          "fold_pass_rate": 0.5,
+          "avg_fold_sharpe": 0.118,
+          "param_stability_pct": 51.72,
+          "oos_days": 2520
+        },
+        {
+          "asset": "LINK",
+          "family": "tsmom_blend",
+          "n_folds": 14,
+          "oos_cagr": 0.0887,
+          "oos_sharpe": 0.434,
+          "oos_sortino": 0.413,
+          "oos_max_dd": -0.6282,
+          "oos_calmar": 0.141,
+          "oos_vol": 0.3012,
+          "avg_exposure": 0.168,
+          "ann_turnover": 14.82,
+          "fold_pass_rate": 0.5,
+          "avg_fold_sharpe": 0.427,
+          "param_stability_pct": 122.43,
+          "oos_days": 2520
+        },
+        {
+          "asset": "LINK",
+          "family": "donchian",
+          "n_folds": 14,
+          "oos_cagr": 0.0848,
+          "oos_sharpe": 0.426,
+          "oos_sortino": 0.492,
+          "oos_max_dd": -0.6507,
+          "oos_calmar": 0.13,
+          "oos_vol": 0.2877,
+          "avg_exposure": 0.214,
+          "ann_turnover": 9.69,
+          "fold_pass_rate": 0.571,
+          "avg_fold_sharpe": 0.302,
+          "param_stability_pct": 193.02,
+          "oos_days": 2520
+        }
+      ],
+      "winner": {
+        "asset": "LINK",
+        "family": "trend_flat",
+        "n_folds": 14,
+        "oos_cagr": 0.2275,
+        "oos_sharpe": 0.843,
+        "oos_sortino": 1.042,
+        "oos_max_dd": -0.4565,
+        "oos_calmar": 0.498,
+        "oos_vol": 0.2936,
+        "avg_exposure": 0.205,
+        "ann_turnover": 3.73,
+        "fold_pass_rate": 0.571,
+        "avg_fold_sharpe": 0.539,
+        "param_stability_pct": 127.5,
+        "oos_days": 2520
+      },
+      "winner_passes_gate": false,
+      "n_gated": 1,
+      "winner_folds": [
+        {
+          "train_start": "2017-10-02",
+          "test_start": "2019-03-26",
+          "test_end": "2019-09-22",
+          "params": {
+            "fast": 20,
+            "slow": 200,
+            "band": 0.02,
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.082,
+          "test_sharpe": 2.319,
+          "test_return": 0.2882,
+          "test_max_dd": -0.121,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-03-31",
+          "test_start": "2019-09-22",
+          "test_end": "2020-03-20",
+          "params": {
+            "fast": 20,
+            "slow": 200,
+            "band": 0.02,
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.126,
+          "test_sharpe": 0.619,
+          "test_return": 0.0608,
+          "test_max_dd": -0.1668,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-09-27",
+          "test_start": "2020-03-20",
+          "test_end": "2020-09-16",
+          "params": {
+            "fast": 20,
+            "slow": 200,
+            "band": 0.0,
+            "vol_target": 0.65,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.331,
+          "test_sharpe": 3.232,
+          "test_return": 1.6818,
+          "test_max_dd": -0.1889,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-03-26",
+          "test_start": "2020-09-16",
+          "test_end": "2021-03-15",
+          "params": {
+            "fast": 20,
+            "slow": 200,
+            "band": 0.0,
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.079,
+          "test_sharpe": 1.87,
+          "test_return": 0.2007,
+          "test_max_dd": -0.0706,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-09-22",
+          "test_start": "2021-03-15",
+          "test_end": "2021-09-11",
+          "params": {
+            "fast": 20,
+            "slow": 200,
+            "band": 0.0,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.929,
+          "test_sharpe": 0.545,
+          "test_return": 0.059,
+          "test_max_dd": -0.1591,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-03-20",
+          "test_start": "2021-09-11",
+          "test_end": "2022-03-10",
+          "params": {
+            "fast": 20,
+            "slow": 200,
+            "band": 0.02,
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.96,
+          "test_sharpe": -0.325,
+          "test_return": -0.0247,
+          "test_max_dd": -0.0819,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-09-16",
+          "test_start": "2022-03-10",
+          "test_end": "2022-09-06",
+          "params": {
+            "fast": 20,
+            "slow": 200,
+            "band": 0.02,
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.882,
+          "test_sharpe": 0.0,
+          "test_return": 0.0,
+          "test_max_dd": 0.0,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-03-15",
+          "test_start": "2022-09-06",
+          "test_end": "2023-03-05",
+          "params": {
+            "fast": 20,
+            "slow": 200,
+            "band": 0.0,
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.46,
+          "test_sharpe": -0.535,
+          "test_return": -0.0696,
+          "test_max_dd": -0.1392,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-09-11",
+          "test_start": "2023-03-05",
+          "test_end": "2023-09-01",
+          "params": {
+            "fast": 20,
+            "slow": 200,
+            "band": 0.02,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.156,
+          "test_sharpe": -1.351,
+          "test_return": -0.2115,
+          "test_max_dd": -0.2863,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-03-10",
+          "test_start": "2023-09-01",
+          "test_end": "2024-02-28",
+          "params": {
+            "fast": 30,
+            "slow": 150,
+            "band": 0.05,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": -0.069,
+          "test_sharpe": 1.853,
+          "test_return": 0.2894,
+          "test_max_dd": -0.1356,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-09-06",
+          "test_start": "2024-02-28",
+          "test_end": "2024-08-26",
+          "params": {
+            "fast": 30,
+            "slow": 150,
+            "band": 0.05,
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.265,
+          "test_sharpe": -1.315,
+          "test_return": -0.0848,
+          "test_max_dd": -0.1221,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-03-05",
+          "test_start": "2024-08-26",
+          "test_end": "2025-02-22",
+          "params": {
+            "fast": 30,
+            "slow": 150,
+            "band": 0.05,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.631,
+          "test_sharpe": 0.596,
+          "test_return": 0.0762,
+          "test_max_dd": -0.1859,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-09-01",
+          "test_start": "2025-02-22",
+          "test_end": "2025-08-21",
+          "params": {
+            "fast": 20,
+            "slow": 100,
+            "band": 0.05,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.284,
+          "test_sharpe": 1.572,
+          "test_return": 0.1389,
+          "test_max_dd": -0.0986,
+          "test_days": 180
+        },
+        {
+          "train_start": "2024-02-28",
+          "test_start": "2025-08-21",
+          "test_end": "2026-02-17",
+          "params": {
+            "fast": 20,
+            "slow": 100,
+            "band": 0.05,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.821,
+          "test_sharpe": -1.54,
+          "test_return": -0.1463,
+          "test_max_dd": -0.1492,
+          "test_days": 180
+        }
+      ]
+    },
+    "ADA": {
+      "asset": "ADA",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold": {
+        "cagr": 0.078,
+        "ann_vol": 1.1289,
+        "sharpe": 0.5916,
+        "sortino": 1.0221,
+        "max_dd": -0.9792,
+        "calmar": 0.0796,
+        "total_return": 0.8905,
+        "avg_exposure": 1.0,
+        "ann_turnover": 0.1179,
+        "n_trades": 0,
+        "win_rate_days": 0.4916,
+        "n_days": 3096,
+        "final_equity": 1.8905
+      },
+      "summaries": [
+        {
+          "asset": "ADA",
+          "family": "donchian",
+          "n_folds": 14,
+          "oos_cagr": 0.3512,
+          "oos_sharpe": 1.023,
+          "oos_sortino": 1.171,
+          "oos_max_dd": -0.3379,
+          "oos_calmar": 1.039,
+          "oos_vol": 0.3553,
+          "avg_exposure": 0.293,
+          "ann_turnover": 10.21,
+          "fold_pass_rate": 0.571,
+          "avg_fold_sharpe": 0.645,
+          "param_stability_pct": 100.0,
+          "oos_days": 2520
+        },
+        {
+          "asset": "ADA",
+          "family": "macross",
+          "n_folds": 14,
+          "oos_cagr": 0.2806,
+          "oos_sharpe": 0.866,
+          "oos_sortino": 1.025,
+          "oos_max_dd": -0.5483,
+          "oos_calmar": 0.512,
+          "oos_vol": 0.3601,
+          "avg_exposure": 0.318,
+          "ann_turnover": 8.3,
+          "fold_pass_rate": 0.5,
+          "avg_fold_sharpe": 0.556,
+          "param_stability_pct": 75.0,
+          "oos_days": 2520
+        },
+        {
+          "asset": "ADA",
+          "family": "tsmom_blend",
+          "n_folds": 14,
+          "oos_cagr": 0.3713,
+          "oos_sharpe": 1.097,
+          "oos_sortino": 1.27,
+          "oos_max_dd": -0.3379,
+          "oos_calmar": 1.099,
+          "oos_vol": 0.3389,
+          "avg_exposure": 0.206,
+          "ann_turnover": 18.6,
+          "fold_pass_rate": 0.429,
+          "avg_fold_sharpe": 0.604,
+          "param_stability_pct": 128.85,
+          "oos_days": 2520
+        },
+        {
+          "asset": "ADA",
+          "family": "rsi_mr",
+          "n_folds": 14,
+          "oos_cagr": 0.0162,
+          "oos_sharpe": 0.188,
+          "oos_sortino": 0.064,
+          "oos_max_dd": -0.3059,
+          "oos_calmar": 0.053,
+          "oos_vol": 0.1364,
+          "avg_exposure": 0.039,
+          "ann_turnover": 3.8,
+          "fold_pass_rate": 0.571,
+          "avg_fold_sharpe": 0.473,
+          "param_stability_pct": 48.15,
+          "oos_days": 2520
+        },
+        {
+          "asset": "ADA",
+          "family": "mr_z",
+          "n_folds": 14,
+          "oos_cagr": -0.0428,
+          "oos_sharpe": -0.075,
+          "oos_sortino": -0.045,
+          "oos_max_dd": -0.5852,
+          "oos_calmar": -0.073,
+          "oos_vol": 0.2316,
+          "avg_exposure": 0.117,
+          "ann_turnover": 10.85,
+          "fold_pass_rate": 0.357,
+          "avg_fold_sharpe": -0.289,
+          "param_stability_pct": 51.72,
+          "oos_days": 2520
+        },
+        {
+          "asset": "ADA",
+          "family": "trend_flat",
+          "n_folds": 14,
+          "oos_cagr": 0.1718,
+          "oos_sharpe": 0.568,
+          "oos_sortino": 0.636,
+          "oos_max_dd": -0.7261,
+          "oos_calmar": 0.237,
+          "oos_vol": 0.4758,
+          "avg_exposure": 0.323,
+          "ann_turnover": 6.72,
+          "fold_pass_rate": 0.357,
+          "avg_fold_sharpe": 0.23,
+          "param_stability_pct": 150.0,
+          "oos_days": 2520
+        },
+        {
+          "asset": "ADA",
+          "family": "tsmom",
+          "n_folds": 14,
+          "oos_cagr": -0.0881,
+          "oos_sharpe": -0.086,
+          "oos_sortino": -0.089,
+          "oos_max_dd": -0.6296,
+          "oos_calmar": -0.14,
+          "oos_vol": 0.3504,
+          "avg_exposure": 0.28,
+          "ann_turnover": 18.26,
+          "fold_pass_rate": 0.357,
+          "avg_fold_sharpe": 0.034,
+          "param_stability_pct": 126.67,
+          "oos_days": 2520
+        }
+      ],
+      "winner": {
+        "asset": "ADA",
+        "family": "donchian",
+        "n_folds": 14,
+        "oos_cagr": 0.3512,
+        "oos_sharpe": 1.023,
+        "oos_sortino": 1.171,
+        "oos_max_dd": -0.3379,
+        "oos_calmar": 1.039,
+        "oos_vol": 0.3553,
+        "avg_exposure": 0.293,
+        "ann_turnover": 10.21,
+        "fold_pass_rate": 0.571,
+        "avg_fold_sharpe": 0.645,
+        "param_stability_pct": 100.0,
+        "oos_days": 2520
+      },
+      "winner_passes_gate": true,
+      "n_gated": 1,
+      "winner_folds": [
+        {
+          "train_start": "2017-12-02",
+          "test_start": "2019-05-26",
+          "test_end": "2019-11-22",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 1.031,
+          "test_sharpe": -0.688,
+          "test_return": -0.1896,
+          "test_max_dd": -0.3379,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-05-31",
+          "test_start": "2019-11-22",
+          "test_end": "2020-05-20",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 1.143,
+          "test_sharpe": 0.537,
+          "test_return": 0.0654,
+          "test_max_dd": -0.2361,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-11-27",
+          "test_start": "2020-05-20",
+          "test_end": "2020-11-16",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.26,
+          "test_sharpe": 2.696,
+          "test_return": 0.363,
+          "test_max_dd": -0.0402,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-05-26",
+          "test_start": "2020-11-16",
+          "test_end": "2021-05-15",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.767,
+          "test_sharpe": 3.695,
+          "test_return": 0.728,
+          "test_max_dd": -0.0965,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-11-22",
+          "test_start": "2021-05-15",
+          "test_end": "2021-11-11",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 2.841,
+          "test_sharpe": 0.985,
+          "test_return": 0.1413,
+          "test_max_dd": -0.1387,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-05-20",
+          "test_start": "2021-11-11",
+          "test_end": "2022-05-10",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 2.582,
+          "test_sharpe": -2.295,
+          "test_return": -0.1021,
+          "test_max_dd": -0.1021,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-11-16",
+          "test_start": "2022-05-10",
+          "test_end": "2022-11-06",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.69,
+          "test_sharpe": -1.483,
+          "test_return": -0.1072,
+          "test_max_dd": -0.1418,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-05-15",
+          "test_start": "2022-11-06",
+          "test_end": "2023-05-05",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 0.074,
+          "test_sharpe": 0.78,
+          "test_return": 0.1431,
+          "test_max_dd": -0.299,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-11-11",
+          "test_start": "2023-05-05",
+          "test_end": "2023-11-01",
+          "params": {
+            "entry": 90,
+            "exit": 30,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 0.313,
+          "test_sharpe": 0.032,
+          "test_return": -0.0284,
+          "test_max_dd": -0.218,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-05-10",
+          "test_start": "2023-11-01",
+          "test_end": "2024-04-29",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.6,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 0.049,
+          "test_sharpe": 3.974,
+          "test_return": 2.6329,
+          "test_max_dd": -0.1517,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-11-06",
+          "test_start": "2024-04-29",
+          "test_end": "2024-10-26",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.636,
+          "test_sharpe": -1.676,
+          "test_return": -0.1683,
+          "test_max_dd": -0.1938,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-05-05",
+          "test_start": "2024-10-26",
+          "test_end": "2025-04-24",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.28,
+          "test_sharpe": 2.201,
+          "test_return": 0.2561,
+          "test_max_dd": -0.1159,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-11-01",
+          "test_start": "2025-04-24",
+          "test_end": "2025-10-21",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 2.038,
+          "test_sharpe": 0.275,
+          "test_return": 0.0187,
+          "test_max_dd": -0.1521,
+          "test_days": 180
+        },
+        {
+          "train_start": "2024-04-29",
+          "test_start": "2025-10-21",
+          "test_end": "2026-04-19",
+          "params": {
+            "entry": 90,
+            "exit": 30,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 0.748,
+          "test_sharpe": 0.0,
+          "test_return": 0.0,
+          "test_max_dd": 0.0,
+          "test_days": 180
+        }
+      ]
+    },
+    "DOGE": {
+      "asset": "DOGE",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold": {
+        "cagr": 0.7441,
+        "ann_vol": 1.5518,
+        "sharpe": 0.9134,
+        "sortino": 1.9964,
+        "max_dd": -0.9227,
+        "calmar": 0.8064,
+        "total_return": 566.5844,
+        "avg_exposure": 1.0,
+        "ann_turnover": 0.0877,
+        "n_trades": 0,
+        "win_rate_days": 0.4939,
+        "n_days": 4161,
+        "final_equity": 567.5844
+      },
+      "summaries": [
+        {
+          "asset": "DOGE",
+          "family": "tsmom_blend",
+          "n_folds": 20,
+          "oos_cagr": 0.3521,
+          "oos_sharpe": 0.958,
+          "oos_sortino": 1.512,
+          "oos_max_dd": -0.4303,
+          "oos_calmar": 0.818,
+          "oos_vol": 0.3803,
+          "avg_exposure": 0.111,
+          "ann_turnover": 13.46,
+          "fold_pass_rate": 0.65,
+          "avg_fold_sharpe": 0.693,
+          "param_stability_pct": 108.59,
+          "oos_days": 3600
+        },
+        {
+          "asset": "DOGE",
+          "family": "tsmom",
+          "n_folds": 20,
+          "oos_cagr": 0.3026,
+          "oos_sharpe": 0.761,
+          "oos_sortino": 1.194,
+          "oos_max_dd": -0.5809,
+          "oos_calmar": 0.521,
+          "oos_vol": 0.4851,
+          "avg_exposure": 0.251,
+          "ann_turnover": 22.14,
+          "fold_pass_rate": 0.6,
+          "avg_fold_sharpe": 0.377,
+          "param_stability_pct": 144.9,
+          "oos_days": 3600
+        },
+        {
+          "asset": "DOGE",
+          "family": "donchian",
+          "n_folds": 20,
+          "oos_cagr": 0.2364,
+          "oos_sharpe": 0.748,
+          "oos_sortino": 0.783,
+          "oos_max_dd": -0.7091,
+          "oos_calmar": 0.333,
+          "oos_vol": 0.3725,
+          "avg_exposure": 0.19,
+          "ann_turnover": 9.93,
+          "fold_pass_rate": 0.65,
+          "avg_fold_sharpe": 0.626,
+          "param_stability_pct": 116.87,
+          "oos_days": 3600
+        },
+        {
+          "asset": "DOGE",
+          "family": "macross",
+          "n_folds": 20,
+          "oos_cagr": 0.3412,
+          "oos_sharpe": 0.987,
+          "oos_sortino": 1.501,
+          "oos_max_dd": -0.4273,
+          "oos_calmar": 0.798,
+          "oos_vol": 0.3565,
+          "avg_exposure": 0.159,
+          "ann_turnover": 5.53,
+          "fold_pass_rate": 0.55,
+          "avg_fold_sharpe": 0.612,
+          "param_stability_pct": 196.3,
+          "oos_days": 3600
+        },
+        {
+          "asset": "DOGE",
+          "family": "rsi_mr",
+          "n_folds": 20,
+          "oos_cagr": -0.0457,
+          "oos_sharpe": -0.268,
+          "oos_sortino": -0.111,
+          "oos_max_dd": -0.5169,
+          "oos_calmar": -0.088,
+          "oos_vol": 0.1385,
+          "avg_exposure": 0.043,
+          "ann_turnover": 3.65,
+          "fold_pass_rate": 0.4,
+          "avg_fold_sharpe": -0.177,
+          "param_stability_pct": 44.44,
+          "oos_days": 3600
+        },
+        {
+          "asset": "DOGE",
+          "family": "trend_flat",
+          "n_folds": 20,
+          "oos_cagr": 0.1613,
+          "oos_sharpe": 0.565,
+          "oos_sortino": 0.909,
+          "oos_max_dd": -0.5563,
+          "oos_calmar": 0.29,
+          "oos_vol": 0.3689,
+          "avg_exposure": 0.146,
+          "ann_turnover": 4.43,
+          "fold_pass_rate": 0.3,
+          "avg_fold_sharpe": -0.308,
+          "param_stability_pct": 163.16,
+          "oos_days": 3600
+        },
+        {
+          "asset": "DOGE",
+          "family": "mr_z",
+          "n_folds": 20,
+          "oos_cagr": -0.1132,
+          "oos_sharpe": -0.6,
+          "oos_sortino": -0.262,
+          "oos_max_dd": -0.7447,
+          "oos_calmar": -0.152,
+          "oos_vol": 0.1741,
+          "avg_exposure": 0.086,
+          "ann_turnover": 8.77,
+          "fold_pass_rate": 0.2,
+          "avg_fold_sharpe": -0.662,
+          "param_stability_pct": 54.55,
+          "oos_days": 3600
+        }
+      ],
+      "winner": {
+        "asset": "DOGE",
+        "family": "tsmom_blend",
+        "n_folds": 20,
+        "oos_cagr": 0.3521,
+        "oos_sharpe": 0.958,
+        "oos_sortino": 1.512,
+        "oos_max_dd": -0.4303,
+        "oos_calmar": 0.818,
+        "oos_vol": 0.3803,
+        "avg_exposure": 0.111,
+        "ann_turnover": 13.46,
+        "fold_pass_rate": 0.65,
+        "avg_fold_sharpe": 0.693,
+        "param_stability_pct": 108.59,
+        "oos_days": 3600
+      },
+      "winner_passes_gate": true,
+      "n_gated": 2,
+      "winner_folds": [
+        {
+          "train_start": "2015-01-02",
+          "test_start": "2016-06-25",
+          "test_end": "2016-12-22",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.757,
+          "test_sharpe": -3.217,
+          "test_return": -0.3352,
+          "test_max_dd": -0.3625,
+          "test_days": 180
+        },
+        {
+          "train_start": "2015-07-01",
+          "test_start": "2016-12-22",
+          "test_end": "2017-06-20",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.204,
+          "test_sharpe": 2.685,
+          "test_return": 0.3272,
+          "test_max_dd": -0.112,
+          "test_days": 180
+        },
+        {
+          "train_start": "2015-12-28",
+          "test_start": "2017-06-20",
+          "test_end": "2017-12-17",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.452,
+          "test_sharpe": 1.252,
+          "test_return": 0.0697,
+          "test_max_dd": -0.0687,
+          "test_days": 180
+        },
+        {
+          "train_start": "2016-06-25",
+          "test_start": "2017-12-17",
+          "test_end": "2018-06-15",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.715,
+          "test_sharpe": 1.578,
+          "test_return": 0.0979,
+          "test_max_dd": -0.07,
+          "test_days": 180
+        },
+        {
+          "train_start": "2016-12-22",
+          "test_start": "2018-06-15",
+          "test_end": "2018-12-12",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.357,
+          "test_sharpe": 0.718,
+          "test_return": 0.0273,
+          "test_max_dd": -0.022,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-06-20",
+          "test_start": "2018-12-12",
+          "test_end": "2019-06-10",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.699,
+          "test_sharpe": 1.499,
+          "test_return": 0.1349,
+          "test_max_dd": -0.0612,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-12-17",
+          "test_start": "2019-06-10",
+          "test_end": "2019-12-07",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.235,
+          "test_sharpe": -0.748,
+          "test_return": -0.083,
+          "test_max_dd": -0.1505,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-06-15",
+          "test_start": "2019-12-07",
+          "test_end": "2020-06-04",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.688,
+          "test_sharpe": -0.167,
+          "test_return": -0.0213,
+          "test_max_dd": -0.1014,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-12-12",
+          "test_start": "2020-06-04",
+          "test_end": "2020-12-01",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.515,
+          "test_sharpe": 1.263,
+          "test_return": 0.5214,
+          "test_max_dd": -0.2276,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-06-10",
+          "test_start": "2020-12-01",
+          "test_end": "2021-05-30",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.65,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.78,
+          "test_sharpe": 3.671,
+          "test_return": 4.3898,
+          "test_max_dd": -0.1212,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-12-07",
+          "test_start": "2021-05-30",
+          "test_end": "2021-11-26",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.151,
+          "test_sharpe": -1.614,
+          "test_return": -0.0558,
+          "test_max_dd": -0.0665,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-06-04",
+          "test_start": "2021-11-26",
+          "test_end": "2022-05-25",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.85,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.944,
+          "test_sharpe": -0.755,
+          "test_return": -0.0094,
+          "test_max_dd": -0.0207,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-12-01",
+          "test_start": "2022-05-25",
+          "test_end": "2022-11-21",
+          "params": {
+            "lbs": [
+              30,
+              60,
+              120,
+              200
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.894,
+          "test_sharpe": 0.138,
+          "test_return": -0.0001,
+          "test_max_dd": -0.2133,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-05-30",
+          "test_start": "2022-11-21",
+          "test_end": "2023-05-20",
+          "params": {
+            "lbs": [
+              10,
+              30,
+              60,
+              120
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.245,
+          "test_sharpe": -1.429,
+          "test_return": -0.0857,
+          "test_max_dd": -0.1145,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-11-26",
+          "test_start": "2023-05-20",
+          "test_end": "2023-11-16",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.34,
+          "test_sharpe": 0.671,
+          "test_return": 0.0374,
+          "test_max_dd": -0.0386,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-05-25",
+          "test_start": "2023-11-16",
+          "test_end": "2024-05-14",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.475,
+          "test_sharpe": 1.847,
+          "test_return": 0.2583,
+          "test_max_dd": -0.0938,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-11-21",
+          "test_start": "2024-05-14",
+          "test_end": "2024-11-10",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.65,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.84,
+          "test_sharpe": 2.174,
+          "test_return": 0.4538,
+          "test_max_dd": -0.1146,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-05-20",
+          "test_start": "2024-11-10",
+          "test_end": "2025-05-09",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.65,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.611,
+          "test_sharpe": 1.632,
+          "test_return": 0.3098,
+          "test_max_dd": -0.1792,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-11-16",
+          "test_start": "2025-05-09",
+          "test_end": "2025-11-05",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.835,
+          "test_sharpe": 0.283,
+          "test_return": 0.0139,
+          "test_max_dd": -0.1019,
+          "test_days": 180
+        },
+        {
+          "train_start": "2024-05-14",
+          "test_start": "2025-11-05",
+          "test_end": "2026-05-04",
+          "params": {
+            "lbs": [
+              20,
+              40,
+              80,
+              120
+            ],
+            "vol_target": 0.2,
+            "vol_lb": 30,
+            "max_lev": 3.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.331,
+          "test_sharpe": 2.371,
+          "test_return": 0.0224,
+          "test_max_dd": -0.0,
+          "test_days": 180
+        }
+      ]
+    },
+    "XRP": {
+      "asset": "XRP",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold": {
+        "cagr": 0.5937,
+        "ann_vol": 1.3075,
+        "sharpe": 0.9257,
+        "sortino": 1.6528,
+        "max_dd": -0.949,
+        "calmar": 0.6256,
+        "total_return": 241.383,
+        "avg_exposure": 1.0,
+        "ann_turnover": 0.0849,
+        "n_trades": 0,
+        "win_rate_days": 0.4877,
+        "n_days": 4300,
+        "final_equity": 242.383
+      },
+      "summaries": [
+        {
+          "asset": "XRP",
+          "family": "rsi_mr",
+          "n_folds": 20,
+          "oos_cagr": 0.0303,
+          "oos_sharpe": 0.248,
+          "oos_sortino": 0.121,
+          "oos_max_dd": -0.6289,
+          "oos_calmar": 0.048,
+          "oos_vol": 0.2083,
+          "avg_exposure": 0.074,
+          "ann_turnover": 7.75,
+          "fold_pass_rate": 0.7,
+          "avg_fold_sharpe": 0.536,
+          "param_stability_pct": 39.39,
+          "oos_days": 3600
+        },
+        {
+          "asset": "XRP",
+          "family": "tsmom_blend",
+          "n_folds": 20,
+          "oos_cagr": 0.0631,
+          "oos_sharpe": 0.374,
+          "oos_sortino": 0.474,
+          "oos_max_dd": -0.64,
+          "oos_calmar": 0.099,
+          "oos_vol": 0.2337,
+          "avg_exposure": 0.131,
+          "ann_turnover": 17.04,
+          "fold_pass_rate": 0.35,
+          "avg_fold_sharpe": -0.191,
+          "param_stability_pct": 108.0,
+          "oos_days": 3600
+        },
+        {
+          "asset": "XRP",
+          "family": "tsmom",
+          "n_folds": 20,
+          "oos_cagr": 0.2065,
+          "oos_sharpe": 0.585,
+          "oos_sortino": 0.924,
+          "oos_max_dd": -0.6007,
+          "oos_calmar": 0.344,
+          "oos_vol": 0.5118,
+          "avg_exposure": 0.301,
+          "ann_turnover": 26.67,
+          "fold_pass_rate": 0.45,
+          "avg_fold_sharpe": 0.152,
+          "param_stability_pct": 172.73,
+          "oos_days": 3600
+        },
+        {
+          "asset": "XRP",
+          "family": "mr_z",
+          "n_folds": 20,
+          "oos_cagr": -0.0543,
+          "oos_sharpe": -0.185,
+          "oos_sortino": -0.106,
+          "oos_max_dd": -0.7175,
+          "oos_calmar": -0.076,
+          "oos_vol": 0.1962,
+          "avg_exposure": 0.118,
+          "ann_turnover": 12.45,
+          "fold_pass_rate": 0.5,
+          "avg_fold_sharpe": -0.103,
+          "param_stability_pct": 62.16,
+          "oos_days": 3600
+        },
+        {
+          "asset": "XRP",
+          "family": "macross",
+          "n_folds": 20,
+          "oos_cagr": 0.0442,
+          "oos_sharpe": 0.306,
+          "oos_sortino": 0.327,
+          "oos_max_dd": -0.6259,
+          "oos_calmar": 0.071,
+          "oos_vol": 0.4061,
+          "avg_exposure": 0.271,
+          "ann_turnover": 9.13,
+          "fold_pass_rate": 0.45,
+          "avg_fold_sharpe": 0.126,
+          "param_stability_pct": 135.29,
+          "oos_days": 3600
+        },
+        {
+          "asset": "XRP",
+          "family": "trend_flat",
+          "n_folds": 20,
+          "oos_cagr": -0.0002,
+          "oos_sharpe": 0.223,
+          "oos_sortino": 0.259,
+          "oos_max_dd": -0.764,
+          "oos_calmar": -0.0,
+          "oos_vol": 0.485,
+          "avg_exposure": 0.254,
+          "ann_turnover": 7.23,
+          "fold_pass_rate": 0.35,
+          "avg_fold_sharpe": -0.137,
+          "param_stability_pct": 100.0,
+          "oos_days": 3600
+        },
+        {
+          "asset": "XRP",
+          "family": "donchian",
+          "n_folds": 20,
+          "oos_cagr": -0.1634,
+          "oos_sharpe": -0.021,
+          "oos_sortino": -0.014,
+          "oos_max_dd": -0.9599,
+          "oos_calmar": -0.17,
+          "oos_vol": 0.443,
+          "avg_exposure": 0.254,
+          "ann_turnover": 11.42,
+          "fold_pass_rate": 0.45,
+          "avg_fold_sharpe": 0.222,
+          "param_stability_pct": 144.9,
+          "oos_days": 3600
+        }
+      ],
+      "winner": {
+        "asset": "XRP",
+        "family": "rsi_mr",
+        "n_folds": 20,
+        "oos_cagr": 0.0303,
+        "oos_sharpe": 0.248,
+        "oos_sortino": 0.121,
+        "oos_max_dd": -0.6289,
+        "oos_calmar": 0.048,
+        "oos_vol": 0.2083,
+        "avg_exposure": 0.074,
+        "ann_turnover": 7.75,
+        "fold_pass_rate": 0.7,
+        "avg_fold_sharpe": 0.536,
+        "param_stability_pct": 39.39,
+        "oos_days": 3600
+      },
+      "winner_passes_gate": false,
+      "n_gated": 0,
+      "winner_folds": [
+        {
+          "train_start": "2014-08-16",
+          "test_start": "2016-02-07",
+          "test_end": "2016-08-05",
+          "params": {
+            "lb": 14,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.1,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.669,
+          "test_sharpe": 1.507,
+          "test_return": 0.1433,
+          "test_max_dd": -0.0855,
+          "test_days": 180
+        },
+        {
+          "train_start": "2015-02-12",
+          "test_start": "2016-08-05",
+          "test_end": "2017-02-01",
+          "params": {
+            "lb": 14,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.1,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.668,
+          "test_sharpe": 0.619,
+          "test_return": 0.0588,
+          "test_max_dd": -0.1467,
+          "test_days": 180
+        },
+        {
+          "train_start": "2015-08-11",
+          "test_start": "2017-02-01",
+          "test_end": "2017-07-31",
+          "params": {
+            "lb": 14,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.1,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.557,
+          "test_sharpe": 0.596,
+          "test_return": 0.0707,
+          "test_max_dd": -0.118,
+          "test_days": 180
+        },
+        {
+          "train_start": "2016-02-07",
+          "test_start": "2017-07-31",
+          "test_end": "2018-01-27",
+          "params": {
+            "lb": 14,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.18,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.651,
+          "test_sharpe": 1.959,
+          "test_return": 0.1783,
+          "test_max_dd": -0.0411,
+          "test_days": 180
+        },
+        {
+          "train_start": "2016-08-05",
+          "test_start": "2018-01-27",
+          "test_end": "2018-07-26",
+          "params": {
+            "lb": 14,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.18,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.436,
+          "test_sharpe": 0.679,
+          "test_return": 0.0324,
+          "test_max_dd": -0.0411,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-02-01",
+          "test_start": "2018-07-26",
+          "test_end": "2019-01-22",
+          "params": {
+            "lb": 14,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.18,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.007,
+          "test_sharpe": 1.526,
+          "test_return": 0.0598,
+          "test_max_dd": -0.0232,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-07-31",
+          "test_start": "2019-01-22",
+          "test_end": "2019-07-21",
+          "params": {
+            "lb": 14,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.1,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.527,
+          "test_sharpe": 0.601,
+          "test_return": 0.0307,
+          "test_max_dd": -0.0439,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-01-27",
+          "test_start": "2019-07-21",
+          "test_end": "2020-01-17",
+          "params": {
+            "lb": 14,
+            "lo": 35,
+            "hi": 65,
+            "trend_gate": 0.1,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.293,
+          "test_sharpe": -1.435,
+          "test_return": -0.066,
+          "test_max_dd": -0.0876,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-07-26",
+          "test_start": "2020-01-17",
+          "test_end": "2020-07-15",
+          "params": {
+            "lb": 14,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.1,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.532,
+          "test_sharpe": -0.704,
+          "test_return": -0.0841,
+          "test_max_dd": -0.1765,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-01-22",
+          "test_start": "2020-07-15",
+          "test_end": "2021-01-11",
+          "params": {
+            "lb": 7,
+            "lo": 25,
+            "hi": 75,
+            "trend_gate": 0.18,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.353,
+          "test_sharpe": -2.862,
+          "test_return": -0.4248,
+          "test_max_dd": -0.4618,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-07-21",
+          "test_start": "2021-01-11",
+          "test_end": "2021-07-10",
+          "params": {
+            "lb": 7,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.18,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.177,
+          "test_sharpe": 1.077,
+          "test_return": 0.1559,
+          "test_max_dd": -0.1148,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-01-17",
+          "test_start": "2021-07-10",
+          "test_end": "2022-01-06",
+          "params": {
+            "lb": 7,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.18,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.046,
+          "test_sharpe": -0.597,
+          "test_return": -0.0497,
+          "test_max_dd": -0.1321,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-07-15",
+          "test_start": "2022-01-06",
+          "test_end": "2022-07-05",
+          "params": {
+            "lb": 7,
+            "lo": 30,
+            "hi": 70,
+            "trend_gate": 0.18,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.92,
+          "test_sharpe": -1.995,
+          "test_return": -0.3079,
+          "test_max_dd": -0.3269,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-01-11",
+          "test_start": "2022-07-05",
+          "test_end": "2023-01-01",
+          "params": {
+            "lb": 14,
+            "lo": 35,
+            "hi": 65,
+            "trend_gate": 0.1,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.54,
+          "test_sharpe": 1.967,
+          "test_return": 0.171,
+          "test_max_dd": -0.0472,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-07-10",
+          "test_start": "2023-01-01",
+          "test_end": "2023-06-30",
+          "params": {
+            "lb": 14,
+            "lo": 35,
+            "hi": 65,
+            "trend_gate": 0.1,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.996,
+          "test_sharpe": 1.441,
+          "test_return": 0.0403,
+          "test_max_dd": -0.015,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-01-06",
+          "test_start": "2023-06-30",
+          "test_end": "2023-12-27",
+          "params": {
+            "lb": 14,
+            "lo": 35,
+            "hi": 65,
+            "trend_gate": 0.1,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.467,
+          "test_sharpe": -0.174,
+          "test_return": -0.0194,
+          "test_max_dd": -0.1311,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-07-05",
+          "test_start": "2023-12-27",
+          "test_end": "2024-06-24",
+          "params": {
+            "lb": 7,
+            "lo": 25,
+            "hi": 75,
+            "trend_gate": 0.1,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.678,
+          "test_sharpe": 0.425,
+          "test_return": 0.0247,
+          "test_max_dd": -0.0802,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-01-01",
+          "test_start": "2024-06-24",
+          "test_end": "2024-12-21",
+          "params": {
+            "lb": 7,
+            "lo": 25,
+            "hi": 75,
+            "trend_gate": 0.1,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.262,
+          "test_sharpe": 2.578,
+          "test_return": 0.2476,
+          "test_max_dd": -0.0406,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-06-30",
+          "test_start": "2024-12-21",
+          "test_end": "2025-06-19",
+          "params": {
+            "lb": 7,
+            "lo": 25,
+            "hi": 75,
+            "trend_gate": 0.1,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.786,
+          "test_sharpe": 1.779,
+          "test_return": 0.194,
+          "test_max_dd": -0.0334,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-12-27",
+          "test_start": "2025-06-19",
+          "test_end": "2025-12-16",
+          "params": {
+            "lb": 14,
+            "lo": 35,
+            "hi": 65,
+            "trend_gate": 0.18,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.697,
+          "test_sharpe": 1.724,
+          "test_return": 0.1432,
+          "test_max_dd": -0.0668,
+          "test_days": 180
+        }
+      ]
+    },
+    "LTC": {
+      "asset": "LTC",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold": {
+        "cagr": 0.311,
+        "ann_vol": 1.3524,
+        "sharpe": 0.7638,
+        "sortino": 1.3534,
+        "max_dd": -0.9754,
+        "calmar": 0.3188,
+        "total_return": 34.2276,
+        "avg_exposure": 1.0,
+        "ann_turnover": 0.076,
+        "n_trades": 0,
+        "win_rate_days": 0.4903,
+        "n_days": 4801,
+        "final_equity": 35.2276
+      },
+      "summaries": [
+        {
+          "asset": "LTC",
+          "family": "mr_z",
+          "n_folds": 23,
+          "oos_cagr": 0.0307,
+          "oos_sharpe": 0.268,
+          "oos_sortino": 0.131,
+          "oos_max_dd": -0.2829,
+          "oos_calmar": 0.109,
+          "oos_vol": 0.1631,
+          "avg_exposure": 0.084,
+          "ann_turnover": 9.68,
+          "fold_pass_rate": 0.478,
+          "avg_fold_sharpe": 0.445,
+          "param_stability_pct": 68.29,
+          "oos_days": 4140
+        },
+        {
+          "asset": "LTC",
+          "family": "trend_flat",
+          "n_folds": 23,
+          "oos_cagr": 0.1724,
+          "oos_sharpe": 0.566,
+          "oos_sortino": 0.699,
+          "oos_max_dd": -0.6789,
+          "oos_calmar": 0.254,
+          "oos_vol": 0.4573,
+          "avg_exposure": 0.345,
+          "ann_turnover": 7.85,
+          "fold_pass_rate": 0.522,
+          "avg_fold_sharpe": 0.182,
+          "param_stability_pct": 116.98,
+          "oos_days": 4140
+        },
+        {
+          "asset": "LTC",
+          "family": "donchian",
+          "n_folds": 23,
+          "oos_cagr": 0.0859,
+          "oos_sharpe": 0.413,
+          "oos_sortino": 0.392,
+          "oos_max_dd": -0.6317,
+          "oos_calmar": 0.136,
+          "oos_vol": 0.3394,
+          "avg_exposure": 0.252,
+          "ann_turnover": 8.71,
+          "fold_pass_rate": 0.565,
+          "avg_fold_sharpe": 0.16,
+          "param_stability_pct": 97.14,
+          "oos_days": 4140
+        },
+        {
+          "asset": "LTC",
+          "family": "tsmom_blend",
+          "n_folds": 23,
+          "oos_cagr": 0.1847,
+          "oos_sharpe": 0.788,
+          "oos_sortino": 0.956,
+          "oos_max_dd": -0.4542,
+          "oos_calmar": 0.407,
+          "oos_vol": 0.2546,
+          "avg_exposure": 0.154,
+          "ann_turnover": 14.97,
+          "fold_pass_rate": 0.565,
+          "avg_fold_sharpe": 0.401,
+          "param_stability_pct": 185.4,
+          "oos_days": 4140
+        },
+        {
+          "asset": "LTC",
+          "family": "rsi_mr",
+          "n_folds": 23,
+          "oos_cagr": -0.042,
+          "oos_sharpe": -0.32,
+          "oos_sortino": -0.091,
+          "oos_max_dd": -0.4896,
+          "oos_calmar": -0.086,
+          "oos_vol": 0.1134,
+          "avg_exposure": 0.032,
+          "ann_turnover": 3.48,
+          "fold_pass_rate": 0.391,
+          "avg_fold_sharpe": -0.01,
+          "param_stability_pct": 45.24,
+          "oos_days": 4140
+        },
+        {
+          "asset": "LTC",
+          "family": "tsmom",
+          "n_folds": 23,
+          "oos_cagr": 0.0629,
+          "oos_sharpe": 0.382,
+          "oos_sortino": 0.367,
+          "oos_max_dd": -0.7903,
+          "oos_calmar": 0.08,
+          "oos_vol": 0.4398,
+          "avg_exposure": 0.357,
+          "ann_turnover": 23.4,
+          "fold_pass_rate": 0.565,
+          "avg_fold_sharpe": 0.441,
+          "param_stability_pct": 106.88,
+          "oos_days": 4140
+        },
+        {
+          "asset": "LTC",
+          "family": "macross",
+          "n_folds": 23,
+          "oos_cagr": 0.0518,
+          "oos_sharpe": 0.322,
+          "oos_sortino": 0.344,
+          "oos_max_dd": -0.6899,
+          "oos_calmar": 0.075,
+          "oos_vol": 0.3778,
+          "avg_exposure": 0.306,
+          "ann_turnover": 10.16,
+          "fold_pass_rate": 0.565,
+          "avg_fold_sharpe": 0.076,
+          "param_stability_pct": 167.44,
+          "oos_days": 4140
+        }
+      ],
+      "winner": {
+        "asset": "LTC",
+        "family": "mr_z",
+        "n_folds": 23,
+        "oos_cagr": 0.0307,
+        "oos_sharpe": 0.268,
+        "oos_sortino": 0.131,
+        "oos_max_dd": -0.2829,
+        "oos_calmar": 0.109,
+        "oos_vol": 0.1631,
+        "avg_exposure": 0.084,
+        "ann_turnover": 9.68,
+        "fold_pass_rate": 0.478,
+        "avg_fold_sharpe": 0.445,
+        "param_stability_pct": 68.29,
+        "oos_days": 4140
+      },
+      "winner_passes_gate": false,
+      "n_gated": 0,
+      "winner_folds": [
+        {
+          "train_start": "2013-04-02",
+          "test_start": "2014-09-24",
+          "test_end": "2015-03-23",
+          "params": {
+            "lb": 20,
+            "z_entry": 2.0,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.081,
+          "test_sharpe": 0.0,
+          "test_return": 0.0,
+          "test_max_dd": 0.0,
+          "test_days": 180
+        },
+        {
+          "train_start": "2013-09-29",
+          "test_start": "2015-03-23",
+          "test_end": "2015-09-19",
+          "params": {
+            "lb": 10,
+            "z_entry": 1.5,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.714,
+          "test_sharpe": 0.96,
+          "test_return": 0.03,
+          "test_max_dd": -0.0426,
+          "test_days": 180
+        },
+        {
+          "train_start": "2014-03-28",
+          "test_start": "2015-09-19",
+          "test_end": "2016-03-17",
+          "params": {
+            "lb": 10,
+            "z_entry": 1.5,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.675,
+          "test_sharpe": 1.289,
+          "test_return": 0.1282,
+          "test_max_dd": -0.073,
+          "test_days": 180
+        },
+        {
+          "train_start": "2014-09-24",
+          "test_start": "2016-03-17",
+          "test_end": "2016-09-13",
+          "params": {
+            "lb": 20,
+            "z_entry": 1.5,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.242,
+          "test_sharpe": -0.365,
+          "test_return": -0.0565,
+          "test_max_dd": -0.1642,
+          "test_days": 180
+        },
+        {
+          "train_start": "2015-03-23",
+          "test_start": "2016-09-13",
+          "test_end": "2017-03-12",
+          "params": {
+            "lb": 30,
+            "z_entry": 2.0,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.78,
+          "test_sharpe": 1.389,
+          "test_return": 0.0497,
+          "test_max_dd": -0.0208,
+          "test_days": 180
+        },
+        {
+          "train_start": "2015-09-19",
+          "test_start": "2017-03-12",
+          "test_end": "2017-09-08",
+          "params": {
+            "lb": 30,
+            "z_entry": 1.5,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.488,
+          "test_sharpe": 0.0,
+          "test_return": 0.0,
+          "test_max_dd": 0.0,
+          "test_days": 180
+        },
+        {
+          "train_start": "2016-03-17",
+          "test_start": "2017-09-08",
+          "test_end": "2018-03-07",
+          "params": {
+            "lb": 30,
+            "z_entry": 1.5,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.246,
+          "test_sharpe": 1.795,
+          "test_return": 0.1206,
+          "test_max_dd": -0.0414,
+          "test_days": 180
+        },
+        {
+          "train_start": "2016-09-13",
+          "test_start": "2018-03-07",
+          "test_end": "2018-09-03",
+          "params": {
+            "lb": 10,
+            "z_entry": 1.5,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 2.183,
+          "test_sharpe": -1.993,
+          "test_return": -0.1752,
+          "test_max_dd": -0.1983,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-03-12",
+          "test_start": "2018-09-03",
+          "test_end": "2019-03-02",
+          "params": {
+            "lb": 10,
+            "z_entry": 1.5,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.608,
+          "test_sharpe": 0.0,
+          "test_return": 0.0,
+          "test_max_dd": 0.0,
+          "test_days": 180
+        },
+        {
+          "train_start": "2017-09-08",
+          "test_start": "2019-03-02",
+          "test_end": "2019-08-29",
+          "params": {
+            "lb": 10,
+            "z_entry": 1.5,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.374,
+          "test_sharpe": 3.128,
+          "test_return": 0.1275,
+          "test_max_dd": -0.0003,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-03-07",
+          "test_start": "2019-08-29",
+          "test_end": "2020-02-25",
+          "params": {
+            "lb": 10,
+            "z_entry": 2.0,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.596,
+          "test_sharpe": 0.064,
+          "test_return": 0.001,
+          "test_max_dd": -0.0313,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-09-03",
+          "test_start": "2020-02-25",
+          "test_end": "2020-08-23",
+          "params": {
+            "lb": 10,
+            "z_entry": 1.5,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 1.866,
+          "test_sharpe": -0.098,
+          "test_return": -0.0174,
+          "test_max_dd": -0.122,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-03-02",
+          "test_start": "2020-08-23",
+          "test_end": "2021-02-19",
+          "params": {
+            "lb": 10,
+            "z_entry": 2.0,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.776,
+          "test_sharpe": 1.614,
+          "test_return": 0.0513,
+          "test_max_dd": -0.0158,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-08-29",
+          "test_start": "2021-02-19",
+          "test_end": "2021-08-18",
+          "params": {
+            "lb": 10,
+            "z_entry": 2.0,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.584,
+          "test_sharpe": 1.356,
+          "test_return": 0.0109,
+          "test_max_dd": -0.0005,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-02-25",
+          "test_start": "2021-08-18",
+          "test_end": "2022-02-14",
+          "params": {
+            "lb": 10,
+            "z_entry": 2.0,
+            "z_exit": 0.5,
+            "trend_gate": 0.15,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.651,
+          "test_sharpe": -0.194,
+          "test_return": -0.0117,
+          "test_max_dd": -0.045,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-08-23",
+          "test_start": "2022-02-14",
+          "test_end": "2022-08-13",
+          "params": {
+            "lb": 30,
+            "z_entry": 2.0,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.722,
+          "test_sharpe": 1.631,
+          "test_return": 0.1545,
+          "test_max_dd": -0.0521,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-02-19",
+          "test_start": "2022-08-13",
+          "test_end": "2023-02-09",
+          "params": {
+            "lb": 30,
+            "z_entry": 2.0,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.258,
+          "test_sharpe": -0.958,
+          "test_return": -0.0833,
+          "test_max_dd": -0.1459,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-08-18",
+          "test_start": "2023-02-09",
+          "test_end": "2023-08-08",
+          "params": {
+            "lb": 30,
+            "z_entry": 1.5,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.65,
+          "test_sharpe": 1.37,
+          "test_return": 0.1703,
+          "test_max_dd": -0.0823,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-02-14",
+          "test_start": "2023-08-08",
+          "test_end": "2024-02-04",
+          "params": {
+            "lb": 30,
+            "z_entry": 1.5,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 1.428,
+          "test_sharpe": 0.068,
+          "test_return": -0.0042,
+          "test_max_dd": -0.2155,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-08-13",
+          "test_start": "2024-02-04",
+          "test_end": "2024-08-02",
+          "params": {
+            "lb": 30,
+            "z_entry": 1.5,
+            "z_exit": 0.3,
+            "trend_gate": 0.08,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.829,
+          "test_sharpe": -1.092,
+          "test_return": -0.1331,
+          "test_max_dd": -0.1914,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-02-09",
+          "test_start": "2024-08-02",
+          "test_end": "2025-01-29",
+          "params": {
+            "lb": 10,
+            "z_entry": 2.0,
+            "z_exit": 0.5,
+            "trend_gate": 0.15,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.673,
+          "test_sharpe": 2.047,
+          "test_return": 0.3121,
+          "test_max_dd": -0.1215,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-08-08",
+          "test_start": "2025-01-29",
+          "test_end": "2025-07-28",
+          "params": {
+            "lb": 10,
+            "z_entry": 2.0,
+            "z_exit": 0.5,
+            "trend_gate": 0.15,
+            "vol_target": 0.3,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": false
+          },
+          "train_sharpe": 0.821,
+          "test_sharpe": -1.481,
+          "test_return": -0.1721,
+          "test_max_dd": -0.2527,
+          "test_days": 180
+        },
+        {
+          "train_start": "2024-02-04",
+          "test_start": "2025-07-28",
+          "test_end": "2026-01-24",
+          "params": {
+            "lb": 10,
+            "z_entry": 1.5,
+            "z_exit": 0.5,
+            "trend_gate": 0.08,
+            "vol_target": 0.45,
+            "vol_lb": 20,
+            "max_lev": 2.0,
+            "long_only": true
+          },
+          "train_sharpe": 0.402,
+          "test_sharpe": -0.3,
+          "test_return": -0.0207,
+          "test_max_dd": -0.0556,
+          "test_days": 180
+        }
+      ]
+    },
+    "BNB": {
+      "asset": "BNB",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold": {
+        "cagr": 1.7769,
+        "ann_vol": 1.1111,
+        "sharpe": 1.429,
+        "sortino": 2.352,
+        "max_dd": -0.8004,
+        "calmar": 2.22,
+        "total_return": 8534.7941,
+        "avg_exposure": 1.0,
+        "ann_turnover": 0.1128,
+        "n_trades": 0,
+        "win_rate_days": 0.5227,
+        "n_days": 3235,
+        "final_equity": 8535.7941
+      },
+      "summaries": [
+        {
+          "asset": "BNB",
+          "family": "donchian",
+          "n_folds": 14,
+          "oos_cagr": 0.4248,
+          "oos_sharpe": 1.17,
+          "oos_sortino": 1.486,
+          "oos_max_dd": -0.3432,
+          "oos_calmar": 1.238,
+          "oos_vol": 0.3556,
+          "avg_exposure": 0.398,
+          "ann_turnover": 15.07,
+          "fold_pass_rate": 0.643,
+          "avg_fold_sharpe": 0.787,
+          "param_stability_pct": 71.11,
+          "oos_days": 2520
+        },
+        {
+          "asset": "BNB",
+          "family": "tsmom_blend",
+          "n_folds": 14,
+          "oos_cagr": 0.3091,
+          "oos_sharpe": 1.045,
+          "oos_sortino": 1.223,
+          "oos_max_dd": -0.4213,
+          "oos_calmar": 0.734,
+          "oos_vol": 0.3009,
+          "avg_exposure": 0.315,
+          "ann_turnover": 26.83,
+          "fold_pass_rate": 0.5,
+          "avg_fold_sharpe": 0.849,
+          "param_stability_pct": 40.43,
+          "oos_days": 2520
+        },
+        {
+          "asset": "BNB",
+          "family": "trend_flat",
+          "n_folds": 14,
+          "oos_cagr": 0.3583,
+          "oos_sharpe": 1.057,
+          "oos_sortino": 1.34,
+          "oos_max_dd": -0.6571,
+          "oos_calmar": 0.545,
+          "oos_vol": 0.345,
+          "avg_exposure": 0.344,
+          "ann_turnover": 7.35,
+          "fold_pass_rate": 0.5,
+          "avg_fold_sharpe": 0.566,
+          "param_stability_pct": 106.82,
+          "oos_days": 2520
+        },
+        {
+          "asset": "BNB",
+          "family": "macross",
+          "n_folds": 14,
+          "oos_cagr": 0.4493,
+          "oos_sharpe": 1.185,
+          "oos_sortino": 1.613,
+          "oos_max_dd": -0.4025,
+          "oos_calmar": 1.116,
+          "oos_vol": 0.3704,
+          "avg_exposure": 0.473,
+          "ann_turnover": 11.51,
+          "fold_pass_rate": 0.571,
+          "avg_fold_sharpe": 0.961,
+          "param_stability_pct": 194.74,
+          "oos_days": 2520
+        },
+        {
+          "asset": "BNB",
+          "family": "tsmom",
+          "n_folds": 14,
+          "oos_cagr": 0.3199,
+          "oos_sharpe": 0.828,
+          "oos_sortino": 1.018,
+          "oos_max_dd": -0.7369,
+          "oos_calmar": 0.434,
+          "oos_vol": 0.4687,
+          "avg_exposure": 0.578,
+          "ann_turnover": 31.19,
+          "fold_pass_rate": 0.429,
+          "avg_fold_sharpe": 0.805,
+          "param_stability_pct": 133.33,
+          "oos_days": 2520
+        },
+        {
+          "asset": "BNB",
+          "family": "rsi_mr",
+          "n_folds": 14,
+          "oos_cagr": -0.016,
+          "oos_sharpe": -0.084,
+          "oos_sortino": -0.026,
+          "oos_max_dd": -0.3337,
+          "oos_calmar": -0.048,
+          "oos_vol": 0.1139,
+          "avg_exposure": 0.036,
+          "ann_turnover": 3.49,
+          "fold_pass_rate": 0.286,
+          "avg_fold_sharpe": 0.032,
+          "param_stability_pct": 46.15,
+          "oos_days": 2520
+        },
+        {
+          "asset": "BNB",
+          "family": "mr_z",
+          "n_folds": 14,
+          "oos_cagr": -0.0732,
+          "oos_sharpe": -0.26,
+          "oos_sortino": -0.135,
+          "oos_max_dd": -0.5603,
+          "oos_calmar": -0.131,
+          "oos_vol": 0.2081,
+          "avg_exposure": 0.12,
+          "ann_turnover": 11.49,
+          "fold_pass_rate": 0.357,
+          "avg_fold_sharpe": -0.064,
+          "param_stability_pct": 57.58,
+          "oos_days": 2520
+        }
+      ],
+      "winner": {
+        "asset": "BNB",
+        "family": "donchian",
+        "n_folds": 14,
+        "oos_cagr": 0.4248,
+        "oos_sharpe": 1.17,
+        "oos_sortino": 1.486,
+        "oos_max_dd": -0.3432,
+        "oos_calmar": 1.238,
+        "oos_vol": 0.3556,
+        "avg_exposure": 0.398,
+        "ann_turnover": 15.07,
+        "fold_pass_rate": 0.643,
+        "avg_fold_sharpe": 0.787,
+        "param_stability_pct": 71.11,
+        "oos_days": 2520
+      },
+      "winner_passes_gate": true,
+      "n_gated": 2,
+      "winner_folds": [
+        {
+          "train_start": "2017-07-16",
+          "test_start": "2019-01-07",
+          "test_end": "2019-07-06",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.998,
+          "test_sharpe": 2.124,
+          "test_return": 0.2798,
+          "test_max_dd": -0.081,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-01-12",
+          "test_start": "2019-07-06",
+          "test_end": "2020-01-02",
+          "params": {
+            "entry": 40,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.422,
+          "test_sharpe": -1.768,
+          "test_return": -0.044,
+          "test_max_dd": -0.0545,
+          "test_days": 180
+        },
+        {
+          "train_start": "2018-07-11",
+          "test_start": "2020-01-02",
+          "test_end": "2020-06-30",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 2.139,
+          "test_sharpe": -1.128,
+          "test_return": -0.2018,
+          "test_max_dd": -0.3035,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-01-07",
+          "test_start": "2020-06-30",
+          "test_end": "2020-12-27",
+          "params": {
+            "entry": 55,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.349,
+          "test_sharpe": 0.217,
+          "test_return": 0.0105,
+          "test_max_dd": -0.1779,
+          "test_days": 180
+        },
+        {
+          "train_start": "2019-07-06",
+          "test_start": "2020-12-27",
+          "test_end": "2021-06-25",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 0.232,
+          "test_sharpe": 4.42,
+          "test_return": 1.8236,
+          "test_max_dd": -0.1751,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-01-02",
+          "test_start": "2021-06-25",
+          "test_end": "2021-12-22",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 2.16,
+          "test_sharpe": 1.852,
+          "test_return": 0.3185,
+          "test_max_dd": -0.1328,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-06-30",
+          "test_start": "2021-12-22",
+          "test_end": "2022-06-20",
+          "params": {
+            "entry": 40,
+            "exit": 20,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 2.355,
+          "test_sharpe": -1.207,
+          "test_return": -0.1009,
+          "test_max_dd": -0.13,
+          "test_days": 180
+        },
+        {
+          "train_start": "2020-12-27",
+          "test_start": "2022-06-20",
+          "test_end": "2022-12-17",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 2.652,
+          "test_sharpe": 0.63,
+          "test_return": 0.0677,
+          "test_max_dd": -0.1768,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-06-25",
+          "test_start": "2022-12-17",
+          "test_end": "2023-06-15",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 1.112,
+          "test_sharpe": 0.55,
+          "test_return": 0.0687,
+          "test_max_dd": -0.2714,
+          "test_days": 180
+        },
+        {
+          "train_start": "2021-12-22",
+          "test_start": "2023-06-15",
+          "test_end": "2023-12-12",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": false
+          },
+          "train_sharpe": 1.054,
+          "test_sharpe": -0.713,
+          "test_return": -0.2086,
+          "test_max_dd": -0.3069,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-06-20",
+          "test_start": "2023-12-12",
+          "test_end": "2024-06-09",
+          "params": {
+            "entry": 20,
+            "exit": 10,
+            "vol_target": 0.6,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 0.196,
+          "test_sharpe": 3.521,
+          "test_return": 1.7505,
+          "test_max_dd": -0.1929,
+          "test_days": 180
+        },
+        {
+          "train_start": "2022-12-17",
+          "test_start": "2024-06-09",
+          "test_end": "2024-12-06",
+          "params": {
+            "entry": 40,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.449,
+          "test_sharpe": -0.242,
+          "test_return": -0.0407,
+          "test_max_dd": -0.1419,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-06-15",
+          "test_start": "2024-12-06",
+          "test_end": "2025-06-04",
+          "params": {
+            "entry": 40,
+            "exit": 20,
+            "vol_target": 0.45,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.472,
+          "test_sharpe": 0.283,
+          "test_return": 0.02,
+          "test_max_dd": -0.093,
+          "test_days": 180
+        },
+        {
+          "train_start": "2023-12-12",
+          "test_start": "2025-06-04",
+          "test_end": "2025-12-01",
+          "params": {
+            "entry": 40,
+            "exit": 20,
+            "vol_target": 0.3,
+            "vol_lb": 30,
+            "max_lev": 2.5,
+            "long_only": true
+          },
+          "train_sharpe": 1.469,
+          "test_sharpe": 2.478,
+          "test_return": 0.4357,
+          "test_max_dd": -0.1176,
+          "test_days": 180
+        }
+      ]
+    }
+  },
+  "portfolio": {
+    "assets": [
+      "BTC",
+      "ETH",
+      "DOT",
+      "LINK",
+      "ADA",
+      "DOGE",
+      "XRP",
+      "LTC",
+      "BNB"
+    ],
+    "equal_weight": {
+      "cagr": 0.3357,
+      "ann_vol": 0.1773,
+      "sharpe": 1.7211,
+      "sortino": 2.1379,
+      "max_dd": -0.2835,
+      "calmar": 1.1838,
+      "total_return": 27.847,
+      "avg_exposure": 1.0,
+      "ann_turnover": 0.0861,
+      "n_trades": 0,
+      "win_rate_days": 0.4575,
+      "n_days": 4240,
+      "final_equity": 28.847
+    },
+    "vol_scaled": {
+      "target_vol": 0.3,
+      "scale": 1.692,
+      "cagr": 0.6023,
+      "ann_vol": 0.3,
+      "sharpe": 1.7211,
+      "sortino": 2.1379,
+      "max_dd": -0.4381,
+      "calmar": 1.3748,
+      "total_return": 238.0533,
+      "avg_exposure": 1.6919,
+      "ann_turnover": 0.1456,
+      "n_trades": 0,
+      "win_rate_days": 0.4575,
+      "n_days": 4240,
+      "final_equity": 239.0533
+    }
+  }
+}

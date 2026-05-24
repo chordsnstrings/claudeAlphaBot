@@ -24,3 +24,9 @@ packages/bot/tests/**/*.js
 packages/bot/tests/**/*.d.ts
 packages/bot/tests/**/*.js.map
 packages/bot/tests/**/*.d.ts.map
+
+# python research harness virtualenv (large, regenerate via research/README)
+research_venv/
+research/__pycache__/
+research/**/__pycache__/
+*.pyc

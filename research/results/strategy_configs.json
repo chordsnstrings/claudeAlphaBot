@@ -1,0 +1,434 @@
+{
+  "cost_model": {
+    "txn_bps": 5.999999999999999,
+    "funding_bps_day": 0.5
+  },
+  "configs": {
+    "BTC": {
+      "family": "tsmom_blend",
+      "params": {
+        "lbs": [
+          10,
+          30,
+          60,
+          120
+        ],
+        "long_only": true,
+        "max_lev": 3.0,
+        "vol_lb": 30,
+        "vol_target": 0.45
+      },
+      "passes_30pct_gate": true,
+      "oos": {
+        "oos_cagr": 0.7621,
+        "oos_sharpe": 1.451,
+        "oos_calmar": 1.515,
+        "oos_max_dd": -0.5031,
+        "fold_pass_rate": 0.636,
+        "oos_days": 3960
+      },
+      "buy_hold_cagr": 0.4518,
+      "per_year_oos": {
+        "2015": 0.5423,
+        "2016": 2.3921,
+        "2017": 3.8043,
+        "2018": -0.1884,
+        "2019": 0.4803,
+        "2020": 3.6874,
+        "2021": 0.395,
+        "2022": -0.021,
+        "2023": 0.391,
+        "2024": 1.2311,
+        "2025": -0.2216,
+        "2026": 0.0
+      },
+      "wf": {
+        "train_days": 540,
+        "test_days": 180
+      }
+    },
+    "ETH": {
+      "family": "tsmom_blend",
+      "params": {
+        "lbs": [
+          10,
+          30,
+          60,
+          120
+        ],
+        "long_only": true,
+        "max_lev": 3.0,
+        "vol_lb": 30,
+        "vol_target": 0.2
+      },
+      "passes_30pct_gate": true,
+      "oos": {
+        "oos_cagr": 0.3566,
+        "oos_sharpe": 1.082,
+        "oos_calmar": 0.89,
+        "oos_max_dd": -0.4008,
+        "fold_pass_rate": 0.647,
+        "oos_days": 3060
+      },
+      "buy_hold_cagr": 0.654,
+      "per_year_oos": {
+        "2017": 0.6992,
+        "2018": 0.1023,
+        "2019": 0.6518,
+        "2020": 0.3636,
+        "2021": 0.8126,
+        "2022": -0.0435,
+        "2023": 0.0502,
+        "2024": 0.2101,
+        "2025": 0.4138,
+        "2026": -0.0188
+      },
+      "wf": {
+        "train_days": 540,
+        "test_days": 180
+      }
+    },
+    "DOT": {
+      "family": "donchian",
+      "params": {
+        "entry": 55,
+        "exit": 20,
+        "long_only": true,
+        "max_lev": 2.5,
+        "vol_lb": 30,
+        "vol_target": 0.3
+      },
+      "passes_30pct_gate": false,
+      "oos": {
+        "oos_cagr": 0.0101,
+        "oos_sharpe": 0.199,
+        "oos_calmar": 0.024,
+        "oos_max_dd": -0.4154,
+        "fold_pass_rate": 0.455,
+        "oos_days": 1650
+      },
+      "buy_hold_cagr": -0.1294,
+      "per_year_oos": {
+        "2021": -0.1033,
+        "2022": -0.0111,
+        "2023": 0.3906,
+        "2024": 0.0058,
+        "2025": -0.1403,
+        "2026": -0.0184
+      },
+      "wf": {
+        "train_days": 420,
+        "test_days": 150
+      }
+    },
+    "LINK": {
+      "family": "trend_flat",
+      "params": {
+        "band": 0.02,
+        "fast": 20,
+        "long_only": true,
+        "max_lev": 3.0,
+        "slow": 200,
+        "vol_lb": 30,
+        "vol_target": 0.2
+      },
+      "passes_30pct_gate": false,
+      "oos": {
+        "oos_cagr": 0.2275,
+        "oos_sharpe": 0.843,
+        "oos_calmar": 0.498,
+        "oos_max_dd": -0.4565,
+        "fold_pass_rate": 0.571,
+        "oos_days": 2520
+      },
+      "buy_hold_cagr": 0.4282,
+      "per_year_oos": {
+        "2019": 0.2711,
+        "2020": 1.9542,
+        "2021": 0.2103,
+        "2022": 0.0256,
+        "2023": -0.1597,
+        "2024": 0.1694,
+        "2025": -0.1012,
+        "2026": 0.0
+      },
+      "wf": {
+        "train_days": 540,
+        "test_days": 180
+      }
+    },
+    "ADA": {
+      "family": "donchian",
+      "params": {
+        "entry": 55,
+        "exit": 20,
+        "long_only": true,
+        "max_lev": 2.5,
+        "vol_lb": 30,
+        "vol_target": 0.3
+      },
+      "passes_30pct_gate": true,
+      "oos": {
+        "oos_cagr": 0.3512,
+        "oos_sharpe": 1.023,
+        "oos_calmar": 1.039,
+        "oos_max_dd": -0.3379,
+        "fold_pass_rate": 0.571,
+        "oos_days": 2520
+      },
+      "buy_hold_cagr": 0.078,
+      "per_year_oos": {
+        "2019": -0.1448,
+        "2020": 0.5041,
+        "2021": 0.8042,
+        "2022": 0.0086,
+        "2023": 0.9788,
+        "2024": 0.8149,
+        "2025": -0.0497,
+        "2026": 0.0
+      },
+      "wf": {
+        "train_days": 540,
+        "test_days": 180
+      }
+    },
+    "DOGE": {
+      "family": "tsmom_blend",
+      "params": {
+        "lbs": [
+          20,
+          40,
+          80,
+          120
+        ],
+        "long_only": true,
+        "max_lev": 3.0,
+        "vol_lb": 30,
+        "vol_target": 0.2
+      },
+      "passes_30pct_gate": true,
+      "oos": {
+        "oos_cagr": 0.3521,
+        "oos_sharpe": 0.958,
+        "oos_calmar": 0.818,
+        "oos_max_dd": -0.4303,
+        "fold_pass_rate": 0.65,
+        "oos_days": 3600
+      },
+      "buy_hold_cagr": 0.7441,
+      "per_year_oos": {
+        "2016": -0.345,
+        "2017": 0.5371,
+        "2018": 0.0464,
+        "2019": 0.0517,
+        "2020": 0.6315,
+        "2021": 3.6445,
+        "2022": -0.0159,
+        "2023": 0.0176,
+        "2024": 1.1987,
+        "2025": 0.0366,
+        "2026": 0.0224
+      },
+      "wf": {
+        "train_days": 540,
+        "test_days": 180
+      }
+    },
+    "XRP": {
+      "family": "rsi_mr",
+      "params": {
+        "hi": 75,
+        "lb": 7,
+        "lo": 25,
+        "long_only": true,
+        "max_lev": 2.0,
+        "trend_gate": 0.1,
+        "vol_lb": 20,
+        "vol_target": 0.3
+      },
+      "passes_30pct_gate": false,
+      "oos": {
+        "oos_cagr": 0.0303,
+        "oos_sharpe": 0.248,
+        "oos_calmar": 0.048,
+        "oos_max_dd": -0.6289,
+        "fold_pass_rate": 0.7,
+        "oos_days": 3600
+      },
+      "buy_hold_cagr": 0.5937,
+      "per_year_oos": {
+        "2016": 0.2105,
+        "2017": 0.2616,
+        "2018": 0.0941,
+        "2019": -0.0373,
+        "2020": -0.4976,
+        "2021": 0.1518,
+        "2022": -0.1896,
+        "2023": 0.0201,
+        "2024": 0.2785,
+        "2025": 0.365
+      },
+      "wf": {
+        "train_days": 540,
+        "test_days": 180
+      }
+    },
+    "LTC": {
+      "family": "mr_z",
+      "params": {
+        "lb": 10,
+        "long_only": true,
+        "max_lev": 2.0,
+        "trend_gate": 0.08,
+        "vol_lb": 20,
+        "vol_target": 0.3,
+        "z_entry": 1.5,
+        "z_exit": 0.5
+      },
+      "passes_30pct_gate": false,
+      "oos": {
+        "oos_cagr": 0.0307,
+        "oos_sharpe": 0.268,
+        "oos_calmar": 0.109,
+        "oos_max_dd": -0.2829,
+        "fold_pass_rate": 0.478,
+        "oos_days": 4140
+      },
+      "buy_hold_cagr": 0.311,
+      "per_year_oos": {
+        "2014": 0.0,
+        "2015": 0.1035,
+        "2016": 0.0428,
+        "2017": 0.0,
+        "2018": -0.0757,
+        "2019": 0.1275,
+        "2020": 0.034,
+        "2021": 0.0105,
+        "2022": 0.0463,
+        "2023": 0.1249,
+        "2024": 0.14,
+        "2025": -0.1619,
+        "2026": 0.0
+      },
+      "wf": {
+        "train_days": 540,
+        "test_days": 180
+      }
+    },
+    "BNB": {
+      "family": "donchian",
+      "params": {
+        "entry": 40,
+        "exit": 20,
+        "long_only": true,
+        "max_lev": 2.5,
+        "vol_lb": 30,
+        "vol_target": 0.3
+      },
+      "passes_30pct_gate": true,
+      "oos": {
+        "oos_cagr": 0.4248,
+        "oos_sharpe": 1.17,
+        "oos_calmar": 1.238,
+        "oos_max_dd": -0.3432,
+        "fold_pass_rate": 0.643,
+        "oos_days": 2520
+      },
+      "buy_hold_cagr": 1.7769,
+      "per_year_oos": {
+        "2019": 0.2235,
+        "2020": -0.126,
+        "2021": 2.4356,
+        "2022": -0.0714,
+        "2023": 0.196,
+        "2024": 0.8959,
+        "2025": 0.4899
+      },
+      "wf": {
+        "train_days": 540,
+        "test_days": 180
+      }
+    }
+  },
+  "portfolio_all": {
+    "assets": [
+      "BTC",
+      "ETH",
+      "DOT",
+      "LINK",
+      "ADA",
+      "DOGE",
+      "XRP",
+      "LTC",
+      "BNB"
+    ],
+    "metrics": {
+      "cagr": 0.3357,
+      "ann_vol": 0.1773,
+      "sharpe": 1.7211,
+      "sortino": 2.1379,
+      "max_dd": -0.2835,
+      "calmar": 1.1838,
+      "total_return": 27.847,
+      "avg_exposure": 1.0,
+      "ann_turnover": 0.0861,
+      "n_trades": 0,
+      "win_rate_days": 0.4575,
+      "n_days": 4240,
+      "final_equity": 28.847
+    },
+    "per_year": {
+      "2014": 0.0,
+      "2015": 0.3793,
+      "2016": 0.3977,
+      "2017": 0.9943,
+      "2018": -0.0017,
+      "2019": 0.2398,
+      "2020": 0.571,
+      "2021": 0.8536,
+      "2022": -0.0146,
+      "2023": 0.2445,
+      "2024": 0.5587,
+      "2025": 0.0708,
+      "2026": 0.0172
+    }
+  },
+  "portfolio_pass_only": {
+    "assets": [
+      "BTC",
+      "ETH",
+      "ADA",
+      "DOGE",
+      "BNB"
+    ],
+    "metrics": {
+      "cagr": 0.5846,
+      "ann_vol": 0.3157,
+      "sharpe": 1.6152,
+      "sortino": 1.9197,
+      "max_dd": -0.5031,
+      "calmar": 1.162,
+      "total_return": 147.5472,
+      "avg_exposure": 1.0,
+      "ann_turnover": 0.0921,
+      "n_trades": 0,
+      "win_rate_days": 0.4376,
+      "n_days": 3965,
+      "final_equity": 148.5472
+    },
+    "per_year": {
+      "2015": 0.5423,
+      "2016": 0.7486,
+      "2017": 2.189,
+      "2018": -0.0132,
+      "2019": 0.3274,
+      "2020": 0.8036,
+      "2021": 1.508,
+      "2022": -0.0147,
+      "2023": 0.3392,
+      "2024": 0.9295,
+      "2025": 0.1256,
+      "2026": 0.0174
+    }
+  }
+}
