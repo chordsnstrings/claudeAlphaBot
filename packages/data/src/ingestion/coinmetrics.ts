@@ -24,7 +24,11 @@ const log = logger("data.coinmetrics");
 export const COINMETRICS_BASE_URL =
   "https://raw.githubusercontent.com/coinmetrics/data/master/csv";
 
-/** CoinMetrics asset slug -> instrument code. */
+/**
+ * CoinMetrics asset slug -> instrument code. Only assets with a `PriceUSD`
+ * column in the community tier are usable (sol/avax/matic etc. lack it). A
+ * broad ~24-asset universe so the cross-sectional book has real dispersion.
+ */
 export const DEFAULT_CRYPTO_ASSETS: Record<string, string> = {
   btc: "BTCUSDT",
   eth: "ETHUSDT",
@@ -33,8 +37,23 @@ export const DEFAULT_CRYPTO_ASSETS: Record<string, string> = {
   doge: "DOGEUSDT",
   bnb: "BNBUSDT",
   ada: "ADAUSDT",
-  // NB: sol/avax/etc. lack a PriceUSD column in the CoinMetrics community
-  // tier, so they're excluded — only assets with a reference price are usable.
+  xmr: "XMRUSDT",
+  dash: "DASHUSDT",
+  xlm: "XLMUSDT",
+  etc: "ETCUSDT",
+  zec: "ZECUSDT",
+  bch: "BCHUSDT",
+  link: "LINKUSDT",
+  mkr: "MKRUSDT",
+  trx: "TRXUSDT",
+  eos: "EOSUSDT",
+  xtz: "XTZUSDT",
+  algo: "ALGOUSDT",
+  dot: "DOTUSDT",
+  uni: "UNIUSDT",
+  aave: "AAVEUSDT",
+  comp: "COMPUSDT",
+  snx: "SNXUSDT",
 };
 
 export interface CryptoIngestResult {
