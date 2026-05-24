@@ -53,43 +53,51 @@ import { buildContext } from "./context.js";
 const log = logger("cli.research");
 
 /**
- * Orchestrator that sizes each signal to risk a fixed fraction of account
- * equity (via @trading/risk computeLotSize), instead of a flat 1 lot. This
- * makes returns realistic + comparable across instruments and equity
- * levels — the whole point of percentage-based risk.
+ * Orchestrator factory that sizes each signal to risk a fixed fraction of
+ * account equity (via @trading/risk computeLotSize) instead of a flat 1 lot.
+ *
+ * `riskPerTradePct` MUST be small enough that the full diversified book
+ * fits under the RiskManager's maxTotalOpenRiskPct (6%): N instruments ×
+ * riskPerTradePct <= 6%. Otherwise the cap arbitrarily drops trades AND the
+ * blocked instruments re-signal every bar (signal_log insert storm). For a
+ * ~9-instrument book, ~0.5% keeps the whole portfolio investable.
  */
-const riskSizedOrchestrator: Orchestrator = {
-  process(signals: Signal[], ctx: OrchestratorContext): OrderRequest[] {
-    const orders: OrderRequest[] = [];
-    for (const s of signals) {
-      const lotSize = computeLotSize({
-        signal: s,
-        accountEquityUsd: ctx.accountEquityUsd,
-        riskConfig: DEFAULT_RISK_CONFIG,
-        currentDrawdownPct: 0,
-      });
-      if (lotSize <= 0) {
-        continue;
+function makeRiskSizedOrchestrator(riskPerTradePct: number): Orchestrator {
+  const riskConfig = { ...DEFAULT_RISK_CONFIG, riskPerTradePct };
+  return {
+    process(signals: Signal[], ctx: OrchestratorContext): OrderRequest[] {
+      const orders: OrderRequest[] = [];
+      for (const s of signals) {
+        const lotSize = computeLotSize({
+          signal: s,
+          accountEquityUsd: ctx.accountEquityUsd,
+          riskConfig,
+          currentDrawdownPct: 0,
+        });
+        if (lotSize <= 0) {
+          continue;
+        }
+        orders.push({
+          clientOrderId: uuid(),
+          signal: s,
+          instrument: s.instrument,
+          direction: s.direction,
+          orderType: "market",
+          lotSize,
+          price: null,
+          stopPrice: s.proposedStopPrice,
+          targetPrice: s.proposedTargetPrice,
+          originatingStrategy: s.originatingStrategy,
+          metadata: { riskSized: true, riskPerTradePct },
+        });
       }
-      orders.push({
-        clientOrderId: uuid(),
-        signal: s,
-        instrument: s.instrument,
-        direction: s.direction,
-        orderType: "market",
-        lotSize,
-        price: null,
-        stopPrice: s.proposedStopPrice,
-        targetPrice: s.proposedTargetPrice,
-        originatingStrategy: s.originatingStrategy,
-        metadata: { riskSized: true },
-      });
-    }
-    return orders;
-  },
-};
+      return orders;
+    },
+  };
+}
 
 const INITIAL_EQUITY = 100_000;
+const DEFAULT_RISK_PER_TRADE_PCT = 0.5;
 const WARMUP_DAYS = 420; // ~300 trading days, covers SMA200 + pastReturn252
 
 type StrategyFactory = (instrument: string) => Strategy;
@@ -119,6 +127,8 @@ export interface RunBacktestArgs {
   windowFrom: Date;
   windowTo: Date;
   seed: bigint;
+  /** Per-trade risk fraction (%). Keep N × this <= 6% total cap. */
+  riskPerTradePct: number;
   sessionType:
     | "single_backtest"
     | "walk_forward_window"
@@ -204,7 +214,7 @@ export async function runWindowBacktest(
   const strategies = args.instruments.map((inst) => factory(inst));
   const built = await buildBacktestDeps(config, {
     strategies,
-    orchestrator: riskSizedOrchestrator,
+    orchestrator: makeRiskSizedOrchestrator(args.riskPerTradePct),
   });
   // Warm-up boundary: bars before windowFrom warm indicators only; trading
   // starts exactly at the window, so every trade belongs to the window.
@@ -276,6 +286,7 @@ export interface WalkForwardRunArgs {
   testMonths: number;
   stepMonths: number;
   minTradesPerWindow: number;
+  riskPerTradePct?: number;
   seed?: bigint;
 }
 
@@ -324,6 +335,7 @@ export async function runWalkForward(
     status: "running",
   });
 
+  const riskPerTradePct = args.riskPerTradePct ?? DEFAULT_RISK_PER_TRADE_PCT;
   const results: WindowResult[] = [];
   let oosTotalTrades = 0;
   let oosNetPnl = 0;
@@ -338,6 +350,7 @@ export async function runWalkForward(
       windowFrom: w.isFrom,
       windowTo: w.isTo,
       seed,
+      riskPerTradePct,
       sessionType: "walk_forward_window",
       parentSessionId,
     });
@@ -348,6 +361,7 @@ export async function runWalkForward(
       windowFrom: w.oosFrom,
       windowTo: w.oosTo,
       seed,
+      riskPerTradePct,
       sessionType: "walk_forward_window",
       parentSessionId,
     });
