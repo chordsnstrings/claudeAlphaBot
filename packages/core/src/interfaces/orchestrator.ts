@@ -24,4 +24,14 @@ export interface Orchestrator {
    * submit (in priority order).
    */
   process(signals: Signal[], context: OrchestratorContext): OrderRequest[];
+
+  /**
+   * Optional per-bar observation hook. The engine calls this once per
+   * processed bar with the current mark-to-market equity, BEFORE signal
+   * processing — even on bars with no signals. Stateful orchestrators use it
+   * to maintain an equity curve for volatility targeting and drawdown-based
+   * de-risking. `process` is only called on signal bars, so it can't carry a
+   * continuous equity series. Stateless orchestrators omit this.
+   */
+  onBar?(equityUsd: number, now: Date): void;
 }

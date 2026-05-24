@@ -193,6 +193,11 @@ export class TradingSystem {
         account = await this.deps.execution.getAccountInfo();
         openPositions = await this.deps.execution.getOpenPositions();
       }
+      // Feed the live mark-to-market equity to a stateful orchestrator so it
+      // can vol-target / de-risk. Only post-warm-up bars, so the equity curve
+      // reflects the measured window. (process() runs only on signal bars, so
+      // it can't carry a continuous series.)
+      this.deps.orchestrator.onBar?.(account.equityUsd, bar.timestampUtc);
     }
 
     const positionsByStrategy = new Map<string, Position[]>();

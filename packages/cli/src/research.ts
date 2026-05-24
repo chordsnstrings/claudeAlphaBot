@@ -74,11 +74,115 @@ const DEFAULT_MAX_LEVERAGE_PER_POSITION = 10;
  * blocked instruments re-signal every bar (signal_log insert storm). For a
  * ~9-instrument book, ~0.5% keeps the whole portfolio investable.
  */
-function makeRiskSizedOrchestrator(sizingRiskPct: number, maxLeverage: number): Orchestrator {
+/**
+ * Risk-overlay knobs that turn the per-trade risk sizer into a portfolio-level
+ * volatility-targeted, drawdown-aware sizer (the consistency levers).
+ */
+export interface VolTargetConfig {
+  /** Target annualised equity volatility (e.g. 0.40 = 40%/yr). 0 = off. */
+  targetAnnualVol: number;
+  /** Trailing window (daily equity samples) for the realised-vol estimate. */
+  volWindowDays: number;
+  /** Clamp on the vol scaler so it never over/under-levers wildly. */
+  volScaleMin: number;
+  volScaleMax: number;
+  /** Drawdown (fraction) at which de-risking begins / is fully applied. */
+  ddStart: number;
+  ddFull: number;
+  /** Floor the drawdown scaler can reach at/after ddFull. */
+  ddMinScale: number;
+}
+
+const VOL_TARGET_OFF: VolTargetConfig = {
+  targetAnnualVol: 0,
+  volWindowDays: 30,
+  volScaleMin: 0.25,
+  volScaleMax: 2.0,
+  ddStart: 0.15,
+  ddFull: 0.45,
+  ddMinScale: 0.3,
+};
+
+/** Crypto trades 365 days/yr; annualise daily vol by sqrt(365). */
+const CRYPTO_ANNUALISATION = Math.sqrt(365);
+
+/**
+ * Orchestrator factory: sizes each signal to risk `sizingRiskPct` of equity to
+ * its stop (per-asset vol targeting, since the stop is ATR-based), clamps
+ * notional to `maxLeverage` × equity, and — when `vol.targetAnnualVol > 0` —
+ * applies a PORTFOLIO overlay scaler:
+ *   - volatility targeting: scale = targetAnnualVol / realisedAnnualVol, so the
+ *     book runs hot in calm trends and small in turbulent blow-offs/crashes;
+ *   - drawdown de-risking: shrink size as the in-window drawdown deepens.
+ * The overlay needs a continuous equity curve, fed via the engine's per-bar
+ * `onBar` hook (process() only runs on signal bars).
+ */
+function makeRiskSizedOrchestrator(
+  sizingRiskPct: number,
+  maxLeverage: number,
+  vol: VolTargetConfig = VOL_TARGET_OFF,
+): Orchestrator {
   const riskConfig: RiskConfig = { ...DEFAULT_RISK_CONFIG, riskPerTradePct: sizingRiskPct };
+  // Per-window equity-curve state (one sample per calendar day).
+  const dailyEquity: number[] = [];
+  let lastDate = "";
+  let peakEquity = 0;
+
+  function overlayScale(currentEquity: number): number {
+    if (vol.targetAnnualVol <= 0) {
+      return 1;
+    }
+    let scale = 1;
+    // Volatility targeting from trailing daily log-returns.
+    if (dailyEquity.length > vol.volWindowDays) {
+      const start = dailyEquity.length - vol.volWindowDays - 1;
+      const rets: number[] = [];
+      for (let i = start + 1; i < dailyEquity.length; i += 1) {
+        const prev = dailyEquity[i - 1];
+        const cur = dailyEquity[i];
+        if (prev !== undefined && cur !== undefined && prev > 0 && cur > 0) {
+          rets.push(Math.log(cur / prev));
+        }
+      }
+      if (rets.length >= 5) {
+        const mean = rets.reduce((a, b) => a + b, 0) / rets.length;
+        const variance =
+          rets.reduce((a, b) => a + (b - mean) * (b - mean), 0) / rets.length;
+        const annualVol = Math.sqrt(variance) * CRYPTO_ANNUALISATION;
+        if (annualVol > 1e-6) {
+          const volScale = vol.targetAnnualVol / annualVol;
+          scale *= Math.max(vol.volScaleMin, Math.min(vol.volScaleMax, volScale));
+        }
+      }
+    }
+    // Drawdown de-risking.
+    if (peakEquity > 0) {
+      const dd = Math.max(0, (peakEquity - currentEquity) / peakEquity);
+      if (dd > vol.ddStart) {
+        const frac = Math.min(1, (dd - vol.ddStart) / Math.max(1e-9, vol.ddFull - vol.ddStart));
+        const ddScale = 1 - frac * (1 - vol.ddMinScale);
+        scale *= ddScale;
+      }
+    }
+    return scale;
+  }
+
   return {
+    onBar(equityUsd: number, now: Date): void {
+      if (equityUsd > peakEquity) {
+        peakEquity = equityUsd;
+      }
+      const d = now.toISOString().slice(0, 10);
+      if (d !== lastDate) {
+        dailyEquity.push(equityUsd);
+        lastDate = d;
+      } else if (dailyEquity.length > 0) {
+        dailyEquity[dailyEquity.length - 1] = equityUsd; // keep the day's latest
+      }
+    },
     process(signals: Signal[], ctx: OrchestratorContext): OrderRequest[] {
       const orders: OrderRequest[] = [];
+      const scale = overlayScale(ctx.accountEquityUsd);
       for (const s of signals) {
         const riskLot = computeLotSize({
           signal: s,
@@ -89,14 +193,15 @@ function makeRiskSizedOrchestrator(sizingRiskPct: number, maxLeverage: number): 
         if (riskLot <= 0) {
           continue;
         }
+        const scaledRiskLot = riskLot * scale;
         // Leverage cap: notional = entry × units × lots <= maxLev × equity.
         const units = standardLotUnits(s.instrument);
         const notionalPerLot = s.proposedEntryPrice * units;
         const maxLot =
           notionalPerLot > 0
             ? (maxLeverage * ctx.accountEquityUsd) / notionalPerLot
-            : riskLot;
-        const lotSize = Math.max(0, Math.min(riskLot, maxLot));
+            : scaledRiskLot;
+        const lotSize = Math.max(0, Math.min(scaledRiskLot, maxLot));
         if (lotSize < lotStep(s.instrument)) {
           continue;
         }
@@ -114,7 +219,8 @@ function makeRiskSizedOrchestrator(sizingRiskPct: number, maxLeverage: number): 
           metadata: {
             riskSized: true,
             riskPerTradePct: riskConfig.riskPerTradePct,
-            leverageCapped: lotSize < riskLot,
+            overlayScale: scale,
+            leverageCapped: lotSize < scaledRiskLot,
           },
         });
       }
@@ -160,6 +266,8 @@ export interface RunBacktestArgs {
   riskConfig: RiskConfig;
   /** Per-position notional leverage ceiling (notional <= maxLeverage × equity). */
   maxLeverage: number;
+  /** Portfolio vol-target + drawdown de-risk overlay (targetAnnualVol 0 = off). */
+  volTarget: VolTargetConfig;
   /** Calendar days of pre-window data to warm indicators. Default 420. */
   warmupDays?: number | undefined;
   sessionType:
@@ -248,7 +356,7 @@ export async function runWindowBacktest(
   const strategies = args.instruments.map((inst) => factory(inst));
   const built = await buildBacktestDeps(config, {
     strategies,
-    orchestrator: makeRiskSizedOrchestrator(args.sizingRiskPct, args.maxLeverage),
+    orchestrator: makeRiskSizedOrchestrator(args.sizingRiskPct, args.maxLeverage, args.volTarget),
   });
   // Warm-up boundary: bars before windowFrom warm indicators only; trading
   // starts exactly at the window, so every trade belongs to the window.
@@ -325,6 +433,8 @@ export interface WalkForwardRunArgs {
   riskConfig?: Partial<RiskConfig> | undefined;
   /** Per-position notional leverage ceiling. Default 10×. */
   maxLeverage?: number | undefined;
+  /** Target annualised equity vol as a percent (e.g. 40). 0/undefined = off. */
+  volTargetAnnualPct?: number | undefined;
   warmupDays?: number | undefined;
   seed?: bigint;
 }
@@ -368,6 +478,10 @@ export async function runWalkForward(
   };
   riskConfig.riskPerTradePct = Math.max(riskConfig.riskPerTradePct, sizingRiskPct * 2);
   const maxLeverage = args.maxLeverage ?? DEFAULT_MAX_LEVERAGE_PER_POSITION;
+  const volTarget: VolTargetConfig = {
+    ...VOL_TARGET_OFF,
+    targetAnnualVol: (args.volTargetAnnualPct ?? 0) / 100,
+  };
 
   // Create the parent session up front so child windows can FK to it.
   await ctx.repos.sessions.create({
@@ -405,6 +519,7 @@ export async function runWalkForward(
       sizingRiskPct,
       riskConfig,
       maxLeverage,
+      volTarget,
       warmupDays: args.warmupDays,
       sessionType: "walk_forward_window",
       parentSessionId,
@@ -419,6 +534,7 @@ export async function runWalkForward(
       sizingRiskPct,
       riskConfig,
       maxLeverage,
+      volTarget,
       warmupDays: args.warmupDays,
       sessionType: "walk_forward_window",
       parentSessionId,
@@ -483,6 +599,7 @@ export interface WalkForwardCliOpts {
   riskPerTradePct?: number | undefined;
   riskConfig?: Partial<RiskConfig> | undefined;
   maxLeverage?: number | undefined;
+  volTargetAnnualPct?: number | undefined;
 }
 
 export async function runWalkForwardCli(opts: WalkForwardCliOpts): Promise<number> {
@@ -502,6 +619,7 @@ export async function runWalkForwardCli(opts: WalkForwardCliOpts): Promise<numbe
       riskPerTradePct: opts.riskPerTradePct,
       riskConfig: opts.riskConfig,
       maxLeverage: opts.maxLeverage,
+      volTargetAnnualPct: opts.volTargetAnnualPct,
     });
     log.info(
       {

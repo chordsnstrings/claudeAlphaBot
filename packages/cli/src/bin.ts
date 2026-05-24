@@ -132,6 +132,7 @@ program
   .option("--risk-per-trade <pct>", "sizing: fraction of equity risked per trade to its stop", "0.5")
   .option("--risk-config <json>", "RiskManager cap overrides as JSON (maxTotalOpenRiskPct, drawdownEmergencyStopPct, dailyLossLimitPct, …)")
   .option("--max-leverage <n>", "per-position notional leverage ceiling", "10")
+  .option("--vol-target <pct>", "portfolio annual vol target % (enables vol-targeting + drawdown de-risk); 0 = off", "0")
   .action(
     async (opts: {
       strategy: string;
@@ -146,6 +147,7 @@ program
       riskPerTrade: string;
       riskConfig?: string;
       maxLeverage: string;
+      volTarget: string;
     }) => {
       process.exitCode = await runWalkForwardCli({
         strategy: opts.strategy,
@@ -166,6 +168,7 @@ program
             ? undefined
             : (JSON.parse(opts.riskConfig) as Record<string, number>),
         maxLeverage: Number(opts.maxLeverage),
+        volTargetAnnualPct: Number(opts.volTarget),
       });
     },
   );
