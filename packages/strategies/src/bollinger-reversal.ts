@@ -28,6 +28,22 @@ export interface BollingerReversalParams {
   maxHoldDays: number;
   stopBufferPips: number;
   targetType: "sma" | "2r";
+  /**
+   * Wide disaster-stop in ATR multiples (0 = legacy "extreme + stopBufferPips"
+   * tight stop). On close-only data a TIGHT stop is untrustworthy — an intrabar
+   * wick through it is invisible, so the position survives to a better close
+   * and the win-rate is inflated (the FX mean-reversion artifact). A WIDE ATR
+   * stop, with the mean (SMA) as the real target, is honestly backtestable:
+   * both entry and exit happen at observed closes.
+   */
+  atrStopMultiplier: number;
+  /**
+   * Ranging-regime filter (0 = off): only enter when ADX(14) < adxMax. Mean
+   * reversion is the right strategy precisely when there is NO trend; in a
+   * trend it gets run over. This is the half of the orchestrator that
+   * complements momentum's ADX>=adxMin trend filter.
+   */
+  adxMax: number;
 }
 
 export const BOLLINGER_REVERSAL_DEFAULTS: BollingerReversalParams = {
@@ -36,6 +52,8 @@ export const BOLLINGER_REVERSAL_DEFAULTS: BollingerReversalParams = {
   maxHoldDays: 10,
   stopBufferPips: 1.5,
   targetType: "sma",
+  atrStopMultiplier: 0,
+  adxMax: 0,
 };
 
 type OutsideState = "idle" | "above" | "below";
@@ -110,11 +128,13 @@ export class BollingerReversalStrategy implements Strategy {
       if (bar.close < bb.upper) {
         // Re-entry → short
         const extreme = this.extremeOutside ?? bar.high;
-        const stop =
-          extreme + this.params.stopBufferPips * pipSizeFor(this.instrument);
-        const target = this.computeTarget(bar, bb.middle, stop, "short");
         this.outsideState = "idle";
         this.extremeOutside = null;
+        if (this.tooTrending(state)) {
+          return [];
+        }
+        const stop = this.stopFor(bar, "short", extreme, state.indicators.atr14);
+        const target = this.computeTarget(bar, bb.middle, stop, "short");
         return [this.signal(bar, "short", bar.close, stop, target)];
       }
       return [];
@@ -125,16 +145,42 @@ export class BollingerReversalStrategy implements Strategy {
       }
       if (bar.close > bb.lower) {
         const extreme = this.extremeOutside ?? bar.low;
-        const stop =
-          extreme - this.params.stopBufferPips * pipSizeFor(this.instrument);
-        const target = this.computeTarget(bar, bb.middle, stop, "long");
         this.outsideState = "idle";
         this.extremeOutside = null;
+        if (this.tooTrending(state)) {
+          return [];
+        }
+        const stop = this.stopFor(bar, "long", extreme, state.indicators.atr14);
+        const target = this.computeTarget(bar, bb.middle, stop, "long");
         return [this.signal(bar, "long", bar.close, stop, target)];
       }
       return [];
     }
     return [];
+  }
+
+  /** Ranging-regime filter: skip entries when ADX says we're trending. */
+  private tooTrending(state: MarketState): boolean {
+    if (this.params.adxMax <= 0) {
+      return false;
+    }
+    const adx = state.indicators.adx14;
+    return adx === null || adx.adx >= this.params.adxMax;
+  }
+
+  /** Wide ATR disaster stop (honest on close-only) or the legacy tight stop. */
+  private stopFor(
+    bar: Bar,
+    direction: "long" | "short",
+    extreme: number,
+    atr14: number | null,
+  ): number {
+    if (this.params.atrStopMultiplier > 0 && atr14 !== null && atr14 > 0) {
+      const dist = this.params.atrStopMultiplier * atr14;
+      return direction === "long" ? bar.close - dist : bar.close + dist;
+    }
+    const buf = this.params.stopBufferPips * pipSizeFor(this.instrument);
+    return direction === "long" ? extreme - buf : extreme + buf;
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
