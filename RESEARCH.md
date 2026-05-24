@@ -90,6 +90,40 @@ later (2010s+) low-trend windows pulled it back down, exactly as the per-decade
 story below predicts. Recording the optimistic partial here on purpose: it is a
 reminder that walk-forward results must be read only after the full run.
 
+### Robustness to the lookback parameter
+
+A single profitable parameter setting proves nothing — it could be the one
+lucky draw from a grid of losers. To check that the edge is a property of the
+*method* rather than the number 252, the 12-month-window walk-forward was re-run
+at three lookbacks bracketing the default (the mid/short horizons scale with
+it: `lookbackBars / 2` and `/ 4`). All three use an **identical 540-day warmup**
+(`--warmup-days 540`) so even the 315-bar lookback is fully warm at every
+window's trading start — an apples-to-apples comparison.
+
+| Lookback (long/mid/short) | OOS trades | Net OOS P&L | Profit factor | Expectancy | Profitable windows | Stitched maxDD |
+|---|---|---|---|---|---|---|
+| 189 / 95 / 47  | 825 | +$41,850 | 1.26 | +0.16R | 51.0% | $27,203 |
+| 252 / 126 / 63 | 826 | +$39,711 | 1.25 | +0.15R | 51.0% | $28,390 |
+| 315 / 158 / 79 | 807 | +$46,767 | 1.30 | +0.19R | 55.1% | $28,951 |
+
+The edge is **not a knife-edge at 252**: net P&L stays +$40–47k, profit factor
+1.25–1.30, expectancy +0.15–0.19R, and the profitable-window fraction 51–55%
+across a ±25% perturbation of the lookback. That parameter insensitivity is the
+strongest single piece of evidence that the OOS edge is real, not curve-fit.
+
+**An honest path-sensitivity caveat.** The friction model samples spread from a
+seeded Gaussian on *every* bar (`sampleSpread` → `rng.nextNormal`), so changing
+the warmup length changes how far the RNG has advanced by the time trading
+starts. Identical signals therefore fill at slightly different prices, and those
+differences cascade through stop/target timing. Concretely, the 252-bar run nets
+**+$46,949 at 420-day warmup but +$39,711 at 540-day warmup** — same signals,
+~15% different P&L. This is *not* an in/out-of-sample leak (the first window is
+byte-identical across warmups, confirming signals are warmup-independent); it is
+ordinary Monte-Carlo friction noise. The qualitative verdict — profit factor
+>1.2, ~51% profitable windows, positive expectancy — is stable to it. The
+headline-table rows are reported at the committed default 420-day warmup; the
+robustness table above is internally consistent at 540.
+
 ### The honest regime story (multi-horizon, per decade)
 
 ```
@@ -118,10 +152,13 @@ of FX trends by post-GFC central-bank intervention. This is real, not a bug.
 
 The validated, trustworthy method is **multi-horizon time-series momentum on
 FX majors**, risk-sized and leverage-capped. It shows a genuine, persistent
-out-of-sample edge (profit factor 1.33, positive expectancy, net positive
+out-of-sample edge (profit factor 1.3, positive expectancy, net positive
 over 50 years across 1,400+ OOS trades) and is *consistently* profitable
 across the 1975–2009 era, with a documented, honest underperformance in the
-2010s low-trend regime.
+2010s low-trend regime. The edge **survives a ±25% perturbation of the lookback**
+(profit factor 1.25–1.30 across 189/252/315-bar settings), which is the
+clearest sign it is a real property of the method rather than a curve-fit
+parameter.
 
 It is profitable in walk-forward back-test; "consistent" holds strongly
 long-run and across most regimes but is regime-dependent in the last 15 years.
@@ -137,4 +174,13 @@ DATABASE_URL=$DEV_DB pnpm --filter @trading/cli research:walkforward \
   --strategy tsmom \
   --instruments AUDUSD,CADUSD,JPYUSD,CHFUSD,GBPUSD,NOKUSD,SEKUSD,NZDUSD \
   --from 1975-01-01 --to 2026-05-01 --train-months 36 --test-months 12
+
+# Lookback-robustness sweep (identical 540-day warmup so 315 is fully warm):
+for LB in 189 252 315; do
+  DATABASE_URL=$DEV_DB pnpm --filter @trading/cli research:walkforward \
+    --strategy tsmom \
+    --instruments AUDUSD,CADUSD,JPYUSD,CHFUSD,GBPUSD,NOKUSD,SEKUSD,NZDUSD \
+    --from 1975-01-01 --to 2026-05-01 --train-months 36 --test-months 12 \
+    --warmup-days 540 --params "{\"lookbackBars\":$LB}"
+done
 ```
