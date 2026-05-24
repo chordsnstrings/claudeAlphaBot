@@ -55,7 +55,13 @@ export class AuditLog implements AuditLogIface {
     result?: OrderResult;
     rejectedReason?: string;
   }): Promise<void> {
-    const tradeId = args.result?.brokerPositionId ?? null;
+    // NOTE: became_trade_id is a FK to trade(id). At signal/order time the
+    // trade row does not exist yet (it's written when the position CLOSES),
+    // and result.brokerPositionId is a POSITION id, not a trade id — so we
+    // must NOT set became_trade_id here or we violate the FK. Whether the
+    // signal became a trade is recorded via metadata.becameTrade + the
+    // absence of rejectedReason; linking to the eventual trade row is a
+    // separate post-close UPDATE (future enhancement).
     const row: NewSignalLogRow = {
       sessionId: this.sessionId,
       originatingStrategy: args.signal.originatingStrategy,
@@ -69,11 +75,12 @@ export class AuditLog implements AuditLogIface {
       signalType: args.signal.signalType,
       entryReason: args.signal.entryReason,
       generatedAtBar: args.signal.generatedAtBar,
-      metadata: args.signal.metadata,
+      metadata: {
+        ...args.signal.metadata,
+        becameTrade: args.becameTrade,
+        brokerPositionId: args.result?.brokerPositionId ?? null,
+      },
     };
-    if (args.becameTrade && tradeId !== null) {
-      row.becameTradeId = tradeId;
-    }
     if (args.rejectedReason !== undefined) {
       row.rejectedReason = args.rejectedReason;
     }

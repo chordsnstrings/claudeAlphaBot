@@ -5,9 +5,11 @@ import { Command } from "commander";
 
 import { runBacktest } from "./backtest.js";
 import { runIngestAsset } from "./ingest-asset.js";
+import { runIngestFedRates } from "./ingest-fed-rates.js";
 import { runIngestFull } from "./ingest-full.js";
 import { runIngestIncremental } from "./ingest-incremental.js";
 import { runIngestReport } from "./ingest-report.js";
+import { runWalkForwardCli } from "./research.js";
 
 const program = new Command();
 program
@@ -96,6 +98,45 @@ program
         timeframe: tf,
         from: opts.from,
         to: opts.to,
+      });
+    },
+  );
+
+program
+  .command("ingest:fed-rates")
+  .description("Load the Federal Reserve H.10 daily exchange-rate series")
+  .action(async () => {
+    process.exitCode = await runIngestFedRates();
+  });
+
+program
+  .command("research:walkforward")
+  .description("Run a walk-forward study of <strategy> across instruments")
+  .requiredOption("--strategy <name>", "daily strategy (trend-following | donchian-breakout | bollinger-reversal)")
+  .requiredOption("--instruments <list>", "comma-separated instrument codes")
+  .requiredOption("--from <yyyy-mm-dd>", "overall start")
+  .requiredOption("--to <yyyy-mm-dd>", "overall end")
+  .option("--train-months <n>", "in-sample window length", "24")
+  .option("--test-months <n>", "out-of-sample window length", "6")
+  .option("--min-trades <n>", "min trades per window for inclusion", "10")
+  .action(
+    async (opts: {
+      strategy: string;
+      instruments: string;
+      from: string;
+      to: string;
+      trainMonths: string;
+      testMonths: string;
+      minTrades: string;
+    }) => {
+      process.exitCode = await runWalkForwardCli({
+        strategy: opts.strategy,
+        instruments: opts.instruments,
+        from: opts.from,
+        to: opts.to,
+        trainMonths: Number(opts.trainMonths),
+        testMonths: Number(opts.testMonths),
+        minTrades: Number(opts.minTrades),
       });
     },
   );

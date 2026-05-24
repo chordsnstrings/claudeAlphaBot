@@ -84,6 +84,12 @@ importers:
       '@trading/engine':
         specifier: workspace:*
         version: link:../engine
+      '@trading/metrics':
+        specifier: workspace:*
+        version: link:../metrics
+      '@trading/risk':
+        specifier: workspace:*
+        version: link:../risk
       '@trading/strategies':
         specifier: workspace:*
         version: link:../strategies

@@ -11,6 +11,8 @@
     { "path": "../data" },
     { "path": "../engine" },
     { "path": "../adapters" },
+    { "path": "../metrics" },
+    { "path": "../risk" },
     { "path": "../strategies" }
   ]
 }

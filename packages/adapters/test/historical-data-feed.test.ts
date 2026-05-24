@@ -265,10 +265,12 @@ describe("HistoricalDataFeed", () => {
     await feed.stop();
   });
 
-  it("enforces no-lookahead with a one-bar-period allowance", async () => {
-    // The HDF gate allows bar.ts <= clock.now() + timeframe-period so the
-    // engine can pull "the next bar" before advancing the SimulatedClock.
-    // Pinning the clock further behind keeps the iterator gated.
+  it("enforces no-lookahead with a configurable gate allowance", async () => {
+    // The HDF gate allows bar.ts <= clock.now() + allowance so the engine
+    // can pull "the next bar" before advancing the SimulatedClock. The
+    // production default is gap-tolerant (31 days for d1) to avoid
+    // multi-instrument deadlock; this test pins a small 1-day allowance to
+    // exercise the gate explicitly.
     tdb = await createTestDb("hdf_lookahead");
     const repos = buildRepos(tdb.db);
     const dates = ["2025-01-01", "2025-01-02", "2025-01-03", "2025-01-04", "2025-01-05"];
@@ -285,6 +287,7 @@ describe("HistoricalDataFeed", () => {
         from: new Date("2025-01-01T00:00:00Z"),
         to: new Date("2025-01-31T00:00:00Z"),
         clockPollMs: 5,
+        clockAheadAllowanceMs: 86_400_000, // 1 day, to exercise gating
       },
     );
     await feed.start();

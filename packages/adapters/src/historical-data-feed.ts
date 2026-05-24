@@ -51,6 +51,14 @@ export interface HistoricalDataFeedConfig {
   queueCapacity?: number;
   /** Clock-gate poll interval; default 10 ms. */
   clockPollMs?: number;
+  /**
+   * No-lookahead gate allowance in ms. A bar yields when
+   * `bar.ts <= clock.now() + allowance`. Defaults to a gap-tolerant
+   * per-timeframe value (31 days for d1, 4 days intraday) so the
+   * SimulatedClock never deadlocks on weekend/holiday gaps. Tests can
+   * pass a small value to exercise gating.
+   */
+  clockAheadAllowanceMs?: number;
 }
 
 interface HistoricalDataFeedDeps {
@@ -75,17 +83,27 @@ function pairKey(instrument: string, timeframe: Timeframe): string {
   return `${instrument}|${timeframe}`;
 }
 
-/** Bar duration in ms; used as the "one-bar ahead" gate allowance. */
+/**
+ * No-lookahead gate allowance. The gate yields a bar when
+ * `bar.ts <= clock.now() + allowance`. The allowance must exceed the
+ * largest real inter-bar gap so the SimulatedClock (advanced per bar by
+ * the engine) never deadlocks against weekend / holiday gaps — otherwise
+ * every concurrent per-instrument consumer waits for the clock to advance
+ * while the clock only advances when a consumer processes a bar.
+ *
+ * Daily FX data skips weekends (≈3-day gaps) and year-end holidays (≈4-5
+ * days), so a full month of slack is safe. Intraday gaps are at most a
+ * weekend, so a few days covers them. The allowance still blocks gross
+ * lookahead (yielding bars far ahead of the clock).
+ */
 function timeframeAllowanceMs(timeframe: Timeframe): number {
   switch (timeframe) {
     case "m1":
-      return 60_000;
     case "m5":
-      return 5 * 60_000;
     case "h1":
-      return 3_600_000;
+      return 4 * 86_400_000; // 4 days — clears any weekend gap
     case "d1":
-      return 86_400_000;
+      return 31 * 86_400_000; // 31 days — clears any holiday gap
     default: {
       const exhaustive: never = timeframe;
       throw new Error(`unhandled timeframe ${String(exhaustive)}`);
@@ -221,7 +239,8 @@ export class HistoricalDataFeed implements MarketDataFeed {
           `[${this.config.instruments.join(",")}] x [${this.config.timeframes.join(",")}]`,
       );
     }
-    const allowance = timeframeAllowanceMs(timeframe);
+    const allowance =
+      this.config.clockAheadAllowanceMs ?? timeframeAllowanceMs(timeframe);
     while (true) {
       const bar = await q.next();
       if (bar === null) {

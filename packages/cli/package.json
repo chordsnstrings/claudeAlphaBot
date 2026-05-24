@@ -28,6 +28,8 @@
     "@trading/core": "workspace:*",
     "@trading/data": "workspace:*",
     "@trading/engine": "workspace:*",
+    "@trading/metrics": "workspace:*",
+    "@trading/risk": "workspace:*",
     "@trading/strategies": "workspace:*",
     "commander": "12.1.0"
   },
