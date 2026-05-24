@@ -120,6 +120,7 @@ program
   .option("--test-months <n>", "out-of-sample window length", "6")
   .option("--min-trades <n>", "min trades per window for inclusion", "10")
   .option("--params <json>", "strategy params override as JSON object")
+  .option("--warmup-days <n>", "calendar days of pre-window warmup", "420")
   .action(
     async (opts: {
       strategy: string;
@@ -130,6 +131,7 @@ program
       testMonths: string;
       minTrades: string;
       params?: string;
+      warmupDays: string;
     }) => {
       process.exitCode = await runWalkForwardCli({
         strategy: opts.strategy,
@@ -143,6 +145,7 @@ program
           opts.params === undefined
             ? undefined
             : (JSON.parse(opts.params) as Record<string, number>),
+        warmupDays: Number(opts.warmupDays),
       });
     },
   );

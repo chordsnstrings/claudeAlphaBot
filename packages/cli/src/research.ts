@@ -133,7 +133,7 @@ function makeRiskSizedOrchestrator(riskPerTradePct: number): Orchestrator {
 
 const INITIAL_EQUITY = 100_000;
 const DEFAULT_RISK_PER_TRADE_PCT = 0.5;
-const WARMUP_DAYS = 540; // ~375 trading days, covers pastReturn up to ~315 bars
+const DEFAULT_WARMUP_DAYS = 420; // ~300 trading days, covers pastReturn252 + SMA200
 
 type StrategyFactory = (instrument: string) => Strategy;
 
@@ -164,6 +164,8 @@ export interface RunBacktestArgs {
   seed: bigint;
   /** Per-trade risk fraction (%). Keep N × this <= 6% total cap. */
   riskPerTradePct: number;
+  /** Calendar days of pre-window data to warm indicators. Default 420. */
+  warmupDays?: number | undefined;
   sessionType:
     | "single_backtest"
     | "walk_forward_window"
@@ -196,7 +198,7 @@ export async function runWindowBacktest(
   }
   const factory = factoryBuilder(args.params);
 
-  const feedFrom = addDays(args.windowFrom, -WARMUP_DAYS);
+  const feedFrom = addDays(args.windowFrom, -(args.warmupDays ?? DEFAULT_WARMUP_DAYS));
   const sessionId = randomUUID();
 
   await ctx.repos.sessions.create({
@@ -322,6 +324,7 @@ export interface WalkForwardRunArgs {
   stepMonths: number;
   minTradesPerWindow: number;
   riskPerTradePct?: number;
+  warmupDays?: number | undefined;
   seed?: bigint;
 }
 
@@ -386,6 +389,7 @@ export async function runWalkForward(
       windowTo: w.isTo,
       seed,
       riskPerTradePct,
+      warmupDays: args.warmupDays,
       sessionType: "walk_forward_window",
       parentSessionId,
     });
@@ -397,6 +401,7 @@ export async function runWalkForward(
       windowTo: w.oosTo,
       seed,
       riskPerTradePct,
+      warmupDays: args.warmupDays,
       sessionType: "walk_forward_window",
       parentSessionId,
     });
@@ -456,6 +461,7 @@ export interface WalkForwardCliOpts {
   testMonths: number;
   minTrades: number;
   params?: Record<string, number> | undefined;
+  warmupDays?: number | undefined;
 }
 
 export async function runWalkForwardCli(opts: WalkForwardCliOpts): Promise<number> {
@@ -471,6 +477,7 @@ export async function runWalkForwardCli(opts: WalkForwardCliOpts): Promise<numbe
       stepMonths: opts.testMonths,
       minTradesPerWindow: opts.minTrades,
       params: opts.params,
+      warmupDays: opts.warmupDays,
     });
     log.info(
       {
