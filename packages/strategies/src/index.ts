@@ -31,3 +31,10 @@ export {
   TSMOM_DEFAULTS,
   type TimeSeriesMomentumParams,
 } from "./time-series-momentum.js";
+
+export {
+  CrossSectionalMomentumStrategy,
+  CrossSectionalBook,
+  CROSS_SECTIONAL_MOMENTUM_DEFAULTS,
+  type CrossSectionalMomentumParams,
+} from "./cross-sectional-momentum.js";

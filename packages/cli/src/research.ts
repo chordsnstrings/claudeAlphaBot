@@ -45,6 +45,9 @@ import { MetricsCollector, type ClosedTrade } from "@trading/metrics";
 import { computeLotSize } from "@trading/risk";
 import {
   BollingerReversalStrategy,
+  CrossSectionalBook,
+  CrossSectionalMomentumStrategy,
+  CROSS_SECTIONAL_MOMENTUM_DEFAULTS,
   DonchianBreakoutStrategy,
   TimeSeriesMomentumStrategy,
   TrendFollowingStrategy,
@@ -240,6 +243,12 @@ const DAILY_STRATEGIES: Record<string, (params?: Record<string, number>) => Stra
   "donchian-breakout": (p) => (inst) => new DonchianBreakoutStrategy(inst, p ?? {}),
   "bollinger-reversal": (p) => (inst) => new BollingerReversalStrategy(inst, p ?? {}),
   tsmom: (p) => (inst) => new TimeSeriesMomentumStrategy(inst, p ?? {}),
+  // Cross-sectional: one shared book ranks the whole universe; each
+  // per-instrument instance reads its target slot from it.
+  xsmom: (p) => {
+    const book = new CrossSectionalBook({ ...CROSS_SECTIONAL_MOMENTUM_DEFAULTS, ...(p ?? {}) });
+    return (inst) => new CrossSectionalMomentumStrategy(inst, book, p ?? {});
+  },
 };
 
 function addDays(d: Date, days: number): Date {
