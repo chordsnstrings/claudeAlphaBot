@@ -129,6 +129,9 @@ program
   .option("--min-trades <n>", "min trades per window for inclusion", "10")
   .option("--params <json>", "strategy params override as JSON object")
   .option("--warmup-days <n>", "calendar days of pre-window warmup", "420")
+  .option("--risk-per-trade <pct>", "sizing: fraction of equity risked per trade to its stop", "0.5")
+  .option("--risk-config <json>", "RiskManager cap overrides as JSON (maxTotalOpenRiskPct, drawdownEmergencyStopPct, dailyLossLimitPct, …)")
+  .option("--max-leverage <n>", "per-position notional leverage ceiling", "10")
   .action(
     async (opts: {
       strategy: string;
@@ -140,6 +143,9 @@ program
       minTrades: string;
       params?: string;
       warmupDays: string;
+      riskPerTrade: string;
+      riskConfig?: string;
+      maxLeverage: string;
     }) => {
       process.exitCode = await runWalkForwardCli({
         strategy: opts.strategy,
@@ -154,6 +160,12 @@ program
             ? undefined
             : (JSON.parse(opts.params) as Record<string, number>),
         warmupDays: Number(opts.warmupDays),
+        riskPerTradePct: Number(opts.riskPerTrade),
+        riskConfig:
+          opts.riskConfig === undefined
+            ? undefined
+            : (JSON.parse(opts.riskConfig) as Record<string, number>),
+        maxLeverage: Number(opts.maxLeverage),
       });
     },
   );

@@ -28,6 +28,7 @@ import {
   type Orchestrator,
   type OrchestratorContext,
   type OrderRequest,
+  type RiskConfig,
   type Signal,
   type Strategy,
   type SystemConfig,
@@ -60,7 +61,7 @@ const log = logger("cli.research");
  * cannot synthesise 50×+ leverage via risk-based sizing. Without this the
  * backtest massively overstates tight-stop strategies — especially on
  * close-only daily data where stops never gap through. */
-const MAX_LEVERAGE_PER_POSITION = 10;
+const DEFAULT_MAX_LEVERAGE_PER_POSITION = 10;
 
 /**
  * Orchestrator factory that sizes each signal to risk a fixed fraction of
@@ -73,8 +74,8 @@ const MAX_LEVERAGE_PER_POSITION = 10;
  * blocked instruments re-signal every bar (signal_log insert storm). For a
  * ~9-instrument book, ~0.5% keeps the whole portfolio investable.
  */
-function makeRiskSizedOrchestrator(riskPerTradePct: number): Orchestrator {
-  const riskConfig = { ...DEFAULT_RISK_CONFIG, riskPerTradePct };
+function makeRiskSizedOrchestrator(sizingRiskPct: number, maxLeverage: number): Orchestrator {
+  const riskConfig: RiskConfig = { ...DEFAULT_RISK_CONFIG, riskPerTradePct: sizingRiskPct };
   return {
     process(signals: Signal[], ctx: OrchestratorContext): OrderRequest[] {
       const orders: OrderRequest[] = [];
@@ -93,7 +94,7 @@ function makeRiskSizedOrchestrator(riskPerTradePct: number): Orchestrator {
         const notionalPerLot = s.proposedEntryPrice * units;
         const maxLot =
           notionalPerLot > 0
-            ? (MAX_LEVERAGE_PER_POSITION * ctx.accountEquityUsd) / notionalPerLot
+            ? (maxLeverage * ctx.accountEquityUsd) / notionalPerLot
             : riskLot;
         const lotSize = Math.max(0, Math.min(riskLot, maxLot));
         if (lotSize < lotStep(s.instrument)) {
@@ -110,7 +111,11 @@ function makeRiskSizedOrchestrator(riskPerTradePct: number): Orchestrator {
           stopPrice: s.proposedStopPrice,
           targetPrice: s.proposedTargetPrice,
           originatingStrategy: s.originatingStrategy,
-          metadata: { riskSized: true, riskPerTradePct, leverageCapped: lotSize < riskLot },
+          metadata: {
+            riskSized: true,
+            riskPerTradePct: riskConfig.riskPerTradePct,
+            leverageCapped: lotSize < riskLot,
+          },
         });
       }
       return orders;
@@ -149,8 +154,12 @@ export interface RunBacktestArgs {
   windowFrom: Date;
   windowTo: Date;
   seed: bigint;
-  /** Per-trade risk fraction (%). Keep N × this <= 6% total cap. */
-  riskPerTradePct: number;
+  /** Orchestrator sizing target: fraction of equity risked per trade to its stop. */
+  sizingRiskPct: number;
+  /** RiskManager caps (per-trade ceiling, total-open, drawdown, daily-loss). */
+  riskConfig: RiskConfig;
+  /** Per-position notional leverage ceiling (notional <= maxLeverage × equity). */
+  maxLeverage: number;
   /** Calendar days of pre-window data to warm indicators. Default 420. */
   warmupDays?: number | undefined;
   sessionType:
@@ -203,7 +212,7 @@ export async function runWindowBacktest(
     randomSeed: args.seed,
     initialEquityUsd: INITIAL_EQUITY.toFixed(2),
     currentEquityUsd: INITIAL_EQUITY.toFixed(2),
-    riskConfig: DEFAULT_RISK_CONFIG,
+    riskConfig: args.riskConfig,
     status: "running",
   });
 
@@ -232,13 +241,14 @@ export async function runWindowBacktest(
       codeVersion: "research",
       instruments: args.instruments,
       timeframes: ["d1"],
+      riskConfig: args.riskConfig,
     },
   );
 
   const strategies = args.instruments.map((inst) => factory(inst));
   const built = await buildBacktestDeps(config, {
     strategies,
-    orchestrator: makeRiskSizedOrchestrator(args.riskPerTradePct),
+    orchestrator: makeRiskSizedOrchestrator(args.sizingRiskPct, args.maxLeverage),
   });
   // Warm-up boundary: bars before windowFrom warm indicators only; trading
   // starts exactly at the window, so every trade belongs to the window.
@@ -310,7 +320,11 @@ export interface WalkForwardRunArgs {
   testMonths: number;
   stepMonths: number;
   minTradesPerWindow: number;
-  riskPerTradePct?: number;
+  riskPerTradePct?: number | undefined;
+  /** Overrides merged over DEFAULT_RISK_CONFIG (for the RiskManager + sizing). */
+  riskConfig?: Partial<RiskConfig> | undefined;
+  /** Per-position notional leverage ceiling. Default 10×. */
+  maxLeverage?: number | undefined;
   warmupDays?: number | undefined;
   seed?: bigint;
 }
@@ -341,6 +355,20 @@ export async function runWalkForward(
   const parentSessionId = randomUUID();
   const seed = args.seed ?? 42n;
 
+  // Orchestrator sizing target (fraction risked per trade to its stop).
+  const sizingRiskPct = args.riskPerTradePct ?? DEFAULT_RISK_PER_TRADE_PCT;
+  // RiskManager caps. Start from DEFAULT, apply explicit overrides, then make
+  // sure the per-trade ceiling sits safely ABOVE the sizing target — otherwise
+  // an order sized to exactly the target risk is rejected at the cap (this is
+  // what would silently corrupt FX runs if cap == sizing target). Total-open,
+  // drawdown and daily-loss gates come straight from the overrides.
+  const riskConfig: RiskConfig = {
+    ...DEFAULT_RISK_CONFIG,
+    ...(args.riskConfig ?? {}),
+  };
+  riskConfig.riskPerTradePct = Math.max(riskConfig.riskPerTradePct, sizingRiskPct * 2);
+  const maxLeverage = args.maxLeverage ?? DEFAULT_MAX_LEVERAGE_PER_POSITION;
+
   // Create the parent session up front so child windows can FK to it.
   await ctx.repos.sessions.create({
     id: parentSessionId,
@@ -356,11 +384,10 @@ export async function runWalkForward(
     randomSeed: seed,
     initialEquityUsd: INITIAL_EQUITY.toFixed(2),
     currentEquityUsd: INITIAL_EQUITY.toFixed(2),
-    riskConfig: DEFAULT_RISK_CONFIG,
+    riskConfig,
     status: "running",
   });
 
-  const riskPerTradePct = args.riskPerTradePct ?? DEFAULT_RISK_PER_TRADE_PCT;
   const results: WindowResult[] = [];
   let oosTotalTrades = 0;
   let oosNetPnl = 0;
@@ -375,7 +402,9 @@ export async function runWalkForward(
       windowFrom: w.isFrom,
       windowTo: w.isTo,
       seed,
-      riskPerTradePct,
+      sizingRiskPct,
+      riskConfig,
+      maxLeverage,
       warmupDays: args.warmupDays,
       sessionType: "walk_forward_window",
       parentSessionId,
@@ -387,7 +416,9 @@ export async function runWalkForward(
       windowFrom: w.oosFrom,
       windowTo: w.oosTo,
       seed,
-      riskPerTradePct,
+      sizingRiskPct,
+      riskConfig,
+      maxLeverage,
       warmupDays: args.warmupDays,
       sessionType: "walk_forward_window",
       parentSessionId,
@@ -449,6 +480,9 @@ export interface WalkForwardCliOpts {
   minTrades: number;
   params?: Record<string, number> | undefined;
   warmupDays?: number | undefined;
+  riskPerTradePct?: number | undefined;
+  riskConfig?: Partial<RiskConfig> | undefined;
+  maxLeverage?: number | undefined;
 }
 
 export async function runWalkForwardCli(opts: WalkForwardCliOpts): Promise<number> {
@@ -465,6 +499,9 @@ export async function runWalkForwardCli(opts: WalkForwardCliOpts): Promise<numbe
       minTradesPerWindow: opts.minTrades,
       params: opts.params,
       warmupDays: opts.warmupDays,
+      riskPerTradePct: opts.riskPerTradePct,
+      riskConfig: opts.riskConfig,
+      maxLeverage: opts.maxLeverage,
     });
     log.info(
       {
