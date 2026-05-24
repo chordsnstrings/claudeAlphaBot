@@ -259,6 +259,14 @@ export class HistoricalDataFeed implements MarketDataFeed {
           return;
         }
         await this.deps.clock.sleep(this.clockPollMs);
+        // SimulatedClock.sleep is a no-op, so this gate would otherwise spin
+        // on microtasks and STARVE the producer (its DB pagination runs as
+        // macrotasks) and every other consumer — a permanent stall whenever
+        // one instrument's first bar lands far ahead of the shared clock
+        // (e.g. a crypto pair whose history starts years after the window's
+        // warm-up start). Yielding a macrotask each poll lets the producer
+        // and the clock-advancing consumers run, so the clock catches up.
+        await new Promise<void>((resolve) => setImmediate(resolve));
       }
       this.currentBars.set(key, bar);
       yield bar;
