@@ -181,6 +181,28 @@ with most years positive**, not a low-variance 30% annuity.
   *second positive-edge* sleeve to help, and the only such sleeve on this data
   (carry) is unbacktestable.
 
+- **Mean-reversion** (honest, close-based: wide ATR disaster stop + mean
+  target + low-ADX ranging filter, so it avoids the close-only *tight*-stop
+  artifact): **no edge — negative in every single window** (0% profitable, net
+  −$177k to −$209k, −0.10R). Crypto is too trend-dominated; "buy the dip" gets
+  run over (dips keep dipping), and the ranging-regime filter doesn't rescue it.
+  This was the candidate second positive edge for a momentum+reversion regime
+  orchestrator — it isn't one.
+
+### The exhaustive conclusion
+
+Across **every honestly-backtestable strategy family on close-only daily spot
+crypto** — directional momentum (the only positive edge, fat-tailed),
+regime-gated momentum, vol-targeting + drawdown de-risk, cross-sectional
+market-neutral, mean-reversion, multi-sleeve blends, and a 24-asset universe —
+**directional momentum is the sole source of return, and it is structurally
+fat-tailed.** There is no second positive edge to diversify it into a steady
+stream, and the one strategy that historically *is* steady — funding/basis
+carry — cannot be backtested without funding-rate data. Therefore a **consistent
+~30%-every-year** result is unattainable with the data reachable here. The
+honest best is the regime-momentum book: ~49% CAGR, 83–86% of years positive,
+robust — a high-return, high-variance book, not a low-variance annuity.
+
 ### What could change the conclusion (needs data not available here)
 
 - **Uncorrelated return sources** — funding-rate harvesting / cash-and-carry
