@@ -9,8 +9,10 @@ results, what the regime ("orchestrator") layer did, and the real limits.
 
 CoinMetrics community daily reference prices (`PriceUSD`), loaded via
 `pnpm --filter @trading/cli ingest:crypto` from
-`raw.githubusercontent.com/coinmetrics/data`. Seven liquid majors with a USD
-reference price and multi-year history:
+`raw.githubusercontent.com/coinmetrics/data`. The universe was later expanded to
+**24 assets** (every CoinMetrics major exposing a `PriceUSD` column) for the
+cross-sectional tests; the directional headline result below uses these seven
+longest-history liquid majors:
 
 | Instrument | History |
 |---|---|
@@ -149,14 +151,34 @@ attainable from a crypto-momentum book — the returns are fat-tailed by nature.
 What *is* attainable, and what this method delivers, is a **robust >30% average
 with most years positive**, not a low-variance 30% annuity.
 
+### Market-neutral and diversification were tried too — and don't rescue it
+
+- **Cross-sectional (relative-strength) momentum** — long the strongest N /
+  short the weakest N, dollar-neutral (`xsmom`, `CrossSectionalBook`). This is
+  the textbook market-neutral momentum sleeve; it strips market beta (and so the
+  directional fat tail). Tested on both the 7-asset and a broadened **24-asset**
+  universe (BTC/ETH/LTC/XRP/DOGE/BNB/ADA/XMR/DASH/XLM/ETC/ZEC/BCH/LINK/MKR/TRX/
+  EOS/XTZ/ALGO/DOT/UNI/AAVE/COMP/SNX): **it is not an edge here** — net
+  negative-to-breakeven, 33–50% of windows profitable, expectancy ≈ 0. Daily
+  crypto exhibits short-term *reversal* (recent winners give back), the short
+  leg suffers dead-cat bounces, and 10–12-name rebalancing friction eats the
+  thin spread. Removing beta removed the return without adding consistency.
+- **More diversification (24 vs 7 assets)** on the directional regime book did
+  *not* break the fat tail (2021 still +305%, still one ~−34% year, 83% of
+  windows positive) — crypto majors are too correlated, so a long-biased trend
+  book stays a market-beta bet no matter how many names it holds.
+
 ### What could change the conclusion (needs data not available here)
 
 - **Uncorrelated return sources** — funding-rate harvesting / cash-and-carry
-  basis (market-neutral, genuinely steady) need perp funding + futures-basis
-  history; order-book / intraday data would also unlock mean-reversion that
-  close-only daily bars cannot honestly backtest. With only one daily reference
-  price per asset, momentum (long/short/cash) is the only honest edge, and it
-  is structurally fat-tailed.
+  basis is the genuinely *steady* crypto strategy (market-neutral carry), but it
+  needs perp **funding-rate + futures-basis history**, which isn't reachable in
+  this environment (the CoinMetrics community tier has no funding/basis columns;
+  Binance's data is behind blocked egress — both confirmed). Order-book /
+  intraday data would also unlock mean-reversion that close-only daily bars
+  cannot honestly backtest. **With only one daily reference price per asset,
+  long/short/cash momentum is the only honest edge — and it is structurally
+  fat-tailed, so consistent +30%/yr is out of reach here.**
 
 ### Reproduce
 
