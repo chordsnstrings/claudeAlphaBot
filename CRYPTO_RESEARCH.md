@@ -124,15 +124,39 @@ The trustworthy claim: **regime-gated crypto momentum is robustly profitable out
 of sample (86% of years, ~49% CAGR, +1.5R), handles bull/bear/chop, and exceeds
 a 30% average return — but it is high-variance, not a steady 30%/yr annuity.**
 
-### Next levers (toward lower variance, not yet done)
+### Consistency levers that were tried — and why they don't get to "30% every year"
 
-- **Portfolio-level volatility targeting** (scale total book to a target
-  realised vol) — caps the 2021 blow-off and lifts calm years; the proven
-  managed-futures consistency tool. Per-asset ATR sizing is already in; the
-  portfolio overlay is the remaining step.
-- **Drawdown-responsive de-risking** to cut the 2025 −34% year.
-- Higher-fidelity data (real perp OHLC + funding history) to validate
-  tighter-stop and intraday regime logic that close-only daily data can't.
+Both textbook variance-reduction tools were implemented (engine `onBar` equity
+hook → `--vol-target`) and tested:
+
+- **Portfolio volatility targeting** (scale the book toward a target realised
+  vol, 40–60%/yr): did **not** tame the fat tail. 2021 stayed +790–920% per
+  window. The reason is structural — vol targeting cuts exposure in *choppy,
+  high-vol* regimes, but 2021's gains came from a **smooth, sustained uptrend**
+  whose realised vol is only moderate, so it isn't scaled down. It caps
+  crashes, not trends.
+- **Drawdown-responsive de-risking** (shrink size as the in-window drawdown
+  deepens): trims the worst years modestly but cannot make a losing year
+  positive — a down year is a *direction* problem, not a *size* problem.
+
+**The decisive arithmetic.** The per-year OOS returns are
+`+25, +418, +37, +13, +75, −34, +8 (%)`. The best year is **11× the median
+positive year**. To cap 2021 at +30% you must scale risk by ~0.072 — which
+turns every other year into +0.6% … +5.4% (and 2025 into −2.4%). **No single
+risk/leverage/vol setting yields ~30% in every year**: the year-to-year return
+dispersion is simply too large. "Consistent 30% annually" is therefore not
+attainable from a crypto-momentum book — the returns are fat-tailed by nature.
+What *is* attainable, and what this method delivers, is a **robust >30% average
+with most years positive**, not a low-variance 30% annuity.
+
+### What could change the conclusion (needs data not available here)
+
+- **Uncorrelated return sources** — funding-rate harvesting / cash-and-carry
+  basis (market-neutral, genuinely steady) need perp funding + futures-basis
+  history; order-book / intraday data would also unlock mean-reversion that
+  close-only daily bars cannot honestly backtest. With only one daily reference
+  price per asset, momentum (long/short/cash) is the only honest edge, and it
+  is structurally fat-tailed.
 
 ### Reproduce
 
