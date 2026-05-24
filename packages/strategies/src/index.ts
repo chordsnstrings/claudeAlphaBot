@@ -25,3 +25,9 @@ export {
   BOLLINGER_REVERSAL_DEFAULTS,
   type BollingerReversalParams,
 } from "./bollinger-reversal.js";
+
+export {
+  TimeSeriesMomentumStrategy,
+  TSMOM_DEFAULTS,
+  type TimeSeriesMomentumParams,
+} from "./time-series-momentum.js";

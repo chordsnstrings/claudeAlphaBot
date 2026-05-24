@@ -35,6 +35,14 @@ export interface TradingSystemDeps {
    * ~500 bars (enough for 200-period SMA + 252-bar pastReturn).
    */
   recentBarsWindow?: number;
+  /**
+   * Walk-forward warm-up boundary. Bars before this timestamp warm the
+   * indicator buffer + advance the clock + run execution.processBar (stop
+   * detection) but DO NOT generate signals, poll exits, or submit orders —
+   * so every trade in the run belongs to the measured window. Omit for
+   * normal continuous operation.
+   */
+  tradingStartsAt?: Date;
 }
 
 export interface PerBarStats {

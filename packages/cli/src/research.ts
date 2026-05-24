@@ -43,6 +43,7 @@ import { computeLotSize } from "@trading/risk";
 import {
   BollingerReversalStrategy,
   DonchianBreakoutStrategy,
+  TimeSeriesMomentumStrategy,
   TrendFollowingStrategy,
 } from "@trading/strategies";
 import type { TradeRow } from "@trading/data";
@@ -97,6 +98,7 @@ const DAILY_STRATEGIES: Record<string, (params?: Record<string, number>) => Stra
   "trend-following": (p) => (inst) => new TrendFollowingStrategy(inst, p ?? {}),
   "donchian-breakout": (p) => (inst) => new DonchianBreakoutStrategy(inst, p ?? {}),
   "bollinger-reversal": (p) => (inst) => new BollingerReversalStrategy(inst, p ?? {}),
+  tsmom: (p) => (inst) => new TimeSeriesMomentumStrategy(inst, p ?? {}),
 };
 
 function addDays(d: Date, days: number): Date {
@@ -204,24 +206,30 @@ export async function runWindowBacktest(
     strategies,
     orchestrator: riskSizedOrchestrator,
   });
+  // Warm-up boundary: bars before windowFrom warm indicators only; trading
+  // starts exactly at the window, so every trade belongs to the window.
+  built.deps.tradingStartsAt = args.windowFrom;
   try {
     const system = new TradingSystem(built.deps);
     await system.run();
+    // Force-close any positions still open at window end so their P&L is
+    // realised and attributed to the window (exit reason data_end).
+    const open = await built.deps.execution.getOpenPositions();
+    for (const p of open) {
+      await built.deps.execution.closePosition(p.id, { reason: "data_end" });
+    }
   } finally {
     await built.close();
   }
 
+  // Every trade in the session belongs to the window (trading was gated to
+  // start at windowFrom and all positions were force-closed at windowTo).
   const trades = await ctx.repos.trades.findBySession(sessionId);
-  const inWindow = trades.filter(
-    (t) =>
-      t.entryTime.getTime() >= args.windowFrom.getTime() &&
-      t.entryTime.getTime() <= args.windowTo.getTime(),
-  );
-  const m = metricsFor(inWindow);
+  const m = metricsFor(trades);
 
   await ctx.repos.sessions.updateStatus(sessionId, "completed", {
     endedAt: new Date(),
-    tradeCount: inWindow.length,
+    tradeCount: trades.length,
     aggregateMetrics: {
       sharpe: m.sharpe,
       expectancyR: m.expectancyR,

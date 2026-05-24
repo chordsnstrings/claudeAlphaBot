@@ -173,8 +173,28 @@ export class TradingSystem {
       closedThisBar = await this.fanOutOrderUpdates(updates, positionsBeforeBar, bar);
     }
 
-    const account = await this.deps.execution.getAccountInfo();
-    const openPositions = await this.deps.execution.getOpenPositions();
+    let account = await this.deps.execution.getAccountInfo();
+    let openPositions = await this.deps.execution.getOpenPositions();
+
+    // Warm-up boundary: before tradingStartsAt, only warm indicators +
+    // advance the clock + run execution.processBar (done above). Skip all
+    // discretionary trading so every trade belongs to the measured window.
+    const tradingActive =
+      this.deps.tradingStartsAt === undefined ||
+      bar.timestampUtc.getTime() >= this.deps.tradingStartsAt.getTime();
+
+    // Strategy-driven discretionary exits (signal-flip / time-stop /
+    // session-close / trailing). Poll each strategy BEFORE signal
+    // generation so a flip can close and re-enter on the same bar.
+    if (tradingActive) {
+      const exitClosures = await this.collectStrategyExits(bar, buf, indicators, openPositions, account);
+      if (exitClosures.length > 0) {
+        closedThisBar = closedThisBar.concat(exitClosures);
+        account = await this.deps.execution.getAccountInfo();
+        openPositions = await this.deps.execution.getOpenPositions();
+      }
+    }
+
     const positionsByStrategy = new Map<string, Position[]>();
     for (const p of openPositions) {
       const list = positionsByStrategy.get(p.originatingStrategy) ?? [];
@@ -193,7 +213,7 @@ export class TradingSystem {
     };
 
     const allSignals: Signal[] = [];
-    for (const strat of this.deps.strategies) {
+    for (const strat of tradingActive ? this.deps.strategies : []) {
       // Only ask strategies that are configured for this instrument/timeframe.
       if (!strat.config.instruments.includes(bar.instrument)) {
         continue;
@@ -270,6 +290,90 @@ export class TradingSystem {
     );
 
     this.stats.push(stats);
+  }
+
+  /**
+   * Poll each strategy's optional `exitsForBar` hook and route the
+   * requested closes to the execution adapter. Returns ClosedTradeRecords
+   * for the MetricsCollector + strategy onPositionEvent dispatch.
+   */
+  private async collectStrategyExits(
+    bar: Bar,
+    buf: Bar[],
+    indicators: ReturnType<typeof computeIndicators>,
+    openPositions: readonly Position[],
+    account: { equityUsd: number },
+  ): Promise<ClosedTradeRecord[]> {
+    const closed: ClosedTradeRecord[] = [];
+    const byStrategy = new Map<string, Position[]>();
+    for (const p of openPositions) {
+      const list = byStrategy.get(p.originatingStrategy) ?? [];
+      list.push(p);
+      byStrategy.set(p.originatingStrategy, list);
+    }
+    for (const strat of this.deps.strategies) {
+      if (strat.exitsForBar === undefined) {
+        continue;
+      }
+      if (!strat.config.instruments.includes(bar.instrument)) {
+        continue;
+      }
+      const state: MarketState = {
+        currentBar: bar,
+        instrument: bar.instrument,
+        recentBars: buf,
+        indicators,
+        sessionContext: emptySessionContext(),
+        currentPositions: byStrategy.get(strat.name) ?? [],
+        accountEquity: account.equityUsd,
+        now: this.deps.clock.now(),
+      };
+      const requests = strat.exitsForBar(state);
+      for (const req of requests) {
+        const pos = openPositions.find((p) => p.id === req.positionId);
+        if (pos === undefined) {
+          continue;
+        }
+        const result = await this.deps.execution.closePosition(req.positionId, {
+          reason: req.reason,
+        });
+        if (result.status === "filled" || result.status === "partially_filled") {
+          const exitPrice = result.fillPrice ?? bar.close;
+          const exitTime = result.fillTime ?? bar.timestampUtc;
+          const move = exitPrice - pos.entryPrice;
+          const signedMove = pos.direction === "long" ? move : -move;
+          const realizedPnLUsd = signedMove * pos.lotSize * standardLotUnitsFor(pos.instrument);
+          const rMultiple = pos.initialRiskUsd > 0 ? realizedPnLUsd / pos.initialRiskUsd : 0;
+          const event: PositionEvent = {
+            type: "closed",
+            position: pos,
+            exitReason: req.reason,
+            exitPrice,
+            exitTime,
+            realizedPnLUsd,
+            realizedPnLPct:
+              pos.initialRiskUsd > 0
+                ? (realizedPnLUsd / pos.initialRiskUsd) * pos.initialRiskPct
+                : 0,
+            realizedRMultiple: rMultiple,
+          };
+          for (const s of this.deps.strategies) {
+            if (s.name === pos.originatingStrategy) {
+              await s.onPositionEvent(event);
+            }
+          }
+          closed.push({
+            position: pos,
+            exitPrice,
+            exitTime,
+            realizedPnLUsd,
+            realizedPnLPct: event.realizedPnLPct,
+            realizedRMultiple: rMultiple,
+          });
+        }
+      }
+    }
+    return closed;
   }
 
   private async submitWithCapturedSize(
