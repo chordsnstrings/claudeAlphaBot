@@ -74,10 +74,21 @@ Single-horizon (252d) vs multi-horizon agreement, full 1975–2026 history,
 |---|---|---|---|---|---|---|---|
 | Single-horizon 252d, 6mo windows | 99 | 800 | +$112,928 | — | — | 50.5% | $46,753 |
 | Multi-horizon agreement, 6mo windows | 99 | 1,412 | +$65,242 | 1.33 | +0.09R | 50.5% | $27,217 |
-| Multi-horizon agreement, 12mo windows | _pending full run_ | | | | | _~67% (partial)_ | |
+| Multi-horizon agreement, 12mo windows | 49 | 820 | +$46,949 | 1.30 | +0.17R | 51.0% | $23,986 |
 
 The agreement filter roughly **halved the drawdown** (the consistency lever)
 while keeping a positive edge.
+
+**12-month OOS windows (matching the 12-month momentum signal) are the most
+honest test of this method**, since a trend follower needs a full cycle to be
+judged. Stepping the OOS window out to 12 months **roughly doubles per-trade
+expectancy (+0.17R vs +0.09R) and lowers the stitched drawdown** ($23,986 vs
+$27,217) while keeping profit factor (1.30) and the profitable-window fraction
+(51%) in line with the 6-month run. Note: an early partial read of this run
+looked like ~67% of windows were profitable; the *completed* run is 51% — the
+later (2010s+) low-trend windows pulled it back down, exactly as the per-decade
+story below predicts. Recording the optimistic partial here on purpose: it is a
+reminder that walk-forward results must be read only after the full run.
 
 ### The honest regime story (multi-horizon, per decade)
 
