@@ -133,7 +133,7 @@ function makeRiskSizedOrchestrator(riskPerTradePct: number): Orchestrator {
 
 const INITIAL_EQUITY = 100_000;
 const DEFAULT_RISK_PER_TRADE_PCT = 0.5;
-const WARMUP_DAYS = 420; // ~300 trading days, covers SMA200 + pastReturn252
+const WARMUP_DAYS = 540; // ~375 trading days, covers pastReturn up to ~315 bars
 
 type StrategyFactory = (instrument: string) => Strategy;
 
@@ -455,6 +455,7 @@ export interface WalkForwardCliOpts {
   trainMonths: number;
   testMonths: number;
   minTrades: number;
+  params?: Record<string, number> | undefined;
 }
 
 export async function runWalkForwardCli(opts: WalkForwardCliOpts): Promise<number> {
@@ -469,6 +470,7 @@ export async function runWalkForwardCli(opts: WalkForwardCliOpts): Promise<numbe
       testMonths: opts.testMonths,
       stepMonths: opts.testMonths,
       minTradesPerWindow: opts.minTrades,
+      params: opts.params,
     });
     log.info(
       {

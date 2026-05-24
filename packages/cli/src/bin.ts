@@ -119,6 +119,7 @@ program
   .option("--train-months <n>", "in-sample window length", "24")
   .option("--test-months <n>", "out-of-sample window length", "6")
   .option("--min-trades <n>", "min trades per window for inclusion", "10")
+  .option("--params <json>", "strategy params override as JSON object")
   .action(
     async (opts: {
       strategy: string;
@@ -128,6 +129,7 @@ program
       trainMonths: string;
       testMonths: string;
       minTrades: string;
+      params?: string;
     }) => {
       process.exitCode = await runWalkForwardCli({
         strategy: opts.strategy,
@@ -137,6 +139,10 @@ program
         trainMonths: Number(opts.trainMonths),
         testMonths: Number(opts.testMonths),
         minTrades: Number(opts.minTrades),
+        params:
+          opts.params === undefined
+            ? undefined
+            : (JSON.parse(opts.params) as Record<string, number>),
       });
     },
   );
