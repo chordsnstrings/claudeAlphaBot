@@ -43,6 +43,20 @@ export interface TimeSeriesMomentumParams {
   atrStopMultiplier: number;
   /** Minimum |long-horizon return| to act on, filters weak trends. */
   minAbsReturn: number;
+  /**
+   * Regime gate (0 = off): only hold a position when ADX(14) >= adxMin, i.e.
+   * the asset is in a genuine trend. In choppy regimes (ADX below the floor)
+   * the strategy goes flat — sitting in cash is the "right strategy" when no
+   * trend exists. This is the per-asset regime selector.
+   */
+  adxMin: number;
+  /**
+   * Regime direction filter (0 = off; 50/100/200 selects an SMA): require the
+   * close on the trend side of the SMA — above for longs, below for shorts.
+   * Blocks counter-trend entries during V-reversals where multi-horizon
+   * momentum briefly agrees against the dominant regime.
+   */
+  regimeSma: number;
 }
 
 export const TSMOM_DEFAULTS: TimeSeriesMomentumParams = {
@@ -52,6 +66,8 @@ export const TSMOM_DEFAULTS: TimeSeriesMomentumParams = {
   requireAllAgree: 1,
   atrStopMultiplier: 20,
   minAbsReturn: 0,
+  adxMin: 0,
+  regimeSma: 0,
 };
 
 function pastReturn(bars: readonly Bar[], lookback: number): number | null {
@@ -106,6 +122,9 @@ export class TimeSeriesMomentumStrategy implements Strategy {
     if (dir === null) {
       return [];
     }
+    if (!this.regimeAllows(state, dir)) {
+      return [];
+    }
     const bar = state.currentBar;
     const stopDist = this.params.atrStopMultiplier * atr14;
     const stop = dir === "long" ? bar.close - stopDist : bar.close + stopDist;
@@ -125,11 +144,48 @@ export class TimeSeriesMomentumStrategy implements Strategy {
     if (pos === undefined) {
       return [];
     }
+    // Exit on signal flip OR when the regime no longer supports the held
+    // direction (trend faded into chop / crossed back through the regime SMA).
     const dir = this.momentumDirection(state.recentBars);
-    if (dir === pos.direction) {
+    if (dir === pos.direction && this.regimeAllows(state, pos.direction)) {
       return [];
     }
     return [{ positionId: pos.id, reason: "signal_flip" }];
+  }
+
+  /**
+   * Regime gate: in a position only while the asset is genuinely trending
+   * (ADX >= adxMin) and — if regimeSma is set — the close is on the trend side
+   * of the chosen SMA. Both default off (params 0), so existing FX runs are
+   * unaffected.
+   */
+  private regimeAllows(state: MarketState, dir: "long" | "short"): boolean {
+    const { adxMin, regimeSma } = this.params;
+    if (adxMin > 0) {
+      const adx = state.indicators.adx14;
+      if (adx === null || adx.adx < adxMin) {
+        return false;
+      }
+    }
+    if (regimeSma > 0) {
+      const sma =
+        regimeSma >= 200
+          ? state.indicators.sma200
+          : regimeSma >= 100
+            ? state.indicators.sma100
+            : state.indicators.sma50;
+      if (sma === null) {
+        return false;
+      }
+      const close = state.currentBar.close;
+      if (dir === "long" && close < sma) {
+        return false;
+      }
+      if (dir === "short" && close > sma) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
