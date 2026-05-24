@@ -28,16 +28,28 @@ import {
 } from "@trading/core";
 
 export interface TimeSeriesMomentumParams {
-  /** Trailing return lookback in bars (252 ≈ 12 months daily). */
+  /** Long (primary) trailing-return lookback in bars (252 ≈ 12 months daily). */
   lookbackBars: number;
+  /** Mid horizon as a fraction of lookbackBars (default 0.5 -> 126). */
+  horizonMidFraction: number;
+  /** Short horizon as a fraction of lookbackBars (default 0.25 -> 63). */
+  horizonShortFraction: number;
+  /**
+   * 1 = only hold when ALL THREE horizons agree on sign (high-conviction,
+   * flat in chop — the key consistency lever). 0 = majority sign.
+   */
+  requireAllAgree: number;
   /** Disaster-stop distance in ATR multiples (wide; the flip is the real exit). */
   atrStopMultiplier: number;
-  /** Minimum |return| to act on, filters flat/no-trend regimes. */
+  /** Minimum |long-horizon return| to act on, filters weak trends. */
   minAbsReturn: number;
 }
 
 export const TSMOM_DEFAULTS: TimeSeriesMomentumParams = {
   lookbackBars: 252,
+  horizonMidFraction: 0.5,
+  horizonShortFraction: 0.25,
+  requireAllAgree: 1,
   atrStopMultiplier: 20,
   minAbsReturn: 0,
 };
@@ -86,16 +98,15 @@ export class TimeSeriesMomentumStrategy implements Strategy {
     if (this.openByInstrument.has(state.instrument)) {
       return []; // already positioned; exits handle flips
     }
-    const ret = pastReturn(state.recentBars, this.params.lookbackBars);
     const atr14 = state.indicators.atr14;
-    if (ret === null || atr14 === null || atr14 <= 0) {
+    if (atr14 === null || atr14 <= 0) {
       return [];
     }
-    if (Math.abs(ret) < this.params.minAbsReturn) {
+    const dir = this.momentumDirection(state.recentBars);
+    if (dir === null) {
       return [];
     }
     const bar = state.currentBar;
-    const dir = ret > 0 ? "long" : "short";
     const stopDist = this.params.atrStopMultiplier * atr14;
     const stop = dir === "long" ? bar.close - stopDist : bar.close + stopDist;
     // Far target: the flip is the real exit, so set the target out of reach.
@@ -103,20 +114,60 @@ export class TimeSeriesMomentumStrategy implements Strategy {
     return [this.signal(bar, dir, bar.close, stop, target)];
   }
 
-  /** Signal-flip exit: close when the trailing-return sign reverses. */
+  /**
+   * Exit when multi-horizon agreement no longer supports the held
+   * direction — i.e. the blended signal flips OR drops to flat (chop). The
+   * latter is what keeps the strategy out of the whipsaw regimes that drag
+   * single-horizon momentum.
+   */
   exitsForBar(state: MarketState): ExitRequest[] {
     const pos = this.openByInstrument.get(state.instrument);
     if (pos === undefined) {
       return [];
     }
-    const ret = pastReturn(state.recentBars, this.params.lookbackBars);
-    if (ret === null) {
+    const dir = this.momentumDirection(state.recentBars);
+    if (dir === pos.direction) {
       return [];
     }
-    const flipped =
-      (pos.direction === "long" && ret < 0) ||
-      (pos.direction === "short" && ret > 0);
-    return flipped ? [{ positionId: pos.id, reason: "signal_flip" }] : [];
+    return [{ positionId: pos.id, reason: "signal_flip" }];
+  }
+
+  /**
+   * Multi-horizon momentum direction. Returns 'long'/'short' when the
+   * short/mid/long trailing-return signs satisfy the agreement rule, else
+   * null (stay flat). minAbsReturn gates on the long-horizon magnitude.
+   */
+  private momentumDirection(bars: readonly Bar[]): "long" | "short" | null {
+    const longH = this.params.lookbackBars;
+    const midH = Math.max(1, Math.round(longH * this.params.horizonMidFraction));
+    const shortH = Math.max(1, Math.round(longH * this.params.horizonShortFraction));
+    const rLong = pastReturn(bars, longH);
+    const rMid = pastReturn(bars, midH);
+    const rShort = pastReturn(bars, shortH);
+    if (rLong === null || rMid === null || rShort === null) {
+      return null;
+    }
+    if (Math.abs(rLong) < this.params.minAbsReturn) {
+      return null;
+    }
+    const signs: number[] = [rShort, rMid, rLong].map((r) => (r > 0 ? 1 : r < 0 ? -1 : 0));
+    const sum = signs.reduce((a, b) => a + b, 0);
+    if (this.params.requireAllAgree >= 1) {
+      if (sum === 3) {
+        return "long";
+      }
+      if (sum === -3) {
+        return "short";
+      }
+      return null;
+    }
+    if (sum > 0) {
+      return "long";
+    }
+    if (sum < 0) {
+      return "short";
+    }
+    return null;
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
