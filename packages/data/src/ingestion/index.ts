@@ -6,3 +6,4 @@ export * from "./validation.js";
 export * from "./report.js";
 export * from "./fed-rates.js";
 export * from "./coinmetrics.js";
+export * from "./funding.js";

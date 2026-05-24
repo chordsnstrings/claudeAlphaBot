@@ -7,6 +7,7 @@ import { runBacktest } from "./backtest.js";
 import { runIngestAsset } from "./ingest-asset.js";
 import { runIngestFedRates } from "./ingest-fed-rates.js";
 import { runIngestCrypto } from "./ingest-crypto.js";
+import { runIngestFunding } from "./ingest-funding.js";
 import { runIngestFull } from "./ingest-full.js";
 import { runIngestIncremental } from "./ingest-incremental.js";
 import { runIngestReport } from "./ingest-report.js";
@@ -115,6 +116,15 @@ program
   .description("Load CoinMetrics daily crypto reference prices (BTC/ETH/…)")
   .action(async () => {
     process.exitCode = await runIngestCrypto();
+  });
+
+program
+  .command("ingest:funding")
+  .description("Load a perp funding-rate CSV (date,asset,funding_rate) -> synthetic <ASSET>CARRY series")
+  .requiredOption("--file <path>", "path to the funding CSV")
+  .option("--interval <8h|1d>", "funding interval in the file; 8h is compounded to daily", "1d")
+  .action(async (opts: { file: string; interval: string }) => {
+    process.exitCode = await runIngestFunding({ file: opts.file, interval: opts.interval });
   });
 
 program

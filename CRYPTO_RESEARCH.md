@@ -225,6 +225,29 @@ robust — a high-return, high-variance book, not a low-variance annuity.
   long/short/cash momentum is the only honest edge — and it is structurally
   fat-tailed, so consistent +30%/yr is out of reach here.**
 
+### The carry path is built and turnkey — it only needs data
+
+Because funding/basis carry is the one strategy that could plausibly deliver a
+low-variance ~30%, the pipeline for it is implemented and unit-tested, so it
+runs the instant a funding series is supplied (no data ships with the repo):
+
+```bash
+# funding CSV: date,asset,funding_rate  (daily decimal; --interval 8h compounds 3/day)
+pnpm --filter @trading/cli ingest:funding --file your_funding.csv --interval 8h
+# -> synthetic <ASSET>CARRY instruments whose daily return == funding harvested,
+#    then regime-time the harvest (long the positive-funding regimes):
+pnpm --filter @trading/cli research:walkforward --strategy tsmom \
+  --instruments BTCCARRY,ETHCARRY,... --from <start> --to <end> ...
+```
+
+`packages/data/src/ingestion/funding.ts` (`parseFundingCsv`, `buildCarryBars`,
+`ingestFunding`) models a delta-neutral book as a synthetic instrument that
+compounds by the funding rate; the parsing + compounding math is unit-tested
+(`test/funding.test.ts`). It is a first-order model (assumes perfect hedging;
+ignores basis-convergence P&L, rebalance slippage, and spot borrow) — those
+should be layered in and the sizing/fee handling finalized **against the real
+funding series**, which is the genuinely missing input, not the code.
+
 ### Reproduce
 
 ```bash
