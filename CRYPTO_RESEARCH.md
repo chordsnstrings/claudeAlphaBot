@@ -189,6 +189,16 @@ with most years positive**, not a low-variance 30% annuity.
   This was the candidate second positive edge for a momentum+reversion regime
   orchestrator — it isn't one.
 
+- **Cross-asset-class diversification (FX + crypto)** — the textbook way to turn
+  two fat-tailed momentum streams into a steadier one, using the validated FX
+  majors book alongside crypto. It **fails here**: regime-gated FX momentum is
+  *net-negative* in 2021–2026 (−$204k, 33% of windows positive — the documented
+  post-2010 FX-trend compression), so it's a losing sleeve to add; and FX and
+  crypto **both lost in 2025**, so they're correlated in precisely the down year
+  you'd want diversification to cover. The combined book (67% positive windows)
+  is *less* consistent than crypto alone (83–86%). The only reachable
+  "uncorrelated" stream is neither profitable nor uncorrelated when it matters.
+
 ### The exhaustive conclusion
 
 Across **every honestly-backtestable strategy family on close-only daily spot
