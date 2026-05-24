@@ -10,37 +10,14 @@
  * Rounded to 0.01-lot increments. Below 0.01 returns 0.
  */
 
-import type { RiskConfig, Signal } from "@trading/core";
+import { lotStep, standardLotUnits, type RiskConfig, type Signal } from "@trading/core";
 
 /**
- * Standard-lot size in base-currency units. Pepperstone defaults:
- *   FX standard lot = 100 000 base units
- *   XAUUSD          = 100 oz
- *   XAGUSD          = 5 000 oz
- *   Brent / WTI     = 100 bbl
- */
-function standardLotUnitsFor(instrument: string): number {
-  switch (instrument) {
-    case "XAUUSD":
-      return 100;
-    case "XAGUSD":
-      return 5000;
-    case "BRENTCMDUSD":
-    case "LIGHTCMDUSD":
-      return 100;
-    default:
-      return 100_000;
-  }
-}
-
-/**
- * Pepperstone-style per-pip USD value for one standard lot. For USD-quote
- * pairs the pip-value = 10 USD per standard lot at pip_size=0.0001 (or
- * $1/pip for JPY pairs). The full risk USD per lot for a given stop
- * distance equals stop_distance_in_price * standard_lot_units.
+ * Per-unit USD value for one standard lot: the risk USD per lot for a given
+ * stop distance equals stop_distance_in_price * standard_lot_units.
  */
 function valuePerUnit(instrument: string): number {
-  return standardLotUnitsFor(instrument);
+  return standardLotUnits(instrument);
 }
 
 export interface SizingArgs {
@@ -75,9 +52,10 @@ export function computeLotSize(args: SizingArgs): number {
     lotSize *= 0.5;
   }
 
-  // 0.01 lot increments, drop sub-minimum.
-  lotSize = Math.round(lotSize * 100) / 100;
-  if (lotSize < 0.01) {
+  // Round to the instrument's lot step, drop sub-minimum.
+  const step = lotStep(signal.instrument);
+  lotSize = Math.round(lotSize / step) * step;
+  if (lotSize < step) {
     return 0;
   }
   return lotSize;

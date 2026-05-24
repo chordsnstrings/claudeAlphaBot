@@ -22,7 +22,9 @@ import { randomUUID as uuid } from "node:crypto";
 import {
   DEFAULT_RISK_CONFIG,
   logger,
+  lotStep,
   resolveSystemConfig,
+  standardLotUnits,
   type Orchestrator,
   type OrchestratorContext,
   type OrderRequest,
@@ -51,21 +53,6 @@ import type { TradeRow } from "@trading/data";
 import { buildContext } from "./context.js";
 
 const log = logger("cli.research");
-
-/** Standard-lot units (matches @trading/risk / adapters). */
-function standardLotUnits(instrument: string): number {
-  switch (instrument) {
-    case "XAUUSD":
-      return 100;
-    case "XAGUSD":
-      return 5000;
-    case "BRENTCMDUSD":
-    case "LIGHTCMDUSD":
-      return 100;
-    default:
-      return 100_000;
-  }
-}
 
 /** Realistic per-position leverage ceiling. Retail FX margin is ~30:1; we
  * cap a single position's notional at MAX_LEVERAGE × equity so tight-stop
@@ -109,7 +96,7 @@ function makeRiskSizedOrchestrator(riskPerTradePct: number): Orchestrator {
             ? (MAX_LEVERAGE_PER_POSITION * ctx.accountEquityUsd) / notionalPerLot
             : riskLot;
         const lotSize = Math.max(0, Math.min(riskLot, maxLot));
-        if (lotSize < 0.01) {
+        if (lotSize < lotStep(s.instrument)) {
           continue;
         }
         orders.push({

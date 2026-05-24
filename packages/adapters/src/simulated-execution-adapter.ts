@@ -17,6 +17,8 @@ import { randomUUID } from "node:crypto";
 
 import {
   logger,
+  isCryptoInstrument,
+  standardLotUnits as standardLotUnitsFor,
   type AccountInfo,
   type Bar,
   type CloseContext,
@@ -344,10 +346,12 @@ export class SimulatedExecutionAdapter implements ExecutionAdapter {
       state.position.unrealizedPnLPct =
         this.equity === 0 ? 0 : (state.position.unrealizedPnLUsd / this.equity) * 100;
 
-      // Swap: apply at most once per UTC day, on the 22:00 rollover.
+      // Swap/funding: apply at most once per UTC day. FX rolls at the 22:00
+      // instant; crypto perps charge funding daily on the (single) daily bar
+      // regardless of its hour.
       const today = utcDateString(bar.timestampUtc);
       if (
-        bar.timestampUtc.getUTCHours() >= 22 &&
+        (bar.timestampUtc.getUTCHours() >= 22 || isCryptoInstrument(p.instrument)) &&
         today !== state.lastSwapRollDate
       ) {
         const swap = this.deps.friction.swap(
@@ -355,6 +359,7 @@ export class SimulatedExecutionAdapter implements ExecutionAdapter {
           p.direction,
           p.lotSize,
           bar.timestampUtc,
+          bar.close,
         );
         this.equity += swap;
         this.balance += swap;
@@ -518,20 +523,6 @@ function computeInitialRiskUsd(
 ): number {
   const distance = Math.abs(entryPrice - stopPrice);
   return distance * lotSize * standardLotUnitsFor(instrument);
-}
-
-function standardLotUnitsFor(instrument: string): number {
-  switch (instrument) {
-    case "XAUUSD":
-      return 100;
-    case "XAGUSD":
-      return 5000;
-    case "BRENTCMDUSD":
-    case "LIGHTCMDUSD":
-      return 100;
-    default:
-      return 100_000;
-  }
 }
 
 function utcDateString(d: Date): string {

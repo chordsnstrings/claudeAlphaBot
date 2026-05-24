@@ -148,6 +148,52 @@ export function slippageMultiplier(profile: FrictionProfileName): number {
   }
 }
 
+// ------------------------------------------------------------ crypto perps
+
+/**
+ * All-in per-side trade cost for crypto perps, in basis points of notional
+ * (taker fee + spread + slippage). Liquid majors (BTC/ETH) run ~4–5 bps taker
+ * + ~1–2 bps spread/slippage; 6 bps/side (12 bps round-turn) is a touch
+ * conservative for majors and roughly fair for the larger alts.
+ */
+export function cryptoTradeCostBps(profile: FrictionProfileName): number {
+  switch (profile) {
+    case "zero_friction":
+      return 0;
+    case "pessimistic":
+      return 12;
+    case "pepperstone_razor":
+      return 6;
+    default: {
+      const exhaustive: never = profile;
+      throw new Error(`cryptoTradeCostBps: unhandled profile ${String(exhaustive)}`);
+    }
+  }
+}
+
+/**
+ * Daily funding/borrow drag for a held crypto-perp position, in basis points
+ * of notional, charged to BOTH directions. A trend follower is long in bull
+ * regimes (when funding is typically positive → longs pay) and short in bear
+ * regimes (funding negative → shorts pay), so funding is ~always a cost for
+ * momentum. 1 bp/day ≈ 3.65%/yr is a conservative average of historical perp
+ * funding; spikes ran higher, calm periods lower.
+ */
+export function cryptoFundingDailyBps(profile: FrictionProfileName): number {
+  switch (profile) {
+    case "zero_friction":
+      return 0;
+    case "pessimistic":
+      return 2;
+    case "pepperstone_razor":
+      return 1;
+    default: {
+      const exhaustive: never = profile;
+      throw new Error(`cryptoFundingDailyBps: unhandled profile ${String(exhaustive)}`);
+    }
+  }
+}
+
 // --------------------------------------------------------------- pip size
 
 /**

@@ -6,6 +6,7 @@ import { Command } from "commander";
 import { runBacktest } from "./backtest.js";
 import { runIngestAsset } from "./ingest-asset.js";
 import { runIngestFedRates } from "./ingest-fed-rates.js";
+import { runIngestCrypto } from "./ingest-crypto.js";
 import { runIngestFull } from "./ingest-full.js";
 import { runIngestIncremental } from "./ingest-incremental.js";
 import { runIngestReport } from "./ingest-report.js";
@@ -107,6 +108,13 @@ program
   .description("Load the Federal Reserve H.10 daily exchange-rate series")
   .action(async () => {
     process.exitCode = await runIngestFedRates();
+  });
+
+program
+  .command("ingest:crypto")
+  .description("Load CoinMetrics daily crypto reference prices (BTC/ETH/…)")
+  .action(async () => {
+    process.exitCode = await runIngestCrypto();
   });
 
 program

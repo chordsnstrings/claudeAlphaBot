@@ -9,11 +9,17 @@
  * same seed produces identical fills.
  */
 
-import type { Direction, FrictionUsd, OrderType } from "@trading/core";
+import {
+  isCryptoInstrument,
+  standardLotUnits as standardLotUnitsFor,
+  type Direction,
+  type FrictionUsd,
+  type OrderType,
+} from "@trading/core";
 
 import { commissionUsd } from "./commission.js";
 import { isInNewsWindow, type LoadedNewsEvent } from "./news.js";
-import { pipSize, type FrictionProfileName } from "./profiles.js";
+import { cryptoTradeCostBps, pipSize, type FrictionProfileName } from "./profiles.js";
 import { mulberry32, seedFromBigint, type SeededRng } from "./rng.js";
 import { applySlippage, sampleSlippagePips } from "./slippage.js";
 import { sampleSpread } from "./spread.js";
@@ -73,6 +79,15 @@ export class FrictionModel {
    * when entry and exit are summed.
    */
   applyFill(args: ApplyFillArgs): FrictionAppliedFill {
+    // Crypto perps: charge a deterministic all-in cost (taker fee + spread +
+    // slippage) as a fraction of notional. The FX pip machinery can't express
+    // a %-of-notional cost (a fixed pip value isn't proportional to price),
+    // and being deterministic avoids the per-bar RNG path-sensitivity that
+    // afflicts the Gaussian spread sampler.
+    if (isCryptoInstrument(args.instrument)) {
+      return this.applyCryptoFill(args);
+    }
+
     const news = this.isNews(args.atUtc);
 
     const spread = sampleSpread({
@@ -138,18 +153,45 @@ export class FrictionModel {
     };
   }
 
+  /**
+   * Crypto-perp fill: a single deterministic cost = costBps × notional per
+   * side, applied both as an adverse price adjustment (so realised P&L
+   * reflects it) and recorded in the USD breakdown. notional = price × lotSize
+   * (crypto lot-units = 1).
+   */
+  private applyCryptoFill(args: ApplyFillArgs): FrictionAppliedFill {
+    const costBps = cryptoTradeCostBps(this.deps.profile);
+    const costFraction = costBps / 10_000;
+    const adverse = args.rawPrice * costFraction;
+    // Entry pays up (long buys higher / short sells lower); exit pays the
+    // same way against the position.
+    const worseUp =
+      (args.side === "entry" && args.direction === "long") ||
+      (args.side === "exit" && args.direction === "short");
+    const effectivePrice = worseUp ? args.rawPrice + adverse : args.rawPrice - adverse;
+    const costUsd = args.rawPrice * costFraction * args.lotSize * standardLotUnitsFor(args.instrument);
+    return {
+      effectivePrice,
+      breakdown: { spread: costUsd, slippage: 0, commission: 0, swap: 0 },
+      spreadPips: 0,
+      slippagePips: 0,
+    };
+  }
+
   /** Per-night swap USD; called by the adapter on each UTC rollover. */
   swap(
     instrument: string,
     direction: Direction,
     lotSize: number,
     rolloverUtc: Date,
+    price: number,
   ): number {
     return swapForNight({
       instrument,
       direction,
       lotSize,
       rolloverUtc,
+      price,
       profile: this.deps.profile,
     });
   }
@@ -161,28 +203,5 @@ export class FrictionModel {
 
   get profile(): FrictionProfileName {
     return this.deps.profile;
-  }
-}
-
-/**
- * Standard-lot size in base-currency units. Pepperstone:
- *   FX standard lot = 100 000 base units
- *   XAUUSD = 100 oz
- *   XAGUSD = 5000 oz (Pepperstone Razor spec)
- *   Brent / WTI = 100 bbl
- *
- * For unlisted instruments default to 100 000 (FX assumption).
- */
-function standardLotUnitsFor(instrument: string): number {
-  switch (instrument) {
-    case "XAUUSD":
-      return 100;
-    case "XAGUSD":
-      return 5000;
-    case "BRENTCMDUSD":
-    case "LIGHTCMDUSD":
-      return 100;
-    default:
-      return 100_000;
   }
 }

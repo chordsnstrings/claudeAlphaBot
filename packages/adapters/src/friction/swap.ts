@@ -9,9 +9,10 @@
  * UTC-day rollover for each open position.
  */
 
-import type { Direction } from "@trading/core";
+import { isCryptoInstrument, standardLotUnits, type Direction } from "@trading/core";
 
 import {
+  cryptoFundingDailyBps,
   swapParamsFor,
   swapValueForDirection,
   type FrictionProfileName,
@@ -32,11 +33,20 @@ export interface SwapForNightArgs {
   lotSize: number;
   /** Rollover instant (typically 22:00 UTC on the night the position is held). */
   rolloverUtc: Date;
+  /** Mark price for the night — used for notional-based crypto funding. */
+  price?: number;
   profile: FrictionProfileName;
 }
 
 /** Returns the swap USD applied this night for the given position. */
 export function swapForNight(args: SwapForNightArgs): number {
+  // Crypto perps: funding = -fundingBps × notional, charged to both sides
+  // (a drag for momentum), no Wednesday triple.
+  if (isCryptoInstrument(args.instrument)) {
+    const bps = cryptoFundingDailyBps(args.profile);
+    const notional = (args.price ?? 0) * args.lotSize * standardLotUnits(args.instrument);
+    return -(bps / 10_000) * notional;
+  }
   const params = swapParamsFor(args.instrument, args.profile);
   const base = swapValueForDirection(params, args.direction);
   const factor = isTripleSwapWednesday(args.rolloverUtc) ? 3 : 1;
