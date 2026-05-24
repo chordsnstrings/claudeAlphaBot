@@ -52,9 +52,33 @@ import { buildContext } from "./context.js";
 
 const log = logger("cli.research");
 
+/** Standard-lot units (matches @trading/risk / adapters). */
+function standardLotUnits(instrument: string): number {
+  switch (instrument) {
+    case "XAUUSD":
+      return 100;
+    case "XAGUSD":
+      return 5000;
+    case "BRENTCMDUSD":
+    case "LIGHTCMDUSD":
+      return 100;
+    default:
+      return 100_000;
+  }
+}
+
+/** Realistic per-position leverage ceiling. Retail FX margin is ~30:1; we
+ * cap a single position's notional at MAX_LEVERAGE × equity so tight-stop
+ * strategies (e.g. mean-reversion entering just beyond a recent extreme)
+ * cannot synthesise 50×+ leverage via risk-based sizing. Without this the
+ * backtest massively overstates tight-stop strategies — especially on
+ * close-only daily data where stops never gap through. */
+const MAX_LEVERAGE_PER_POSITION = 10;
+
 /**
  * Orchestrator factory that sizes each signal to risk a fixed fraction of
- * account equity (via @trading/risk computeLotSize) instead of a flat 1 lot.
+ * account equity (via @trading/risk computeLotSize) instead of a flat 1 lot,
+ * then clamps notional to MAX_LEVERAGE_PER_POSITION × equity.
  *
  * `riskPerTradePct` MUST be small enough that the full diversified book
  * fits under the RiskManager's maxTotalOpenRiskPct (6%): N instruments ×
@@ -68,13 +92,24 @@ function makeRiskSizedOrchestrator(riskPerTradePct: number): Orchestrator {
     process(signals: Signal[], ctx: OrchestratorContext): OrderRequest[] {
       const orders: OrderRequest[] = [];
       for (const s of signals) {
-        const lotSize = computeLotSize({
+        const riskLot = computeLotSize({
           signal: s,
           accountEquityUsd: ctx.accountEquityUsd,
           riskConfig,
           currentDrawdownPct: 0,
         });
-        if (lotSize <= 0) {
+        if (riskLot <= 0) {
+          continue;
+        }
+        // Leverage cap: notional = entry × units × lots <= maxLev × equity.
+        const units = standardLotUnits(s.instrument);
+        const notionalPerLot = s.proposedEntryPrice * units;
+        const maxLot =
+          notionalPerLot > 0
+            ? (MAX_LEVERAGE_PER_POSITION * ctx.accountEquityUsd) / notionalPerLot
+            : riskLot;
+        const lotSize = Math.max(0, Math.min(riskLot, maxLot));
+        if (lotSize < 0.01) {
           continue;
         }
         orders.push({
@@ -88,7 +123,7 @@ function makeRiskSizedOrchestrator(riskPerTradePct: number): Orchestrator {
           stopPrice: s.proposedStopPrice,
           targetPrice: s.proposedTargetPrice,
           originatingStrategy: s.originatingStrategy,
-          metadata: { riskSized: true, riskPerTradePct },
+          metadata: { riskSized: true, riskPerTradePct, leverageCapped: lotSize < riskLot },
         });
       }
       return orders;
