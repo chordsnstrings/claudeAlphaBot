@@ -167,6 +167,19 @@ with most years positive**, not a low-variance 30% annuity.
   *not* break the fat tail (2021 still +305%, still one ~−34% year, 83% of
   windows positive) — crypto majors are too correlated, so a long-biased trend
   book stays a market-beta bet no matter how many names it holds.
+- **Multi-sleeve orchestrator** (the explicit "right strategy at the right
+  time" combination): a 50/50 blend of the directional regime book + the
+  dollar-neutral cross-sectional book. The sleeves ARE nearly uncorrelated
+  (corr ≈ 0.13), so blending genuinely **halved volatility** (135% → 72% stdev)
+  and cut the worst year (−46% → −34%). But because the cross-sectional sleeve
+  has **no positive edge** (−7% CAGR alone), the blend buys lower variance only
+  by **giving up return** — risk-adjusted return barely moved (mean/σ 0.66 →
+  0.62), and the blend *still* has a −34% year (2023, when both sleeves were
+  down) and a +190% blow-off (2021). Per-year blend:
+  `+190, +8, −34, +66, +30, +6 (%)` → ~30% CAGR, 5/6 positive — i.e. it
+  averages ~30% but is **still not ~30% every year**. Diversification needs a
+  *second positive-edge* sleeve to help, and the only such sleeve on this data
+  (carry) is unbacktestable.
 
 ### What could change the conclusion (needs data not available here)
 
