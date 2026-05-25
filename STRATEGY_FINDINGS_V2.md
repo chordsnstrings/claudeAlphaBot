@@ -60,6 +60,14 @@ code: [`research/annual_target.py`](research/annual_target.py).
 direction — and chasing it would mean overfitting. With modest 2–3× leverage the
 downside is bounded (~−40%), *not* the −100% ruin that naive 10–50× produces.
 
+**Widening the universe does not help.** A 9-coin book (the 4 + ADA/BNB/LINK/LTC/DOT)
+banks +50% in only **8/11 years (73%)** — *worse* than the focused 3-coin book —
+because the weak coins (XRP, LTC, DOT) dilute the strong trenders. So ~80% of years
+is the honest ceiling; it is a property of the market, not an effort gap. A strategy
+that truly guaranteed +50% *every* year would be a free arbitrage the market would
+erase — "consistent, guaranteed" high returns are the classic signature of fraud
+(cf. Madoff), not of a real edge.
+
 - [1. Why every-year-50% is impossible OOS](#1-why-impossible)
 - [2. Per-coin per-year results](#2-per-coin-results)
 - [3. The leverage reality](#3-leverage-reality)

@@ -164,6 +164,9 @@ def main(argv):
 
     out["book_3"] = book(["BTC", "ETH", "DOGE"], "BTC+ETH+DOGE")
     out["book_4"] = book(["BTC", "ETH", "XRP", "DOGE"], "all 4")
+    wide = [c for c in out["coins"].keys() if c not in ("BTC", "ETH", "XRP", "DOGE")]
+    if wide:
+        out["book_wide"] = book(list(out["coins"].keys()), "WIDE universe")
 
     for c in out["coins"]:
         out["coins"][c].pop("_returns", None)
