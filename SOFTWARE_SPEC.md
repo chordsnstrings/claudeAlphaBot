@@ -849,6 +849,49 @@ stop**, profit withdrawn. Expectation: ~56–105% CAGR, ~1 month in 4–5 prints
 deep down-months are part of the deal. Paper-trade first. (Maps onto the same
 execution/risk layer as the multi-coin book in `DEPLOYABLE_STRATEGY_BUILD.md`.)
 
+### 18.5 Have we exhausted the options? (additional levers)
+Pushed further than the daily backtest. Code: [`eth_intraday_stops.py`](research/eth_intraday_stops.py).
+
+**Intraday stop-loss execution (TESTED — genuine improvement).** The daily
+close-to-close model never cuts a crash day short. Re-executing the *same* daily
+`tsmom_blend` signal on **1h bars with an intraday trailing stop** caps the
+catastrophic days, removes liquidation even at 8×, and lifts achievable CAGR
+(2020-05→2026 window, 72 months):
+
+| exposure | no-stop CAGR | best-stop CAGR | worst month (no→stop) |
+| --- | ---: | ---: | --- |
+| m=3 | +145% | +130% (25%) | −40% → −33% |
+| m=5 | +129% | **+163% (15%)** | −60% → −53% |
+| m=8 | +45% | +71% (25%) | −71% → −55% |
+
+→ Best sane config **m=5, 15% intraday stop: ~+163% CAGR, 0 ruin months**. Caveats:
+this window excludes the 2018 bear (flattering), and it assumes clean stop fills
+(a real gap-down fills worse). **But the monthly shape is unchanged: median month
+still 0%, only ~26% of months ≥+20%, worst still −53%.** Stops raise the *return*
+and cut tail risk; they do not manufacture a +20%-every-month distribution.
+
+**Avenues that CANNOT be validated here (data blocked).** Honest disclosure rather
+than a claim of exhaustion:
+- **Options premium selling** (ETH covered calls / put-writing on Deribit) — the one
+  structure whose *shape* resembles steady monthly income. Deribit is not reachable
+  from this environment (`Host not in allowlist`), so it is untested. Known trade-off:
+  selling enough premium to target +20%/month means selling deep tail risk; a single
+  crash month erases many months of premium (this is how "income" vol-sellers blow
+  up). It moves the problem to the tail, it does not remove it.
+- **Funding-rate / basis carry** (long spot − short perp) — a steady market-neutral
+  yield. Binance `fapi` and KuCoin-futures funding endpoints are geo-blocked/not
+  allowlisted, so it is untested here. Historically ETH perp carry is ~5–30%/yr — real,
+  but an order of magnitude below +20%/month.
+- **ML / on-chain / order-flow signals** — not tried; high overfitting risk on a
+  single asset and unlikely to beat momentum OOS, but not claimed as tested.
+
+**Net conclusion (unchanged target verdict).** The best ETH-only futures bot is the
+daily momentum engine, and intraday stops push its realistic ceiling to roughly
+**+100–160% CAGR at 2–5× with hard stops** — an excellent result. **+20% every
+month remains unreachable**: it requires a monthly *median* ≥20% on a ~16–38%
+monthly-vol asset, a return shape no causal edge (trend, MR, carry, or premium
+selling) produces without hiding a blow-up in the tail.
+
 ---
 
 ## 17. Files & reproduction
@@ -865,7 +908,8 @@ execution/risk layer as the multi-coin book in `DEPLOYABLE_STRATEGY_BUILD.md`.)
 [`crash_hedge.py`](research/crash_hedge.py) · [`alloc_wf.py`](research/alloc_wf.py) ·
 [`production_strategy.py`](research/production_strategy.py) · [`market_neutral.py`](research/market_neutral.py) ·
 [`target_1000.py`](research/target_1000.py) · [`lowcap.py`](research/lowcap.py) ·
-[`eth_monthly.py`](research/eth_monthly.py) · [`eth_intraday.py`](research/eth_intraday.py)
+[`eth_monthly.py`](research/eth_monthly.py) · [`eth_intraday.py`](research/eth_intraday.py) ·
+[`eth_intraday_stops.py`](research/eth_intraday_stops.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·
