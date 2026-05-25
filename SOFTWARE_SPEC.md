@@ -497,6 +497,17 @@ The reason is structural, not a search failure:
   static averaging dilutes one of them below the +50% lock. You can choose *which*
   year to forgo (XS-heavy ⇒ miss 2022; orch-heavy ⇒ miss 2023), never neither.
 
+**Dynamic switching does not help either** ([`regime_switch.py`](research/regime_switch.py)).
+A causal risk-on/risk-off overlay — when an equal-weight market index confirms a
+DOWN regime (below SMA_n *and* negative trailing momentum) route to the short-capable
+orchestrator, else to the trend+XS up-engine — was swept over 24 (SMA window ×
+momentum lookback) settings. **Zero reach 10/10; the maximum is 9/10**, the same
+ceiling. The causal regime label cannot distinguish a *bear to short* (2022) from a
+*recovery chop to rotate through* (2023) early enough — threading that needle needs
+foresight, which is look-ahead. So the 2022/2023 tension is fundamental to the
+information set, not an artifact of static averaging. **There is no causal strategy
+on this universe that banks +50% — or is even positive — in all ten years.**
+
 **Honesty caveat on the 90%.** Each sleeve is fully walk-forward OOS (params chosen
 on train slices only). The *blend weight and leverage* are chosen by inspecting the
 OOS-period hit-rate — a mild meta-level in-sample choice — so the 90% is the best
@@ -641,7 +652,8 @@ the signature of fraud, not an edge.
 [`annual_target.py`](research/annual_target.py) · [`binance_vision.py`](research/binance_vision.py) ·
 [`kucoin_loader.py`](research/kucoin_loader.py) · [`intraday.py`](research/intraday.py) ·
 [`combine.py`](research/combine.py) · [`xsection.py`](research/xsection.py) ·
-[`xs_blend.py`](research/xs_blend.py) · [`defensive_blend.py`](research/defensive_blend.py)
+[`xs_blend.py`](research/xs_blend.py) · [`defensive_blend.py`](research/defensive_blend.py) ·
+[`regime_switch.py`](research/regime_switch.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·
