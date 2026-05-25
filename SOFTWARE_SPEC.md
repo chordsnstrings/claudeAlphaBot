@@ -600,6 +600,39 @@ and the leverage needed to make *every* year +1000% guarantees ruin. The honest,
 realistically-deployable expectation remains the risk-controlled figures of §12–§13
 (~50–90% of years banking +50%, ~33–50% CAGR), not four-digit annual returns.
 
+### 12.13 — Mid/low-cap long-"sniping" (cross-sectional momentum on small alts)
+Tested whether rotating long into the strongest mid/low-cap alts reaches the high
+targets the large caps cannot ([`lowcap.py`](research/lowcap.py)). Basket = 20
+mid/low caps via Binance Vision, deliberately including **crashed** (FTT, LUNA, GALA,
+ROSE, AXS down 90–99%) and **delisted** (MATIC, FTM, WAVES) names to blunt
+survivorship bias. Strategy: causal cross-sectional momentum, long top-k, rotating,
+delisting-aware exit; walk-forward OOS. Per-year (m=1):
+
+> 2021 **+1328%** · 2022 −40% · 2023 −40% · 2024 −40% · 2025 −42%
+
+The entire return is the **single 2021 alt-mania**; every other OOS year bled to the
+−40% stop (rotating into low-cap strength = chasing pumps that violently reverse).
+Cost sensitivity is fatal:
+
+| cost | OOS CAGR | Sharpe |
+| --- | ---: | ---: |
+| naive 6 bps (large-cap assumption) | +22% | 0.63 |
+| **realistic 50 bps + delist gaps** | **−43%** | −0.29 |
+| harsh 100 bps + delist gaps | **−61%** | −0.65 |
+
+- **Net loser after realistic low-cap slippage** (−43% to −61% CAGR); the +22% at
+  6 bps is fiction — low-cap books can't fill at large-cap costs.
+- **The high leveraged "mean" is 100% the 2021 outlier**: at 2× the mean year is
+  +1980% but the **median is −40%** — the typical year loses, one year won a lottery.
+- **Still survivorship-biased upward** (coins that died before/without a Binance
+  listing are absent), so live results would be worse than even this.
+
+**Verdict.** Low-cap long-sniping is the *opposite* of consistent: one unrepeatable
+alt-season carries it, it bleeds −40% otherwise, and it turns net-negative under
+honest costs. It cannot be leveraged to +1000% sustainably (median year is a loss)
+and it worsens the every-year-+50% problem rather than solving it. This is the
+canonical frictionless/survivorship backtest illusion, now measured and rejected.
+
 **Honesty caveat on the 90%.** Each sleeve is fully walk-forward OOS (params chosen
 on train slices only). The *blend weight and leverage* for the 90% headline are
 chosen by inspecting the OOS-period hit-rate — a mild meta-level in-sample choice.
@@ -771,7 +804,7 @@ the signature of fraud, not an edge.
 [`regime_switch.py`](research/regime_switch.py) · [`ls_trend_test.py`](research/ls_trend_test.py) ·
 [`crash_hedge.py`](research/crash_hedge.py) · [`alloc_wf.py`](research/alloc_wf.py) ·
 [`production_strategy.py`](research/production_strategy.py) · [`market_neutral.py`](research/market_neutral.py) ·
-[`target_1000.py`](research/target_1000.py)
+[`target_1000.py`](research/target_1000.py) · [`lowcap.py`](research/lowcap.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·
