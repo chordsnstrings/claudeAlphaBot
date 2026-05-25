@@ -508,6 +508,16 @@ foresight, which is look-ahead. So the 2022/2023 tension is fundamental to the
 information set, not an artifact of static averaging. **There is no causal strategy
 on this universe that banks +50% — or is even positive — in all ten years.**
 
+A fourth, independent confirmation ([`ls_trend_test.py`](research/ls_trend_test.py)):
+the cleanest short-capable engine — a **pure long/short slow-trend CTA** (short below
+a slow EMA, long above) — banks 2022 (+50…+63%) in nearly every parameter setting by
+shorting the bear, but **misses 2023 (−40…−45%) in every setting**, because 2023 was
+chop-with-net-up that whipsaws directional trend (its +50% is reachable only via the
+cross-sectional dispersion sleeve). **No setting banks both 2022 and 2023** — the
+required postures (sustained-short vs rotate-long) are opposite. The 2022 ⊻ 2023
+trade-off is therefore confirmed by four independent constructions (dense simplex
+blend, 3-sleeve defensive blend, causal regime switch, long/short CTA).
+
 **Honesty caveat on the 90%.** Each sleeve is fully walk-forward OOS (params chosen
 on train slices only). The *blend weight and leverage* are chosen by inspecting the
 OOS-period hit-rate — a mild meta-level in-sample choice — so the 90% is the best
@@ -653,7 +663,7 @@ the signature of fraud, not an edge.
 [`kucoin_loader.py`](research/kucoin_loader.py) · [`intraday.py`](research/intraday.py) ·
 [`combine.py`](research/combine.py) · [`xsection.py`](research/xsection.py) ·
 [`xs_blend.py`](research/xs_blend.py) · [`defensive_blend.py`](research/defensive_blend.py) ·
-[`regime_switch.py`](research/regime_switch.py)
+[`regime_switch.py`](research/regime_switch.py) · [`ls_trend_test.py`](research/ls_trend_test.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·
