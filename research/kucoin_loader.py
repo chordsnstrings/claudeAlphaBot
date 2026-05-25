@@ -1,10 +1,10 @@
-"""KuCoin 1H / 8H OHLCV loader.
+"""KuCoin 1H / 8H OHLCV loader (alternate market-data source).
 
-IMPORTANT: this sandbox's network allowlist blocks api.kucoin.com (403 "Host not
-in allowlist"), so this script cannot fetch here. It is written to run the moment
-KuCoin is reachable — i.e. when either:
-  * `api.kucoin.com` is added to the Claude Code web environment's network policy, or
-  * it is run outside the sandbox (locally / on the deployed bot).
+STATUS (2026-05-25): `api.kucoin.com` is now REACHABLE from this environment
+(verified 200 OK on /api/v1/timestamp). `binance_vision.py` is the primary loader
+used by the research harness; this KuCoin loader is kept as an alternate/cross-check
+source (e.g. to validate Binance-mirror candles against a second venue, or as a
+failover). `reachable()` still guards the run.
 
 KuCoin spot candles API (no key needed for market data):
   GET https://api.kucoin.com/api/v1/market/candles
@@ -29,7 +29,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(HERE, "data", "intraday")
 BASE = "https://api.kucoin.com/api/v1/market/candles"
 
-SYMBOLS = ["BTC-USDT", "ETH-USDT", "XRP-USDT", "DOGE-USDT"]
+SYMBOLS = ["SOL-USDT", "BTC-USDT", "ETH-USDT", "XRP-USDT", "DOGE-USDT"]
 TF = {"1h": ("1hour", 3600), "8h": ("8hour", 8 * 3600)}
 MAX_PER_REQ = 1500
 PAGE_PACE_S = 0.4

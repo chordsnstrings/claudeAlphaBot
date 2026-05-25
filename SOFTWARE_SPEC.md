@@ -1,8 +1,9 @@
 # Software Specification — Asset-Specific Crypto Trading System
 
 **Project:** systematic crypto strategy discovery + walk-forward validation harness
-(`research/`), built to find per-coin strategies for **BTC, ETH, XRP, DOGE** (plus
-ADA, BNB, LINK, LTC, DOT as breadth) and validate them out-of-sample.
+(`research/`), built to find per-coin strategies for the requested universe
+**SOL, ETH, BTC, DOGE, XRP** (plus ADA, BNB, LINK, LTC, DOT as breadth) and validate
+them out-of-sample.
 **Status:** research complete; all results below are walk-forward out-of-sample (OOS).
 **Date:** 2026-05-25.
 
@@ -14,6 +15,18 @@ ADA, BNB, LINK, LTC, DOT as breadth) and validate them out-of-sample.
 > documents exactly how that was established and the precise strategy that comes
 > closest. No parameters were fit to the missing years (2023, 2025); doing so
 > would be overfitting that loses money live.
+>
+> **2026-05-25 update — two prior blockers removed, conclusion unchanged.** The
+> environment can now reach `data-api.binance.vision` (Binance's public
+> market-data mirror) and `api.kucoin.com`, so the two caveats the earlier
+> research leaned on were closed: (1) **real SOL** daily/intraday now replaces the
+> DOT stand-in, and (2) **real 1h intraday** candles let us test mean reversion at
+> the frequency where it actually has opportunities. On the *exact* SOL/ETH/BTC/
+> DOGE/XRP universe the best book still banks +50% in **8/10 years (80%)**; an
+> intraday-MR sleeve is genuinely **uncorrelated** (corr +0.07) with the trend
+> book but is net-negative after realistic costs and, blended in, only *reshuffles
+> which years miss* (rescues 2023 at the cost of 2022/2025) — it does not lift the
+> 80% ceiling. See §12.6–12.7 and §14.
 
 ## Table of contents
 - [1. Objective & scope](#1-objective)
@@ -89,14 +102,16 @@ Risk overlays applied on the OOS return stream (all causal):
 
 | Item | Spec |
 | --- | --- |
-| **Source** | Coin Metrics *community* network data, pulled from `raw.githubusercontent.com/coinmetrics/data/master/csv/<asset>.csv`. |
-| **Field** | Daily close = `PriceUSD` (legacy, full history for older assets) with `ReferenceRateUSD` fallback. |
-| **Frequency** | **Daily** (1 bar/day, UTC). Intraday (1H/8H) is **unavailable** in this sandbox — every exchange/aggregator API (Binance, Coinbase, Kraken, **KuCoin**) returns HTTP 403 "Host not in allowlist"; a ready KuCoin loader (`kucoin_loader.py`) is included for when the host is reachable. |
-| **Coverage** | BTC 2014‑01‑01→, ETH 2016‑06‑01→, XRP 2014‑08‑15→, DOGE 2015‑01‑01→, LTC 2013→, ADA/BNB/LINK 2017→, DOT 2020→. All to 2026‑05‑24. |
+| **Source** | (a) Coin Metrics *community* network data for the long-history coins (`raw.githubusercontent.com/coinmetrics/data/master/csv/<asset>.csv`); (b) **`data-api.binance.vision`** (Binance public market-data mirror) for **SOL** daily and for **all-coin 1h intraday**. |
+| **Field** | Daily close = `PriceUSD`/`ReferenceRateUSD` (Coin Metrics) or `close` from Binance klines (SOL). |
+| **Frequency** | **Daily** (1 bar/day, UTC) for the validated trend study; **1H intraday** now also fetched (`research/data/intraday/<SYM>_1h.csv`, ~52k bars/coin, 2020→2026) for the mean-reversion study (§12.7). |
+| **Reachability (2026-05-25)** | `data-api.binance.vision` → **200 OK**; `api.kucoin.com` → **200 OK**. `api.binance.com` → **451** (geo-blocked), `api.binance.us` → 403. So market data flows via the Binance mirror / KuCoin; signed/account/trading endpoints remain unavailable here. Loaders: [`binance_vision.py`](research/binance_vision.py) (primary), [`kucoin_loader.py`](research/kucoin_loader.py) (alt). |
+| **Coverage** | BTC 2014‑01‑01→, ETH 2016‑06‑01→, **SOL 2020‑08‑11→ (real, Binance)**, XRP 2014‑08‑15→, DOGE 2015‑01‑01→, LTC 2013→, ADA/BNB/LINK 2017→, DOT 2020→. All to 2026‑05‑25. |
 | **Cleaning** | drop null/≤0 prices, dedupe by date, sort ascending; cached as slim `date,close,volume_usd` CSVs in `research/data/`. |
 
-**SOL note:** SOL price is not in the community tier (7-row stub); **DOT** is the
-high-beta-L1 analog used in its place.
+**SOL note (resolved):** SOL is no longer a Coin Metrics 7-row stub problem —
+real SOLUSDT history (2020‑08‑11→) is sourced from the Binance mirror. DOT is
+retained only as extra breadth, not as the SOL proxy.
 
 ---
 
@@ -297,8 +312,18 @@ AND maxDD ≥ −55%. **50% study:** count of full calendar years with return �
    years ≥+50%**, incl. 2018 & 2022 bears. Wider 9-coin book is *worse* (8/11).
 10. **KuCoin loader** (`kucoin_loader.py`): built + verified it detects the 403
     block; ready to fetch 1H/8H when the host is allowlisted.
-11. **Conclusion.** ~80% of years is the honest ceiling; +50% every year is not
-    attainable OOS without overfitting (refused).
+11. **Data unblocked (2026-05-25).** Re-probed network: `data-api.binance.vision`
+    and `api.kucoin.com` now return 200 (`api.binance.com` is geo-blocked, 451).
+    Built [`binance_vision.py`](research/binance_vision.py); fetched **real SOL
+    daily** and **1h intraday** for all 5 coins; wired SOL into `data.py`.
+12. **Real-SOL re-run** (`annual_target.py`, universe = SOL ETH BTC DOGE XRP):
+    best book 8/10 years (80%) — same band as the DOT-proxy study (§12.6).
+13. **Intraday-MR study** (`intraday.py`) + **trend/MR blend** (`combine.py`):
+    intraday MR is uncorrelated (+0.07) and positive in 2023 but net-negative after
+    costs; blending only reshuffles the missed years, ceiling stays 8/10 (§12.7).
+14. **Conclusion.** ~80% of years is the honest ceiling; +50% every year is not
+    attainable OOS without overfitting (refused). The two prior "if only we had
+    real SOL / intraday" caveats are now closed and the conclusion is unchanged.
 
 ---
 
@@ -367,6 +392,64 @@ Per-coin best leverage `m`, banked = full years returning ≥+50%:
 2021 +67%✅ · **2022 +54%✅** · 2023 −43% · 2024 +53%✅ · 2025 −41%.
 → **8/10 years, including both bear markets (2018, 2022).**
 
+### 12.6 — Real SOL, exact requested universe (2026-05-25 re-run, +50% lock)
+With real SOL replacing DOT and the universe set to exactly **SOL ETH BTC DOGE XRP**
+([`annual_target.py`](research/annual_target.py)):
+
+| Coin | Engine | m | Banked ≥50% | Worst yr | Avg profit/yr |
+| --- | --- | :--: | :--: | ---: | ---: |
+| ETH | tsmom_blend | 3× | **7/8 (88%)** | −43% | $56,056 |
+| DOGE | tsmom_blend | 2× | **7/9 (78%)** | −48% | $50,808 |
+| SOL *(real)* | tsmom_blend | 3× | 3/4 (75%) | −54% | $33,886 |
+| BTC | orchestrator | 2× | 7/10 (70%) | −47% | $32,905 |
+| XRP | tsmom_blend | 1× | 4/10 (40%) | −43% | $5,280 |
+
+| Book (3×, banked at book level) | Banked ≥50% | Worst yr | Avg profit/yr |
+| --- | :--: | ---: | ---: |
+| **SOL+ETH+BTC** | **8/10 (80%)** | −40% | $45,016 |
+| **BTC+ETH+SOL+DOGE** | **8/10 (80%)** | −40% | $54,617 |
+| **All 5 (SOL ETH BTC DOGE XRP)** | **8/10 (80%)** | −44% | $48,606 |
+
+**SOL+ETH+BTC per-year OOS (3×, +50% lock):** 2016 +71%✅ · 2017 +84%✅ ·
+2018 +59%✅ · 2019 +57%✅ · 2020 +56%✅ · 2021 +84%✅ · **2022 +54%✅** ·
+2023 −40% · 2024 +64%✅ · 2025 −40%. → **8/10, including the 2022 bear.**
+(SOL contributes from 2021; pre-2021 years are the BTC/ETH legs.)
+
+The real-SOL universe lands in the **same 80% band** as the DOT-proxy study — the
+high-beta-L1 thesis held, and using the genuine asset did not move the ceiling.
+
+### 12.7 — Intraday mean-reversion sleeve + trend/MR blend (the new-data test)
+Now that 1h candles are available, we tested whether intraday mean reversion
+([`intraday.py`](research/intraday.py)) supplies the *uncorrelated, chop-year*
+return stream the trend book lacks. Walk-forward OOS, 1h bars, **6 bps/turn +
+funding**:
+
+| Coin (best MR engine) | OOS daily CAGR | 2022 | 2023 | 2024 | 2025 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| SOL (mr_z) | −43% | −98% | **+266%** | +129% | −86% |
+| ETH (rsi_mr) | −64% | −69% | −6% | −19% | −91% |
+| BTC (rsi_mr) | −23% | −69% | −0% | −24% | −18% |
+| DOGE (rsi_mr) | −22% | **+67%** | **+60%** | −37% | **+56%** |
+| XRP (rsi_mr) | −12% | −56% | **+150%** | −1% | +16% |
+| **MR book (EW)** | — | −61% | **+90%** | +12% | −45% |
+
+- **Diversification is real:** trend-book vs MR-book daily-return correlation =
+  **+0.07** (essentially uncorrelated), and MR is strongly positive in 2023 (the
+  prime trendless year).
+- **But the edge does not survive costs:** every coin's intraday-MR sleeve is
+  net-negative; at 6 bps/turn the high turnover eats the gross signal.
+- **Blending does not raise the ceiling** ([`combine.py`](research/combine.py)),
+  it only moves the misses around:
+
+| Book = EW coins of (1−w)·trend + w·MR | best m | Banked ≥50% | which years miss |
+| --- | :--: | :--: | --- |
+| trend-only (w=0) | 3× | **8/10** | 2022, 2023 |
+| trend + 20% MR | 3× | 7/10 | 2022, 2023, 2025 |
+| trend + 35% MR | 3× | 7/10 | 2022, 2025 *(2023 rescued: +55%)* |
+| trend + 50% MR | 5× | **8/10** | 2022, 2025 *(2023 rescued: +54%)* |
+
+No blend weight or leverage (1–50× swept) exceeds **8/10 years ≥ +50%**.
+
 ---
 
 ## 13. Winner — precise spec
@@ -427,10 +510,12 @@ means *something* usually trends, lifting the book to **8/10 years ≥ +50%**.
 | Question | Honest answer |
 | --- | --- |
 | +50% in **every** calendar year, OOS? | **No.** Not achievable without overfitting. |
-| Best single-coin? | ETH 7/8 (88%), DOGE 7/9 (78%), BTC 7/10 (70%). |
-| Best book? | BTC+ETH+DOGE 8/10 (80%), worst year −43%. |
-| Why the misses? | 2023 & 2025 had no +50% directional move to lock. |
-| Does leverage help? | It raises good-year returns **and** ruin probability; net it **hurts** consistency (XRP −112%). Modest 2–3× + stop is the sane choice. |
+| Best single-coin? | ETH 7/8 (88%), DOGE 7/9 (78%), SOL 3/4 (75%, real data), BTC 7/10 (70%). |
+| Best book? | SOL+ETH+BTC / BTC+ETH+SOL+DOGE 8/10 (80%), worst year −40%. |
+| Why the misses? | The trendless years (2022 for some books, 2023, 2025) have no +50% directional move to lock; trend-following sits in cash. |
+| Did **real SOL** change it? | No — the real-SOL universe lands in the same 80% band as the DOT-proxy study. |
+| Did **intraday** change it? | No — intraday MR is uncorrelated (corr +0.07) and helps 2023, but is net-negative after costs and only reshuffles which years miss; the book holds at 8/10. |
+| Does leverage help? | It raises good-year returns **and** ruin probability; beyond ~3× it **hurts** consistency (−100% liquidation years). Modest 2–3× + stop is the sane choice. |
 | What *is* consistent? | The 30% diversified book: +33.6% CAGR, Sharpe 1.72, **positive 10/13 years**. |
 
 A strategy that truly guaranteed +50% every year would be a risk-free arbitrage
@@ -455,15 +540,20 @@ the signature of fraud, not an edge.
 
 ## 16. Limitations & caveats
 
-- **Daily bars only** — no intraday stops/fills; costs kept conservative; 1H/8H
-  unavailable in-sandbox (KuCoin/all exchanges blocked).
+- **Daily bars drive the validated trend study** — intraday (1h) is now available
+  and was used for the mean-reversion study (§12.7), but the trend backbone is
+  daily; no tick-level stops/fills are modelled. Costs kept conservative.
+- **Intraday MR is cost-bound** — the 1h mean-reversion edge is gross-positive in
+  parts but net-negative at realistic 6 bps/turn; it is not a deployable standalone
+  sleeve here, only a (weak, uncorrelated) diversifier.
 - **Trend-following is lumpy** — per-coin returns concentrate in trend years;
   consistency is a *portfolio* property.
 - **Leverage = ruin risk** — naive 10–50× produces −100% years; only vol-targeted,
   stop-protected, modest leverage is sane.
 - **Past performance is not predictive**; walk-forward limits but does not remove
   regime-change risk. Paper-trade first.
-- **XRP/LTC/DOT** do not support the 50% target on daily data.
+- **XRP/LTC/DOT** do not support the 50% target on daily data; **SOL** (real) sits
+  in the 75% band per-coin, 80% inside a book.
 
 ---
 
@@ -473,7 +563,9 @@ the signature of fraud, not an edge.
 [`strategies.py`](research/strategies.py) · [`walkforward.py`](research/walkforward.py) ·
 [`run_research.py`](research/run_research.py) · [`robustness.py`](research/robustness.py) ·
 [`portfolio_analysis.py`](research/portfolio_analysis.py) · [`run_v2.py`](research/run_v2.py) ·
-[`annual_target.py`](research/annual_target.py) · [`kucoin_loader.py`](research/kucoin_loader.py)
+[`annual_target.py`](research/annual_target.py) · [`binance_vision.py`](research/binance_vision.py) ·
+[`kucoin_loader.py`](research/kucoin_loader.py) · [`intraday.py`](research/intraday.py) ·
+[`combine.py`](research/combine.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·
@@ -487,8 +579,12 @@ OOS equity CSVs in `research/results/`.
 ```bash
 python3 -m venv research_venv && research_venv/bin/pip install numpy pandas
 cd research
-../research_venv/bin/python data.py
-../research_venv/bin/python run_research.py --all      # 30% study
-../research_venv/bin/python run_v2.py                  # 50% leverage/orchestrator
-../research_venv/bin/python annual_target.py BTC ETH XRP DOGE   # profit-lock + books
+../research_venv/bin/python data.py                          # CM daily for the long-history coins
+../research_venv/bin/python binance_vision.py SOL --daily     # real SOL daily (Binance mirror)
+../research_venv/bin/python binance_vision.py --intraday 1h    # 1h candles, all 5 coins
+../research_venv/bin/python run_research.py --all             # 30% study
+../research_venv/bin/python run_v2.py                         # 50% leverage/orchestrator
+../research_venv/bin/python annual_target.py                  # profit-lock + books (SOL ETH BTC DOGE XRP)
+../research_venv/bin/python intraday.py                       # intraday mean-reversion sleeve
+../research_venv/bin/python combine.py                        # trend + intraday-MR blend test
 ```
