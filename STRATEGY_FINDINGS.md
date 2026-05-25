@@ -72,6 +72,17 @@ Return **peaks near 5% risk and falls apart above it** — bigger size means big
 losers and sizing rejections, not more profit. There is no risk setting that
 turns this edge into 20%/month; pushing toward it destroys the account.
 
+**On leverage — yes, it's used, and it's capped.** Sizing is risk‑based: WEEKEND_MR's
+stops sit ~1.2% from entry on average, so even 2% risk produces **~1.7× notional
+exposure** (≈1.7× leverage); the recommended config is *not* unleveraged. The
+engine hard‑caps total exposure at **2.5× equity**, and from ~5% risk upward
+sizing simply pins to that ceiling — which is why the ladder above flattens then
+decays (trade count collapses 9 → 7 → 3 as oversized orders get rejected). The
+per‑symbol leverage parameter defaults to 20× but only governs posted margin,
+not P&L. Bottom line: **even at the maximum 2.5× exposure the system allows, the
+best result is ~1.7%/month** — 20%/month is not reachable by adding leverage, and
+lifting the cap only converts an ordinary losing streak into account death.
+
 **The asset itself doesn't offer it.** BTC buy‑and‑hold over this window returned
 **+9.8% total** (mean +1.24%/month) and rose **≥20% in only 1 of 19 months**.
 With profit withdrawn each month (no compounding), 20%/month requires generating
