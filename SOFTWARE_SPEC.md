@@ -791,6 +791,66 @@ the signature of fraud, not an edge.
 
 ---
 
+## 18. ETH-only futures bot — the +20%/month question
+
+Dedicated study of the **best possible ETHUSDT-only futures bot** and the target of
+**+20% month-on-month** (≈ +791%/yr compounded). Code: [`eth_monthly.py`](research/eth_monthly.py),
+[`eth_intraday.py`](research/eth_intraday.py). All walk-forward OOS.
+
+### 18.1 Best ETH engine (daily)
+Across all families, the walk-forward winner for ETH is **`tsmom_blend` long-only**
+(lbs `[10,30,60,120]`, inverse-vol target 0.6, vol_lb 20):
+**OOS CAGR +56.4%, Sharpe 1.20, maxDD −42%, avg exposure 0.42.** This is the honest
+best single-coin ETH bot — a strong result, ~3× ETH buy-and-hold's risk-adjusted return.
+
+### 18.2 Intraday does NOT help (higher frequency loses)
+1h trend/breakout families on ETH (Binance Vision) are all **worse** than the daily
+engine — costs and whipsaw dominate:
+
+| ETH engine | OOS CAGR | ann.Sharpe | maxDD | median month |
+| --- | ---: | ---: | ---: | ---: |
+| **daily tsmom_blend** | **+56%** | **1.20** | **−42%** | 0% |
+| 1h donchian (best intraday) | +14% | 0.78 | −99% | −3% |
+| 1h tsmom_blend | −13% | 0.36 | −95% | −7% |
+| 1h trend_flat | −30% | 0.39 | −99% | −4% |
+
+→ The daily bar is the right frequency for ETH momentum; intraday is rejected.
+
+### 18.3 Monthly distribution of the best bot (leverage sweep, OOS, 102 months)
+| m | mean/mo | median/mo | std/mo | % months ≥+20% | worst mo | best mo | ruin mo | ann CAGR |
+| --: | --: | --: | --: | :--: | --: | --: | :--: | --: |
+| 1× | +5% | 0% | 16% | 13% | −19% | +64% | 0 | +55% |
+| 2× | +10% | 0% | 36% | 20% | −35% | +161% | 0 | +98% |
+| 3× | +16% | 0% | 60% | 22% | −49% | +305% | 0 | **+105%** |
+| 5× | +30% | 0% | 126% | 24% | −84% | +805% | 0 | +4% |
+| 8× | +56% | 0% | 303% | 22% | −100% | +2486% | 4 | −100% |
+
+With a **monthly +20% lock / −20% stop**, the share of months banking +20% rises to
+24% (1×) → 48% (8×), but the **median month stays 0%** and worst months deepen to
+−48%; leverage past ~3× wrecks compounded CAGR.
+
+### 18.4 Verdict on +20%/month
+- **Not attainable as an every-month outcome.** ETH's monthly return std is ~16% at
+  1× (38% buy-and-hold); momentum is **flat (0%) in the median month** (it sits in
+  cash out of uptrends) and clears +20% in only **~22% of months** even levered.
+- **Chasing it with leverage backfires:** the +20%-month hit-rate barely rises past
+  3× while drawdowns go to −84% (5×) and ruin (8×), collapsing compounded CAGR from
+  +105% (3×) to +4% (5×) to −100% (8×). The mean is dragged up by a few explosive
+  months; the typical month is flat.
+- **What IS real:** the best ETH bot compounds **~56% CAGR at 1×** (Sharpe 1.20) and
+  up to **~100–105% CAGR at 2–3×** — with the explicit cost that individual months
+  swing −35% to −49%. That is an excellent ETH futures strategy; it is **not** a
+  smooth +20%/month, which (like all "fixed high return every period" claims) is not
+  a shape any honest causal edge produces on a 38%-monthly-vol asset.
+
+**Deployable ETH-only config:** `tsmom_blend` long-only, lbs `[10,30,60,120]`,
+vol_target 0.6, vol_lb 20, futures leverage **m=2–3×**, **−40% annual / −20% monthly
+stop**, profit withdrawn. Expectation: ~56–105% CAGR, ~1 month in 4–5 prints ≥+20%,
+deep down-months are part of the deal. Paper-trade first. (Maps onto the same
+execution/risk layer as the multi-coin book in `DEPLOYABLE_STRATEGY_BUILD.md`.)
+
+---
+
 ## 17. Files & reproduction
 
 **Code:** [`data.py`](research/data.py) · [`engine.py`](research/engine.py) ·
@@ -804,7 +864,8 @@ the signature of fraud, not an edge.
 [`regime_switch.py`](research/regime_switch.py) · [`ls_trend_test.py`](research/ls_trend_test.py) ·
 [`crash_hedge.py`](research/crash_hedge.py) · [`alloc_wf.py`](research/alloc_wf.py) ·
 [`production_strategy.py`](research/production_strategy.py) · [`market_neutral.py`](research/market_neutral.py) ·
-[`target_1000.py`](research/target_1000.py) · [`lowcap.py`](research/lowcap.py)
+[`target_1000.py`](research/target_1000.py) · [`lowcap.py`](research/lowcap.py) ·
+[`eth_monthly.py`](research/eth_monthly.py) · [`eth_intraday.py`](research/eth_intraday.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·

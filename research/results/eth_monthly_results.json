@@ -1,0 +1,144 @@
+{
+  "engine": "tsmom_blend_lev",
+  "oos_summary": {
+    "asset": "ETH",
+    "family": "tsmom_blend_lev",
+    "n_folds": 17,
+    "oos_cagr": 0.5636,
+    "oos_sharpe": 1.199,
+    "oos_sortino": 1.365,
+    "oos_max_dd": -0.4225,
+    "oos_calmar": 1.334,
+    "oos_vol": 0.4595,
+    "avg_exposure": 0.421,
+    "ann_turnover": 36.97,
+    "fold_pass_rate": 0.647,
+    "avg_fold_sharpe": 0.961,
+    "param_stability_pct": 87.29,
+    "oos_days": 3060
+  },
+  "raw_leverage": {
+    "1": {
+      "n_months": 102,
+      "mean": 0.0481,
+      "median": 0.0,
+      "std": 0.1601,
+      "pct_ge_20": 0.127,
+      "worst": -0.189,
+      "best": 0.6404,
+      "ruin_months": 0,
+      "compounded_mult": 42.41712190878013,
+      "ann_cagr": 0.554
+    },
+    "2": {
+      "n_months": 102,
+      "mean": 0.1018,
+      "median": 0.0,
+      "std": 0.3562,
+      "pct_ge_20": 0.196,
+      "worst": -0.3521,
+      "best": 1.6124,
+      "ruin_months": 0,
+      "compounded_mult": 326.72348883852175,
+      "ann_cagr": 0.976
+    },
+    "3": {
+      "n_months": 102,
+      "mean": 0.161,
+      "median": 0.0,
+      "std": 0.597,
+      "pct_ge_20": 0.225,
+      "worst": -0.4907,
+      "best": 3.0496,
+      "ruin_months": 0,
+      "compounded_mult": 444.88795072550516,
+      "ann_cagr": 1.049
+    },
+    "5": {
+      "n_months": 102,
+      "mean": 0.2955,
+      "median": 0.0,
+      "std": 1.2595,
+      "pct_ge_20": 0.235,
+      "worst": -0.841,
+      "best": 8.0521,
+      "ruin_months": 0,
+      "compounded_mult": 1.360413032442461,
+      "ann_cagr": 0.037
+    },
+    "8": {
+      "n_months": 102,
+      "mean": 0.5581,
+      "median": 0.0,
+      "std": 3.029,
+      "pct_ge_20": 0.216,
+      "worst": -1.0,
+      "best": 24.8616,
+      "ruin_months": 4,
+      "compounded_mult": 0.0,
+      "ann_cagr": -1.0
+    }
+  },
+  "monthly_lock": {
+    "1": {
+      "n_months": 102,
+      "mean": 0.0401,
+      "median": 0.0,
+      "std": 0.1228,
+      "pct_ge_20": 0.235,
+      "worst": -0.189,
+      "best": 0.295,
+      "ruin_months": 0,
+      "compounded_mult": 27.666606604341474,
+      "ann_cagr": 0.478
+    },
+    "2": {
+      "n_months": 102,
+      "mean": 0.0655,
+      "median": 0.0,
+      "std": 0.1903,
+      "pct_ge_20": 0.343,
+      "worst": -0.2463,
+      "best": 0.6132,
+      "ruin_months": 0,
+      "compounded_mult": 130.47550394897806,
+      "ann_cagr": 0.774
+    },
+    "3": {
+      "n_months": 102,
+      "mean": 0.0858,
+      "median": 0.0,
+      "std": 0.2509,
+      "pct_ge_20": 0.402,
+      "worst": -0.2997,
+      "best": 0.8813,
+      "ruin_months": 0,
+      "compounded_mult": 310.27492295489964,
+      "ann_cagr": 0.964
+    },
+    "5": {
+      "n_months": 102,
+      "mean": 0.1088,
+      "median": 0.0,
+      "std": 0.3394,
+      "pct_ge_20": 0.451,
+      "worst": -0.4794,
+      "best": 1.5498,
+      "ruin_months": 0,
+      "compounded_mult": 471.4492227761481,
+      "ann_cagr": 1.063
+    },
+    "8": {
+      "n_months": 102,
+      "mean": 0.1423,
+      "median": 0.0,
+      "std": 0.3704,
+      "pct_ge_20": 0.48,
+      "worst": -0.4781,
+      "best": 1.6199,
+      "ruin_months": 0,
+      "compounded_mult": 4395.5920176362915,
+      "ann_cagr": 1.683
+    }
+  }
+}
