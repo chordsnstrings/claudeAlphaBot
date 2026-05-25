@@ -179,8 +179,15 @@ def concentration(events):
 def main(argv):
     px, vol = load_panel()
     print(f"Universe: {px.shape[1]} coins, {px.index[0].date()} -> {px.index[-1].date()}")
+    # Walk-forward grid: keep rebalance <= 30d so every 180d test fold has >=6
+    # periods (slower rebals would yield <=3-period folds that get dropped, which
+    # silently removes 2022 from the OOS -- a fake pass). Slow rebalancing gets its
+    # fair shot in the full-sample UPPER-BOUND scan below instead.
     grid = [dict(lookback=lb, k=k, rebal=rb, univ_size=40)
-            for lb in (30, 60, 90) for k in (3, 5, 8) for rb in (7, 14, 30)]
+            for lb in (30, 60, 90, 120) for k in (3, 5, 8) for rb in (7, 14, 30)]
+    # Upper-bound scan grid: include slow/low-turnover rebalancing (60, 90d).
+    ub_grid = [dict(lookback=lb, k=k, rebal=rb, univ_size=40)
+               for lb in (30, 60, 90, 120) for k in (3, 5, 8) for rb in (14, 30, 60, 90)]
     out = {}
     for cost in (6, 50):
         oos, events, meta = walk_forward(px, vol, grid, cost_bps=cost)
@@ -202,6 +209,25 @@ def main(argv):
               f"events={len(events)}  top10/posPnL={conc:.0%}")
         print(f"  2022 return={r2022:+.1%}")
         print("  per-year:", "  ".join(f"{y}:{v:+.0%}" for y, v in peryr.items()))
+    # OPTIMISTIC UPPER BOUND (full-sample, look-ahead): if even the best in-sample
+    # config at 50 bps cannot get 2022>0 AND Sharpe>=0.7, no honest OOS process can,
+    # so the KILL is definitive and not an artifact of walk-forward param choice.
+    print(f"\n{'='*70}\nUPPER-BOUND CHECK (full-sample look-ahead, 50 bps) — best achievable")
+    best_2022, best_sharpe = (-9, None), (-9, None)
+    for p in ub_grid:
+        rp, _, rb = build_returns(px, vol, cost_bps=50, **p)
+        rp = rp[rp.index >= (px.index[0] + pd.Timedelta(days=400))]
+        r22 = year_return(rp, 2022)
+        sh = sharpe(rp, rb)
+        if not np.isnan(r22) and r22 > best_2022[0]:
+            best_2022 = (r22, dict(p, sharpe=round(sh, 2)))
+        if sh > best_sharpe[0]:
+            best_sharpe = (sh, dict(p, r2022=round(r22, 4) if not np.isnan(r22) else None))
+    out["upper_bound_2022"] = {"r2022": round(best_2022[0], 4), "config": best_2022[1]}
+    out["upper_bound_sharpe"] = {"sharpe": round(best_sharpe[0], 2), "config": best_sharpe[1]}
+    print(f"  best 2022 any config: {best_2022[0]:+.1%}  {best_2022[1]}")
+    print(f"  best Sharpe any config: {best_sharpe[0]:.2f}  {best_sharpe[1]}")
+
     # scoring
     if 50 in out and 6 in out:
         o, o6 = out[50], out[6]
