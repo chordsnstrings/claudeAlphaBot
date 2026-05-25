@@ -27,9 +27,38 @@ liquidation). XRP is the clearest proof that leverage + a "must hit 50%" mandate
 is dangerous, not profitable.
 
 **Bottom line:** a strong, survivable system that *targets* 50%+ and clears it in
-~40–60% of years for the trend-friendly coins — but **no honest configuration
-guarantees 50% every year.** Treat 50% as an aspiration with real downside, not a
-floor.
+~40–60% of years per single coin — but **no honest configuration guarantees 50%
+every year for a single coin.** The best honest architecture (below) is a
+**diversified book with a within-year +50% profit-lock**, which banks +50% in
+**8 of 10 years (80%), including the 2018 and 2022 bears**, worst year −43%.
+
+## 🏆 Best achievable architecture (profit-target lock + diversified book)
+
+The brief's own accounting — **start each year at $100k, withdraw profit at year
+end** — is the key. It turns each year into an independent race: *can the account
+reach +50% before a −40% stop?* If yes, **lock it** (go flat, bank +50% for the
+year). This is causal and is the natural way to run a leveraged, profit-swept
+account. Splitting capital across **BTC + ETH + DOGE** (something trends almost
+every year) and banking at the **book** level gives the most consistent result:
+
+| Engine | Lev | Banks +50% | Worst year | Avg profit/yr |
+| --- | :--: | :--: | ---: | ---: |
+| **Book: BTC+ETH+DOGE, book-level lock** | 3× | **8 / 10 yrs (80%)** | −43% | **$48,961** |
+| ETH single (profit-lock) | 2–3× | 7 / 8 (88%) | −43% | $56,056 |
+| DOGE single (profit-lock) | 2× | 7 / 9 (78%) | −48% | $50,808 |
+| BTC single (profit-lock) | 2× | 7 / 10 (70%) | −47% | $32,905 |
+| XRP single | 1× | 4 / 10 (40%) | −43% | $5,280 |
+
+**Book per-year (OOS, +50% lock, 3×):** 2016 +71%✅, 2017 +56%✅, **2018 +50%✅**,
+2019 +171%✅, 2020 +50%✅, 2021 +67%✅, **2022 +54%✅**, 2023 −43%, 2024 +53%✅,
+2025 −41%. → **8/10, and it cleared +50% in both bear years (2018, 2022).** Only
+2023 and 2025 missed. Data: [`research/results/annual_target_results.json`](research/results/annual_target_results.json),
+code: [`research/annual_target.py`](research/annual_target.py).
+
+**This is as close to the goal as the out-of-sample evidence honestly allows.**
+100% is not reachable — 2023/2025 had no +50% move to lock in the strategy's
+direction — and chasing it would mean overfitting. With modest 2–3× leverage the
+downside is bounded (~−40%), *not* the −100% ruin that naive 10–50× produces.
 
 - [1. Why every-year-50% is impossible OOS](#1-why-impossible)
 - [2. Per-coin per-year results](#2-per-coin-results)
