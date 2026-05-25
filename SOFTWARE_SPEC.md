@@ -629,7 +629,21 @@ Result: **9/10 calendar years ≥ +50% (90%)** out-of-sample, worst non-banked y
 ≈ −42% (2022), robust across the weight band. Sleeve B is what banks the trendless
 2023 & 2025; Sleeve A carries the trend years. This supersedes the trend-only book
 (8/10) as the recommended target — subject to the §12.9 honesty caveat that the
-*allocation* weights should themselves be walk-forwarded at the deployment gate.
+*allocation* weights should themselves be walk-forwarded at the deployment gate
+(done in §12.9: fully-OOS allocation-walk-forward = **6/7, 86%**).
+
+### 13.7 Deployable module — live target weights
+[`production_strategy.py`](research/production_strategy.py) operationalises the
+above into **today's target weights** from live daily data (Binance Vision/KuCoin):
+- Sleeve A: `sig_tsmom_blend` long-only per coin (lbs per §13.5), vol-target 0.60,
+  vol_lb 20, max_lev 3.
+- Sleeve B: cross-sectional top-2 rotation, basket vol-targeted.
+- Book = `0.60·A + 0.40·B` (the allocation the walk-forward converged on), with a
+  **book gross-exposure cap of 2×** and the annual +50% lock / −40% stop wrapper.
+
+Example output (2026-05-24): hold **ETH 39% + DOGE 39%**, gross 78% — the two
+strongest-momentum coins; SOL/BTC/XRP not in qualifying uptrends ⇒ 0. This module
+maps directly onto the production bot's risk/execution layer (§15).
 
 ---
 
@@ -696,7 +710,8 @@ the signature of fraud, not an edge.
 [`combine.py`](research/combine.py) · [`xsection.py`](research/xsection.py) ·
 [`xs_blend.py`](research/xs_blend.py) · [`defensive_blend.py`](research/defensive_blend.py) ·
 [`regime_switch.py`](research/regime_switch.py) · [`ls_trend_test.py`](research/ls_trend_test.py) ·
-[`crash_hedge.py`](research/crash_hedge.py) · [`alloc_wf.py`](research/alloc_wf.py)
+[`crash_hedge.py`](research/crash_hedge.py) · [`alloc_wf.py`](research/alloc_wf.py) ·
+[`production_strategy.py`](research/production_strategy.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·
