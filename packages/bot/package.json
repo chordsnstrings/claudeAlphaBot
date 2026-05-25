@@ -19,6 +19,7 @@
     "validate-pipeline": "tsx src/cli/run-validation.ts",
     "fetch-btc-data": "tsx src/cli/fetch-btc-data.ts",
     "analyze-btcusdt": "tsx src/cli/analyze-btcusdt.ts",
+    "optimize-btcusdt": "tsx src/cli/optimize-btcusdt.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {

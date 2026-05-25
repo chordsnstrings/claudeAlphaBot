@@ -45,6 +45,43 @@ profile on real data.
 Over the full window, WEEKEND_MR @ 5% withdrew **$2,965 on a $10,000 base
 (~30%, ≈ 1.6%/month average)** while keeping working capital constant.
 
+## Good-faith optimization & the ceiling
+
+I didn't stop at defaults. `optimize-btcusdt.ts` sweeps WEEKEND_MR
+(threshold × stop buffer × risk = 36 configs) plus ARB/NY grids, scored on
+constant‑capital monthly return, then runs a risk ladder, a buy‑and‑hold
+benchmark, and a train/out‑of‑sample split. Reproduce with
+`pnpm --filter @hydra/bot optimize-btcusdt`
+(`artifacts/btcusdt_optimization.json`).
+
+**Best config found:** `WEEKEND_MR threshold=3.0, stop=0.3·ATR @ 5% risk` —
+**1.71%/month** mean, 1/19 months ≥20%, 20.8% compound APR, 24% constant‑capital
+drawdown. Marginally better than the default; nowhere near 20%.
+
+**You cannot buy 20%/month with leverage.** The risk ladder on that config:
+
+| Risk/trade | Mean month | Constant‑cap max DD | Note |
+|---|---|---|---|
+| 2% | +1.43% | 16.0% | survivable |
+| **5%** | **+1.71%** | 24.3% | **peak** |
+| 10% | +1.11% | 25.8% | already decaying |
+| 20% | −0.11% | — | losers dominate |
+| 40–80% | 0.00% | — | account wiped, then idle |
+
+Return **peaks near 5% risk and falls apart above it** — bigger size means bigger
+losers and sizing rejections, not more profit. There is no risk setting that
+turns this edge into 20%/month; pushing toward it destroys the account.
+
+**The asset itself doesn't offer it.** BTC buy‑and‑hold over this window returned
+**+9.8% total** (mean +1.24%/month) and rose **≥20% in only 1 of 19 months**.
+With profit withdrawn each month (no compounding), 20%/month requires generating
+20% of base in fresh profit *every* month — but the underlying barely delivers a
+20% month even once. That is the hard ceiling, independent of strategy.
+
+**Out‑of‑sample, it holds up (modestly).** 70/30 train/OOS split: TRAIN
++1.90%/month → OOS **+0.96%/month**, 0/6 OOS months ≥20%. Positive and not a
+catastrophic overfit — but a realistic ~1%/month, not 20%.
+
 ---
 
 ## Why WEEKEND_MR wins (and why it still isn't 20%/month)
@@ -85,11 +122,16 @@ to 20% you would have to raise risk‑per‑trade to a level where a normal losi
 streak (which WEEKEND_MR has — three negative months in a row to start the
 window) wipes the account before the withdrawals ever accumulate.
 
-**Recommendation:** treat 15–20% *per year* with single‑digit drawdowns as the
-achievable target. WEEKEND_MR @ 2% risk (Sharpe 1.52, 5.7% max DD, +15%/yr) is
-the soundest config; the monthly skim is the right risk discipline to keep on
-top of it. Reframe the goal from "20%/month" to "consistent monthly skim of a
-positive‑expectancy edge," and this bot can serve it.
+**Recommendation:** treat **15–20% *per year*** with single‑digit drawdowns as
+the achievable target. The soundest deployable config is **`WEEKEND_MR`
+threshold=3.0 @ 2% risk** (Sharpe 1.52, ~6% max DD, ~15–18%/yr); 5% risk lifts
+the mean to ~1.7%/month but doubles the drawdown for little gain, and anything
+beyond that decays. Keep the **monthly profit skim** on top of it — it is the
+correct risk discipline and the one part of the original goal worth keeping as
+stated. Reframe the objective from "20%/month" to "consistently skim a
+positive‑expectancy edge each month," and this bot can serve it. The literal
+20%/month is not a strategy problem — it exceeds what BTC itself offered in 18
+of the last 19 months — so it should be dropped rather than chased.
 
 ---
 

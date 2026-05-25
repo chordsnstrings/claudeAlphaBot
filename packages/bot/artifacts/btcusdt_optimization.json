@@ -1,0 +1,243 @@
+{
+  "generatedAt": "2026-05-25T07:42:14.793Z",
+  "dataWindow": {
+    "firstOpen": "2024-11-01T00:00:00.000Z",
+    "lastOpen": "2026-05-24T23:00:00.000Z",
+    "candles": 13680
+  },
+  "target": 20,
+  "best": {
+    "label": "WMR th=3 sb=0.3",
+    "riskPct": 0.05,
+    "trades": 9,
+    "meanMonthlyPct": 1.7075953028574002,
+    "medianMonthlyPct": 0,
+    "monthsAbove": 1,
+    "months": 19,
+    "skimMaxDdPct": 24.31327953845571,
+    "compoundMaxDdPct": 11.019640473552426,
+    "compoundAnnualizedPct": 20.823065395920317,
+    "totalWithdrawn": 3167.028702791542
+  },
+  "topConfigs": [
+    {
+      "label": "WMR th=3 sb=0.3",
+      "riskPct": 0.05,
+      "trades": 9,
+      "meanMonthlyPct": 1.7075953028574002,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 1,
+      "months": 19,
+      "skimMaxDdPct": 24.31327953845571,
+      "compoundMaxDdPct": 11.019640473552426,
+      "compoundAnnualizedPct": 20.823065395920317,
+      "totalWithdrawn": 3167.028702791542
+    },
+    {
+      "label": "WMR th=3 sb=0.5",
+      "riskPct": 0.05,
+      "trades": 9,
+      "meanMonthlyPct": 1.6176535706619548,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 1,
+      "months": 19,
+      "skimMaxDdPct": 23.267521265040674,
+      "compoundMaxDdPct": 11.705102563277595,
+      "compoundAnnualizedPct": 19.507695788038504,
+      "totalWithdrawn": 2964.5786179930565
+    },
+    {
+      "label": "WMR th=3 sb=0.7",
+      "riskPct": 0.05,
+      "trades": 9,
+      "meanMonthlyPct": 1.551745387478244,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 1,
+      "months": 19,
+      "skimMaxDdPct": 22.284576333315137,
+      "compoundMaxDdPct": 12.064721201034043,
+      "compoundAnnualizedPct": 18.572251021300534,
+      "totalWithdrawn": 2817.539859152881
+    },
+    {
+      "label": "WMR th=3 sb=0.7",
+      "riskPct": 0.1,
+      "trades": 9,
+      "meanMonthlyPct": 1.5479097944739149,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 1,
+      "months": 19,
+      "skimMaxDdPct": 23.47148357207077,
+      "compoundMaxDdPct": 12.865200606050694,
+      "compoundAnnualizedPct": 18.393501707194293,
+      "totalWithdrawn": 2804.5914016601437
+    },
+    {
+      "label": "WMR th=3 sb=0.3",
+      "riskPct": 0.02,
+      "trades": 9,
+      "meanMonthlyPct": 1.428025378723058,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 0,
+      "months": 19,
+      "skimMaxDdPct": 16.01207727924477,
+      "compoundMaxDdPct": 5.841169589614601,
+      "compoundAnnualizedPct": 17.836764817312556,
+      "totalWithdrawn": 2673.158363072029
+    },
+    {
+      "label": "WMR th=2.5 sb=0.3",
+      "riskPct": 0.05,
+      "trades": 13,
+      "meanMonthlyPct": 1.3920486970198394,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 1,
+      "months": 19,
+      "skimMaxDdPct": 20.335363893306095,
+      "compoundMaxDdPct": 11.019640473552426,
+      "compoundAnnualizedPct": 16.273416302851995,
+      "totalWithdrawn": 2466.1947734000114
+    },
+    {
+      "label": "WMR th=3 sb=0.5",
+      "riskPct": 0.1,
+      "trades": 8,
+      "meanMonthlyPct": 1.3360956612684012,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 1,
+      "months": 19,
+      "skimMaxDdPct": 25.392043772434462,
+      "compoundMaxDdPct": 11.96076129104169,
+      "compoundAnnualizedPct": 15.555171576742243,
+      "totalWithdrawn": 2431.672470865533
+    },
+    {
+      "label": "WMR th=3 sb=0.5",
+      "riskPct": 0.02,
+      "trades": 9,
+      "meanMonthlyPct": 1.2423838854274358,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 0,
+      "months": 19,
+      "skimMaxDdPct": 13.715247304128178,
+      "compoundMaxDdPct": 5.658680280897588,
+      "compoundAnnualizedPct": 15.447429601507178,
+      "totalWithdrawn": 2321.8709429575047
+    }
+  ],
+  "riskLadder": [
+    {
+      "label": "WMR th=3 sb=0.3 (ladder)",
+      "riskPct": 0.02,
+      "trades": 9,
+      "meanMonthlyPct": 1.428025378723058,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 0,
+      "months": 19,
+      "skimMaxDdPct": 16.01207727924477,
+      "compoundMaxDdPct": 5.841169589614601,
+      "compoundAnnualizedPct": 17.836764817312556,
+      "totalWithdrawn": 2673.158363072029
+    },
+    {
+      "label": "WMR th=3 sb=0.3 (ladder)",
+      "riskPct": 0.05,
+      "trades": 9,
+      "meanMonthlyPct": 1.7075953028574002,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 1,
+      "months": 19,
+      "skimMaxDdPct": 24.31327953845571,
+      "compoundMaxDdPct": 11.019640473552426,
+      "compoundAnnualizedPct": 20.823065395920317,
+      "totalWithdrawn": 3167.028702791542
+    },
+    {
+      "label": "WMR th=3 sb=0.3 (ladder)",
+      "riskPct": 0.1,
+      "trades": 7,
+      "meanMonthlyPct": 1.1112382894583561,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 1,
+      "months": 19,
+      "skimMaxDdPct": 25.796698818873615,
+      "compoundMaxDdPct": 11.019640473552426,
+      "compoundAnnualizedPct": 12.601204996868987,
+      "totalWithdrawn": 2034.3207280232145
+    },
+    {
+      "label": "WMR th=3 sb=0.3 (ladder)",
+      "riskPct": 0.2,
+      "trades": 3,
+      "meanMonthlyPct": -0.10687539438295313,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 0,
+      "months": 19,
+      "skimMaxDdPct": 8.332157481668236,
+      "compoundMaxDdPct": 8.332157481668236,
+      "compoundAnnualizedPct": -1.6239632134631754,
+      "totalWithdrawn": 271.0479890603001
+    },
+    {
+      "label": "WMR th=3 sb=0.3 (ladder)",
+      "riskPct": 0.4,
+      "trades": 0,
+      "meanMonthlyPct": 0,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 0,
+      "months": 19,
+      "skimMaxDdPct": 0,
+      "compoundMaxDdPct": 0,
+      "compoundAnnualizedPct": 0,
+      "totalWithdrawn": 0
+    },
+    {
+      "label": "WMR th=3 sb=0.3 (ladder)",
+      "riskPct": 0.8,
+      "trades": 0,
+      "meanMonthlyPct": 0,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 0,
+      "months": 19,
+      "skimMaxDdPct": 0,
+      "compoundMaxDdPct": 0,
+      "compoundAnnualizedPct": 0,
+      "totalWithdrawn": 0
+    }
+  ],
+  "buyHold": {
+    "totalPct": 9.820241848338418,
+    "meanMonthlyPct": 1.2384356614866454,
+    "monthsAbove": 1,
+    "months": 19
+  },
+  "trainOos": {
+    "cut": "2025-12-05T00:00:00.000Z",
+    "train": {
+      "label": "WMR th=3 sb=0.3 TRAIN",
+      "riskPct": 0.05,
+      "trades": 8,
+      "meanMonthlyPct": 1.9039037963930467,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 1,
+      "months": 14,
+      "skimMaxDdPct": 24.31327953845571,
+      "compoundMaxDdPct": 11.019640473552426,
+      "compoundAnnualizedPct": 24.455921705003746,
+      "totalWithdrawn": 2588.0629423127466
+    },
+    "oos": {
+      "label": "WMR th=3 sb=0.3 OOS",
+      "riskPct": 0.05,
+      "trades": 1,
+      "meanMonthlyPct": 0.9649429341313255,
+      "medianMonthlyPct": 0,
+      "monthsAbove": 0,
+      "months": 6,
+      "skimMaxDdPct": 5.472801156439246,
+      "compoundMaxDdPct": 1.7985375411610172,
+      "compoundAnnualizedPct": 12.768245239053266,
+      "totalWithdrawn": 578.9657604787953
+    }
+  }
+}
