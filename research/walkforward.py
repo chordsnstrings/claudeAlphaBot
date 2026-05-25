@@ -45,6 +45,7 @@ class WFResult:
     oos: Metrics
     oos_equity: pd.Series = field(repr=False)
     oos_returns: pd.Series = field(repr=False)
+    oos_held: pd.Series = field(repr=False, default=None)
     fold_pass_rate: float = 0.0
     avg_fold_test_sharpe: float = 0.0
     param_stability_pct: float = 0.0
@@ -194,7 +195,7 @@ def walk_forward(
 
     return WFResult(
         asset=asset, family=family.name, folds=folds, oos=oos_m,
-        oos_equity=oos_equity, oos_returns=oos_returns,
+        oos_equity=oos_equity, oos_returns=oos_returns, oos_held=oos_held,
         fold_pass_rate=float(fold_pass), avg_fold_test_sharpe=avg_fold_sharpe,
         param_stability_pct=stability,
     )

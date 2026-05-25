@@ -132,6 +132,53 @@ def sig_rsi_mr(prices: pd.Series, p: dict) -> pd.Series:
     return raw * gate
 
 
+def classify_regime(prices: pd.Series, fast: int, slow: int, long_ma: int, band: float) -> pd.Series:
+    """Per-day regime label: +1 uptrend, -1 downtrend, 0 chop. Causal."""
+    f = ema(prices, fast)
+    s = ema(prices, slow)
+    lma = sma(prices, long_ma)
+    spread = f / s - 1.0
+    up = (spread > band) & (prices > lma)
+    dn = (spread < -band) & (prices < lma)
+    reg = pd.Series(0.0, index=prices.index)
+    reg[up] = 1.0
+    reg[dn] = -1.0
+    return reg
+
+
+def sig_orchestrator(prices: pd.Series, p: dict) -> pd.Series:
+    """Regime-switching orchestrator (the architecture the brief asks for):
+
+      * UPTREND   -> long momentum  (ride it)
+      * DOWNTREND -> short momentum (profit from the bear)
+      * CHOP      -> z-score mean reversion (fade the range)
+
+    One model that adapts to the regime instead of assuming the market only
+    ever goes up. This is what lets the system earn in down years."""
+    reg = classify_regime(prices, p["fast"], p["slow"], p["long_ma"], p["band"])
+
+    lbs = p.get("lbs", (20, 40, 80))
+    trend = sum(np.sign(prices / prices.shift(L) - 1.0) for L in lbs) / float(len(lbs))
+
+    lb = p.get("mr_lb", 15)
+    mu = sma(prices, lb)
+    sd = rolling_std(prices, lb).replace(0.0, np.nan)
+    z = (prices - mu) / sd
+    mr = pd.Series(0.0, index=prices.index)
+    mr[z > p.get("z_entry", 1.5)] = -1.0
+    mr[z < -p.get("z_entry", 1.5)] = 1.0
+
+    raw = pd.Series(0.0, index=prices.index)
+    up_mask = reg > 0
+    dn_mask = reg < 0
+    chop_mask = reg == 0
+    raw[up_mask] = trend[up_mask].clip(lower=0.0)        # uptrend: long only
+    raw[dn_mask] = trend[dn_mask].clip(upper=0.0)        # downtrend: short only
+    chop_mr = mr if p.get("mr_allow_short", True) else mr.clip(lower=0.0)
+    raw[chop_mask] = chop_mr[chop_mask] * p.get("mr_scale", 0.7)
+    return raw.fillna(0.0)
+
+
 # --------------------------------------------------------------------------
 # Family registry: signal fn + parameter grid
 # --------------------------------------------------------------------------
@@ -227,3 +274,57 @@ def family_by_name(name: str) -> Family:
         if f.name == name:
             return f
     raise KeyError(name)
+
+
+# Leverage ladder for the v2 (futures) search. Effective exposure is
+# vol-target / realised-vol, capped at max_lev; the exchange's 10-50x facility
+# is what permits notional > equity. Higher targets chase the 50%/yr bar.
+_VT3 = [0.6, 0.9, 1.3, 1.8]
+_MAXLEV3 = [10.0]
+
+
+def v2_families() -> list[Family]:
+    """Futures-oriented, long/short, higher-leverage family set + the regime
+    orchestrator. Used by run_v2.py for the >=50%/yr (annual-reset) target."""
+    fams: list[Family] = []
+
+    fams.append(Family("orchestrator", sig_orchestrator, [
+        dict(fast=f, slow=s, long_ma=lma, band=b, lbs=lbs, mr_lb=mrlb, z_entry=ze,
+             mr_scale=0.7, mr_allow_short=True,
+             vol_target=vt, vol_lb=20, max_lev=ml, long_only=False)
+        for (f, s, lma) in ((20, 60, 150), (15, 50, 100), (25, 75, 200))
+        for b in (0.0, 0.02)
+        for lbs in ((20, 40, 80),)
+        for mrlb in (12, 20)
+        for ze in (1.3, 1.8)
+        for vt in _VT3
+        for ml in _MAXLEV3
+    ]))
+
+    fams.append(Family("tsmom_blend_lev", sig_tsmom_blend, [
+        dict(lbs=lbs, vol_target=vt, vol_lb=20, max_lev=ml, long_only=lo)
+        for lbs in ((10, 30, 60, 120), (20, 40, 80, 120))
+        for vt in _VT3
+        for ml in _MAXLEV3
+        for lo in (False, True)
+    ]))
+
+    fams.append(Family("donchian_lev", sig_donchian, [
+        dict(entry=n, exit=m, vol_target=vt, vol_lb=20, max_lev=ml, long_only=lo)
+        for (n, m) in ((20, 10), (40, 20), (55, 20))
+        for vt in _VT3
+        for ml in _MAXLEV3
+        for lo in (False, True)
+    ]))
+
+    fams.append(Family("mr_z_lev", sig_mr_z, [
+        dict(lb=lb, z_entry=ze, z_exit=zx, trend_gate=tg, vol_target=vt, vol_lb=15, max_lev=ml, long_only=False)
+        for lb in (10, 15, 20)
+        for ze in (1.5, 2.0)
+        for zx in (0.3, 0.5)
+        for tg in (0.10, 0.20)
+        for vt in (0.6, 0.9, 1.3)
+        for ml in _MAXLEV3
+    ]))
+
+    return fams

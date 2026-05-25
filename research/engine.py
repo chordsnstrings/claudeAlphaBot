@@ -151,6 +151,32 @@ def backtest(prices: pd.Series, target_w: pd.Series, costs: Costs = Costs()) -> 
     return {"equity": equity, "returns": r_p, "held": held_v, "metrics": m}
 
 
+def apply_annual_breaker(returns: pd.Series, dd_stop: float = 0.25) -> pd.Series:
+    """Within-year circuit breaker for the annual-reset / profit-withdrawal model.
+
+    Each calendar year starts fresh at equity 1.0. If the year-to-date equity
+    falls more than ``dd_stop`` below its running intra-year peak, the account
+    goes flat for the remainder of that year (returns zeroed). Causal: the
+    decision on day t uses only YTD information through t. This converts the
+    catastrophic leveraged ruin years (e.g. XRP -100%) into capped small losses
+    so the $100k base survives to the next year."""
+    out = returns.copy()
+    for y in sorted(set(returns.index.year)):
+        idx = returns.index[returns.index.year == y]
+        eq = 1.0
+        peak = 1.0
+        stopped = False
+        for t in idx:
+            if stopped:
+                out.loc[t] = 0.0
+                continue
+            eq *= (1.0 + returns.loc[t])
+            peak = max(peak, eq)
+            if eq / peak - 1.0 <= -dd_stop:
+                stopped = True  # flat for the rest of the year (today's loss kept)
+    return out
+
+
 def buy_hold_metrics(prices: pd.Series) -> Metrics:
     w = pd.Series(1.0, index=prices.index)
     return backtest(prices, w, Costs(txn=0.0006, funding_daily=0.0))["metrics"]

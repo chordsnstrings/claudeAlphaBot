@@ -1,0 +1,1290 @@
+{
+  "coins": {
+    "BTC": {
+      "coin": "BTC",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold_cagr": 0.4518,
+      "best_family": "tsmom_blend_lev",
+      "modal_params": "{\"lbs\": [10, 30, 60, 120], \"long_only\": true, \"max_lev\": 10.0, \"vol_lb\": 20, \"vol_target\": 0.6}",
+      "oos": {
+        "asset": "BTC",
+        "family": "tsmom_blend_lev",
+        "n_folds": 22,
+        "oos_cagr": 1.0192,
+        "oos_sharpe": 1.547,
+        "oos_sortino": 1.88,
+        "oos_max_dd": -0.6069,
+        "oos_calmar": 1.679,
+        "oos_vol": 0.5467,
+        "avg_exposure": 0.634,
+        "ann_turnover": 52.58,
+        "fold_pass_rate": 0.636,
+        "avg_fold_sharpe": 0.996,
+        "param_stability_pct": 85.71,
+        "oos_days": 3960
+      },
+      "per_year": [
+        {
+          "year": 2015,
+          "days": 189,
+          "full_year": false,
+          "return": 1.0971,
+          "profit_usd": 109713.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.94,
+            "max": 2.56
+          }
+        },
+        {
+          "year": 2016,
+          "days": 366,
+          "full_year": true,
+          "return": 3.5381,
+          "profit_usd": 353812.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 1.34,
+            "max": 7.37
+          }
+        },
+        {
+          "year": 2017,
+          "days": 365,
+          "full_year": true,
+          "return": 13.0442,
+          "profit_usd": 1304421.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.84,
+            "max": 2.52
+          }
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "full_year": true,
+          "return": -0.428,
+          "profit_usd": -42803.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.14,
+            "max": 5.91
+          }
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "full_year": true,
+          "return": 2.039,
+          "profit_usd": 203902.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.54,
+            "max": 2.92
+          }
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "full_year": true,
+          "return": 2.6601,
+          "profit_usd": 266014.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.74,
+            "max": 2.95
+          }
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "full_year": true,
+          "return": 0.423,
+          "profit_usd": 42297.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.42,
+            "max": 1.52
+          }
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "full_year": true,
+          "return": -0.1166,
+          "profit_usd": -11660.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.22,
+            "max": 2.02
+          }
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "full_year": true,
+          "return": 0.5033,
+          "profit_usd": 50333.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.77,
+            "max": 2.9
+          }
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "full_year": true,
+          "return": 0.687,
+          "profit_usd": 68696.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.61,
+            "max": 2.3
+          }
+        },
+        {
+          "year": 2025,
+          "days": 365,
+          "full_year": true,
+          "return": -0.2105,
+          "profit_usd": -21055.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.71,
+            "max": 3.85
+          }
+        },
+        {
+          "year": 2026,
+          "days": 118,
+          "full_year": false,
+          "return": -0.0437,
+          "profit_usd": -4365.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.19,
+            "max": 1.09
+          }
+        }
+      ],
+      "per_year_with_breaker": [
+        {
+          "year": 2015,
+          "days": 189,
+          "full_year": false,
+          "return": 1.0971,
+          "profit_usd": 109713.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.94,
+            "max": 2.56
+          }
+        },
+        {
+          "year": 2016,
+          "days": 366,
+          "full_year": true,
+          "return": 3.5381,
+          "profit_usd": 353812.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 1.34,
+            "max": 7.37
+          }
+        },
+        {
+          "year": 2017,
+          "days": 365,
+          "full_year": true,
+          "return": 13.0442,
+          "profit_usd": 1304421.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.84,
+            "max": 2.52
+          }
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "full_year": true,
+          "return": -0.2795,
+          "profit_usd": -27949.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.14,
+            "max": 5.91
+          }
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "full_year": true,
+          "return": 2.2078,
+          "profit_usd": 220785.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.54,
+            "max": 2.92
+          }
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "full_year": true,
+          "return": 2.6601,
+          "profit_usd": 266014.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.74,
+            "max": 2.95
+          }
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "full_year": true,
+          "return": 0.423,
+          "profit_usd": 42297.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.42,
+            "max": 1.52
+          }
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "full_year": true,
+          "return": -0.1166,
+          "profit_usd": -11660.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.22,
+            "max": 2.02
+          }
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "full_year": true,
+          "return": 0.5033,
+          "profit_usd": 50333.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.77,
+            "max": 2.9
+          }
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "full_year": true,
+          "return": 0.687,
+          "profit_usd": 68696.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.61,
+            "max": 2.3
+          }
+        },
+        {
+          "year": 2025,
+          "days": 365,
+          "full_year": true,
+          "return": -0.2105,
+          "profit_usd": -21055.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.71,
+            "max": 3.85
+          }
+        },
+        {
+          "year": 2026,
+          "days": 118,
+          "full_year": false,
+          "return": -0.0437,
+          "profit_usd": -4365.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.19,
+            "max": 1.09
+          }
+        }
+      ],
+      "breaker_dd_stop": 0.35,
+      "worst_year_raw": -0.428,
+      "worst_year_breaker": -0.2795,
+      "years_full": 10,
+      "years_hit_50": 6,
+      "ranking": [
+        {
+          "family": "tsmom_blend_lev",
+          "score_hitrate": 0.6,
+          "worst_year": -0.428,
+          "median_year": 0.5952
+        },
+        {
+          "family": "donchian_lev",
+          "score_hitrate": 0.6,
+          "worst_year": -0.6541,
+          "median_year": 0.6687
+        },
+        {
+          "family": "orchestrator",
+          "score_hitrate": 0.5,
+          "worst_year": -0.2994,
+          "median_year": 0.8771
+        },
+        {
+          "family": "mr_z_lev",
+          "score_hitrate": 0.0,
+          "worst_year": -0.796,
+          "median_year": -0.4132
+        }
+      ]
+    },
+    "ETH": {
+      "coin": "ETH",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold_cagr": 0.654,
+      "best_family": "tsmom_blend_lev",
+      "modal_params": "{\"lbs\": [10, 30, 60, 120], \"long_only\": true, \"max_lev\": 10.0, \"vol_lb\": 20, \"vol_target\": 0.6}",
+      "oos": {
+        "asset": "ETH",
+        "family": "tsmom_blend_lev",
+        "n_folds": 17,
+        "oos_cagr": 0.5636,
+        "oos_sharpe": 1.199,
+        "oos_sortino": 1.365,
+        "oos_max_dd": -0.4225,
+        "oos_calmar": 1.334,
+        "oos_vol": 0.4595,
+        "avg_exposure": 0.421,
+        "ann_turnover": 36.97,
+        "fold_pass_rate": 0.647,
+        "avg_fold_sharpe": 0.961,
+        "param_stability_pct": 87.29,
+        "oos_days": 3060
+      },
+      "per_year": [
+        {
+          "year": 2017,
+          "days": 38,
+          "full_year": false,
+          "return": 0.4111,
+          "profit_usd": 41109.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.51,
+            "max": 0.84
+          }
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "full_year": true,
+          "return": 0.1534,
+          "profit_usd": 15345.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.05,
+            "max": 0.63
+          }
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "full_year": true,
+          "return": 0.2088,
+          "profit_usd": 20881.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.5,
+            "max": 1.75
+          }
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "full_year": true,
+          "return": 1.9831,
+          "profit_usd": 198311.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.48,
+            "max": 1.54
+          }
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "full_year": true,
+          "return": 2.3724,
+          "profit_usd": 237244.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.44,
+            "max": 1.17
+          }
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "full_year": true,
+          "return": -0.177,
+          "profit_usd": -17704.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.14,
+            "max": 1.29
+          }
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "full_year": true,
+          "return": 0.2722,
+          "profit_usd": 27220.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 1.04,
+            "max": 3.67
+          }
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "full_year": true,
+          "return": 0.7942,
+          "profit_usd": 79417.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.54,
+            "max": 1.86
+          }
+        },
+        {
+          "year": 2025,
+          "days": 365,
+          "full_year": true,
+          "return": 0.1912,
+          "profit_usd": 19115.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.27,
+            "max": 1.67
+          }
+        },
+        {
+          "year": 2026,
+          "days": 100,
+          "full_year": false,
+          "return": -0.0422,
+          "profit_usd": -4224.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.07,
+            "max": 0.71
+          }
+        }
+      ],
+      "per_year_with_breaker": [
+        {
+          "year": 2017,
+          "days": 38,
+          "full_year": false,
+          "return": 0.4111,
+          "profit_usd": 41109.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.51,
+            "max": 0.84
+          }
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "full_year": true,
+          "return": 0.1534,
+          "profit_usd": 15345.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.05,
+            "max": 0.63
+          }
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "full_year": true,
+          "return": 0.3325,
+          "profit_usd": 33251.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.5,
+            "max": 1.75
+          }
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "full_year": true,
+          "return": 1.9831,
+          "profit_usd": 198311.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.48,
+            "max": 1.54
+          }
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "full_year": true,
+          "return": 2.3724,
+          "profit_usd": 237244.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.44,
+            "max": 1.17
+          }
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "full_year": true,
+          "return": -0.177,
+          "profit_usd": -17704.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.14,
+            "max": 1.29
+          }
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "full_year": true,
+          "return": -0.1215,
+          "profit_usd": -12151.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 1.04,
+            "max": 3.67
+          }
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "full_year": true,
+          "return": 0.7942,
+          "profit_usd": 79417.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.54,
+            "max": 1.86
+          }
+        },
+        {
+          "year": 2025,
+          "days": 365,
+          "full_year": true,
+          "return": 0.1912,
+          "profit_usd": 19115.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.27,
+            "max": 1.67
+          }
+        },
+        {
+          "year": 2026,
+          "days": 100,
+          "full_year": false,
+          "return": -0.0422,
+          "profit_usd": -4224.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.07,
+            "max": 0.71
+          }
+        }
+      ],
+      "breaker_dd_stop": 0.35,
+      "worst_year_raw": -0.177,
+      "worst_year_breaker": -0.177,
+      "years_full": 8,
+      "years_hit_50": 3,
+      "ranking": [
+        {
+          "family": "tsmom_blend_lev",
+          "score_hitrate": 0.375,
+          "worst_year": -0.177,
+          "median_year": 0.2405
+        },
+        {
+          "family": "orchestrator",
+          "score_hitrate": 0.25,
+          "worst_year": -0.363,
+          "median_year": 0.1442
+        },
+        {
+          "family": "donchian_lev",
+          "score_hitrate": 0.25,
+          "worst_year": -0.3895,
+          "median_year": 0.2597
+        },
+        {
+          "family": "mr_z_lev",
+          "score_hitrate": 0.125,
+          "worst_year": -0.5852,
+          "median_year": -0.25
+        }
+      ]
+    },
+    "XRP": {
+      "coin": "XRP",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold_cagr": 0.5937,
+      "best_family": "donchian_lev",
+      "modal_params": "{\"entry\": 20, \"exit\": 10, \"long_only\": true, \"max_lev\": 10.0, \"vol_lb\": 20, \"vol_target\": 0.6}",
+      "oos": {
+        "asset": "XRP",
+        "family": "donchian_lev",
+        "n_folds": 20,
+        "oos_cagr": -1.0,
+        "oos_sharpe": 0.156,
+        "oos_sortino": 0.109,
+        "oos_max_dd": -1.3289,
+        "oos_calmar": -0.752,
+        "oos_vol": 0.8135,
+        "avg_exposure": 0.462,
+        "ann_turnover": 25.22,
+        "fold_pass_rate": 0.35,
+        "avg_fold_sharpe": 0.175,
+        "param_stability_pct": 79.31,
+        "oos_days": 3600
+      },
+      "per_year": [
+        {
+          "year": 2016,
+          "days": 329,
+          "full_year": true,
+          "return": -0.8052,
+          "profit_usd": -80518.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 1.14,
+            "max": 2.64
+          }
+        },
+        {
+          "year": 2017,
+          "days": 365,
+          "full_year": true,
+          "return": 1.912,
+          "profit_usd": 191199.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.21,
+            "max": 1.47
+          }
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "full_year": true,
+          "return": -0.1784,
+          "profit_usd": -17844.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.11,
+            "max": 1.64
+          }
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "full_year": true,
+          "return": -0.608,
+          "profit_usd": -60803.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.47,
+            "max": 4.59
+          }
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "full_year": true,
+          "return": 4.6658,
+          "profit_usd": 466580.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.38,
+            "max": 2.32
+          }
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "full_year": true,
+          "return": -0.1043,
+          "profit_usd": -10430.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.18,
+            "max": 1.04
+          }
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "full_year": true,
+          "return": -0.3859,
+          "profit_usd": -38591.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.32,
+            "max": 2.31
+          }
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "full_year": true,
+          "return": -1.1242,
+          "profit_usd": -112424.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 1.22,
+            "max": 2.18
+          }
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "full_year": true,
+          "return": 3.261,
+          "profit_usd": 326096.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.34,
+            "max": 2.32
+          }
+        },
+        {
+          "year": 2025,
+          "days": 349,
+          "full_year": true,
+          "return": 0.4747,
+          "profit_usd": 47474.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.32,
+            "max": 2.76
+          }
+        }
+      ],
+      "per_year_with_breaker": [
+        {
+          "year": 2016,
+          "days": 329,
+          "full_year": true,
+          "return": 0.1245,
+          "profit_usd": 12451.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 1.14,
+            "max": 2.64
+          }
+        },
+        {
+          "year": 2017,
+          "days": 365,
+          "full_year": true,
+          "return": 1.1918,
+          "profit_usd": 119182.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.21,
+            "max": 1.47
+          }
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "full_year": true,
+          "return": -0.1784,
+          "profit_usd": -17844.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.11,
+            "max": 1.64
+          }
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "full_year": true,
+          "return": -0.3255,
+          "profit_usd": -32554.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.47,
+            "max": 4.59
+          }
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "full_year": true,
+          "return": 4.6658,
+          "profit_usd": 466580.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.38,
+            "max": 2.32
+          }
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "full_year": true,
+          "return": -0.1039,
+          "profit_usd": -10391.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.18,
+            "max": 1.04
+          }
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "full_year": true,
+          "return": -0.2988,
+          "profit_usd": -29883.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.32,
+            "max": 2.31
+          }
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "full_year": true,
+          "return": -0.3833,
+          "profit_usd": -38329.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 1.22,
+            "max": 2.18
+          }
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "full_year": true,
+          "return": 3.261,
+          "profit_usd": 326096.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.34,
+            "max": 2.32
+          }
+        },
+        {
+          "year": 2025,
+          "days": 349,
+          "full_year": true,
+          "return": 0.4747,
+          "profit_usd": 47474.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.32,
+            "max": 2.76
+          }
+        }
+      ],
+      "breaker_dd_stop": 0.35,
+      "worst_year_raw": -1.1242,
+      "worst_year_breaker": -0.3833,
+      "years_full": 10,
+      "years_hit_50": 3,
+      "ranking": [
+        {
+          "family": "donchian_lev",
+          "score_hitrate": 0.3,
+          "worst_year": -1.1242,
+          "median_year": -0.1414
+        },
+        {
+          "family": "orchestrator",
+          "score_hitrate": 0.2,
+          "worst_year": -0.4937,
+          "median_year": -0.2675
+        },
+        {
+          "family": "tsmom_blend_lev",
+          "score_hitrate": 0.2,
+          "worst_year": -0.6762,
+          "median_year": -0.0302
+        },
+        {
+          "family": "mr_z_lev",
+          "score_hitrate": 0.0,
+          "worst_year": -1.4429,
+          "median_year": -0.3513
+        }
+      ]
+    },
+    "DOGE": {
+      "coin": "DOGE",
+      "wf_params": {
+        "train_days": 540,
+        "test_days": 180
+      },
+      "buy_hold_cagr": 0.7441,
+      "best_family": "tsmom_blend_lev",
+      "modal_params": "{\"lbs\": [10, 30, 60, 120], \"long_only\": true, \"max_lev\": 10.0, \"vol_lb\": 20, \"vol_target\": 0.6}",
+      "oos": {
+        "asset": "DOGE",
+        "family": "tsmom_blend_lev",
+        "n_folds": 20,
+        "oos_cagr": 0.5647,
+        "oos_sharpe": 1.0,
+        "oos_sortino": 1.422,
+        "oos_max_dd": -0.4857,
+        "oos_calmar": 1.163,
+        "oos_vol": 0.6013,
+        "avg_exposure": 0.209,
+        "ann_turnover": 25.86,
+        "fold_pass_rate": 0.65,
+        "avg_fold_sharpe": 0.676,
+        "param_stability_pct": 74.5,
+        "oos_days": 3600
+      },
+      "per_year": [
+        {
+          "year": 2016,
+          "days": 190,
+          "full_year": false,
+          "return": -0.3584,
+          "profit_usd": -35839.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.19,
+            "max": 2.11
+          }
+        },
+        {
+          "year": 2017,
+          "days": 365,
+          "full_year": true,
+          "return": 3.6136,
+          "profit_usd": 361357.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.15,
+            "max": 1.45
+          }
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "full_year": true,
+          "return": 0.0601,
+          "profit_usd": 6012.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.12,
+            "max": 2.18
+          }
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "full_year": true,
+          "return": 0.7064,
+          "profit_usd": 70639.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.32,
+            "max": 6.57
+          }
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "full_year": true,
+          "return": 0.479,
+          "profit_usd": 47902.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.26,
+            "max": 1.39
+          }
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "full_year": true,
+          "return": 3.4329,
+          "profit_usd": 343293.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.13,
+            "max": 0.91
+          }
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "full_year": true,
+          "return": 0.1852,
+          "profit_usd": 18517.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.07,
+            "max": 0.9
+          }
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "full_year": true,
+          "return": -0.0879,
+          "profit_usd": -8792.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.38,
+            "max": 2.05
+          }
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "full_year": true,
+          "return": 1.6768,
+          "profit_usd": 167680.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.36,
+            "max": 3.29
+          }
+        },
+        {
+          "year": 2025,
+          "days": 365,
+          "full_year": true,
+          "return": -0.2385,
+          "profit_usd": -23846.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.15,
+            "max": 0.94
+          }
+        },
+        {
+          "year": 2026,
+          "days": 123,
+          "full_year": false,
+          "return": 0.0693,
+          "profit_usd": 6930.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.04,
+            "max": 0.77
+          }
+        }
+      ],
+      "per_year_with_breaker": [
+        {
+          "year": 2016,
+          "days": 190,
+          "full_year": false,
+          "return": -0.3314,
+          "profit_usd": -33141.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.19,
+            "max": 2.11
+          }
+        },
+        {
+          "year": 2017,
+          "days": 365,
+          "full_year": true,
+          "return": 3.6136,
+          "profit_usd": 361357.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.15,
+            "max": 1.45
+          }
+        },
+        {
+          "year": 2018,
+          "days": 365,
+          "full_year": true,
+          "return": 0.0601,
+          "profit_usd": 6012.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.12,
+            "max": 2.18
+          }
+        },
+        {
+          "year": 2019,
+          "days": 365,
+          "full_year": true,
+          "return": 0.8234,
+          "profit_usd": 82344.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.32,
+            "max": 6.57
+          }
+        },
+        {
+          "year": 2020,
+          "days": 366,
+          "full_year": true,
+          "return": 0.479,
+          "profit_usd": 47902.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.26,
+            "max": 1.39
+          }
+        },
+        {
+          "year": 2021,
+          "days": 365,
+          "full_year": true,
+          "return": 3.4329,
+          "profit_usd": 343293.0,
+          "hit_50": true,
+          "leverage": {
+            "avg": 0.13,
+            "max": 0.91
+          }
+        },
+        {
+          "year": 2022,
+          "days": 365,
+          "full_year": true,
+          "return": 0.1852,
+          "profit_usd": 18517.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.07,
+            "max": 0.9
+          }
+        },
+        {
+          "year": 2023,
+          "days": 365,
+          "full_year": true,
+          "return": -0.3252,
+          "profit_usd": -32522.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.38,
+            "max": 2.05
+          }
+        },
+        {
+          "year": 2024,
+          "days": 366,
+          "full_year": true,
+          "return": 0.2745,
+          "profit_usd": 27450.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.36,
+            "max": 3.29
+          }
+        },
+        {
+          "year": 2025,
+          "days": 365,
+          "full_year": true,
+          "return": -0.2381,
+          "profit_usd": -23811.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.15,
+            "max": 0.94
+          }
+        },
+        {
+          "year": 2026,
+          "days": 123,
+          "full_year": false,
+          "return": 0.0693,
+          "profit_usd": 6930.0,
+          "hit_50": false,
+          "leverage": {
+            "avg": 0.04,
+            "max": 0.77
+          }
+        }
+      ],
+      "breaker_dd_stop": 0.35,
+      "worst_year_raw": -0.2385,
+      "worst_year_breaker": -0.3252,
+      "years_full": 9,
+      "years_hit_50": 4,
+      "ranking": [
+        {
+          "family": "tsmom_blend_lev",
+          "score_hitrate": 0.444,
+          "worst_year": -0.2385,
+          "median_year": 0.479
+        },
+        {
+          "family": "donchian_lev",
+          "score_hitrate": 0.444,
+          "worst_year": -0.6077,
+          "median_year": 0.0426
+        },
+        {
+          "family": "orchestrator",
+          "score_hitrate": 0.222,
+          "worst_year": -0.496,
+          "median_year": 0.2599
+        },
+        {
+          "family": "mr_z_lev",
+          "score_hitrate": 0.0,
+          "worst_year": -0.774,
+          "median_year": -0.4321
+        }
+      ]
+    }
+  },
+  "target": 0.5,
+  "start_capital": 100000.0,
+  "cost_model": {
+    "txn_bps": 5.999999999999999,
+    "funding_bps_day": 1.0
+  }
+}
