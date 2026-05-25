@@ -31,7 +31,7 @@ from walkforward import walk_forward
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RESULTS = os.path.join(HERE, "results")
-COINS = ["BTC", "ETH", "XRP", "DOGE"]
+COINS = ["SOL", "ETH", "BTC", "DOGE", "XRP"]
 COSTS = Costs(txn=0.0006, funding_daily=0.0001)
 TARGET = 0.50
 
@@ -162,11 +162,17 @@ def main(argv):
         print("      per-year:", "  ".join(f"{y}:{r:+.0%}" for y, r in b["per_year"]))
         return {"coins": coin_list, "sweep": sw, "best": b}
 
-    out["book_3"] = book(["BTC", "ETH", "DOGE"], "BTC+ETH+DOGE")
-    out["book_4"] = book(["BTC", "ETH", "XRP", "DOGE"], "all 4")
-    wide = [c for c in out["coins"].keys() if c not in ("BTC", "ETH", "XRP", "DOGE")]
-    if wide:
-        out["book_wide"] = book(list(out["coins"].keys()), "WIDE universe")
+    present = set(out["coins"].keys())
+
+    def book_if(coin_list, label, key):
+        cl = [c for c in coin_list if c in present]
+        if len(cl) >= 2:
+            out[key] = book(cl, label)
+
+    book_if(["SOL", "ETH", "BTC", "DOGE", "XRP"], "ALL 5 (SOL ETH BTC DOGE XRP)", "book_5")
+    book_if(["BTC", "ETH", "SOL", "DOGE"], "BTC+ETH+SOL+DOGE (drop weak XRP)", "book_4core")
+    book_if(["BTC", "ETH", "DOGE"], "BTC+ETH+DOGE (prior best, baseline)", "book_3")
+    book_if(["SOL", "ETH", "BTC"], "SOL+ETH+BTC (majors+L1)", "book_3b")
 
     for c in out["coins"]:
         out["coins"][c].pop("_returns", None)

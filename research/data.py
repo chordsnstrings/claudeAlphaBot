@@ -26,19 +26,18 @@ CM_BASE = "https://raw.githubusercontent.com/coinmetrics/data/master/csv"
 
 # Asset -> (coinmetrics file, first date we consider "liquid / tradeable").
 #
-# NOTE on SOL: Coin Metrics' *community* CSVs only carry a full price history
-# for assets old enough to have the legacy ``PriceUSD`` field. Newer 2020+
-# listings (SOL, AVAX, MATIC) expose only a 7-row ``ReferenceRateUSD`` stub in
-# the community tier, and every crypto exchange / aggregator API is blocked by
-# this sandbox's egress allowlist. SOL spot price therefore cannot be sourced
-# offline here. DOT is included as the closest *available* high-beta L1 analog
-# (also a 2020 launch) so the "high-vol alt behaves differently" thesis can
-# still be validated. The SOL slot is kept ready for when real data is present
-# (e.g. running against the bot's Binance loader outside the sandbox).
+# NOTE on SOL (RESOLVED 2026-05-25): Coin Metrics' *community* CSVs only carry a
+# full price history for assets old enough to have the legacy ``PriceUSD`` field,
+# so SOL used to be unavailable offline and DOT was used as a high-beta-L1 stand-in.
+# `data-api.binance.vision` (Binance's public market-data mirror) is now reachable,
+# so SOL is sourced there via ``binance_vision.fetch_daily`` (real SOLUSDT daily
+# close, 2020-08-11 -> today). The ``binance_vision`` source marker means
+# ``fetch_and_cache`` delegates to that loader instead of Coin Metrics.
 ASSETS = {
     "BTC": ("btc.csv", "2014-01-01"),   # major / store-of-value
     "ETH": ("eth.csv", "2016-06-01"),   # major / smart-contract L1
-    "DOT": ("dot.csv", "2020-08-20"),   # high-beta L1 (SOL analog)
+    "SOL": ("binance_vision", "2020-08-11"),  # high-beta L1 (real data, Binance mirror)
+    "DOT": ("dot.csv", "2020-08-20"),   # high-beta L1 (legacy SOL analog; kept for breadth)
     "LINK": ("link.csv", "2017-10-01"), # high-beta alt
     "ADA": ("ada.csv", "2017-12-01"),   # high-beta L1
     "DOGE": ("doge.csv", "2015-01-01"), # meme / fat-tailed
@@ -47,9 +46,8 @@ ASSETS = {
     "BNB": ("bnb.csv", "2017-07-15"),   # exchange token
 }
 
-# Assets the goal names explicitly. SOL is unavailable offline (see note above);
-# DOT is its stand-in for the high-beta-L1 regime.
-CORE_ASSETS = ["BTC", "ETH", "DOT"]
+# The universe the goal names explicitly: real SOL now included.
+CORE_ASSETS = ["BTC", "ETH", "SOL", "DOGE", "XRP"]
 
 
 def _slim_path(asset: str) -> str:
@@ -65,6 +63,11 @@ def fetch_and_cache(asset: str, force: bool = False) -> pd.DataFrame:
         return load_cached(asset)
 
     fname, start = ASSETS[asset]
+    if fname == "binance_vision":
+        # real exchange data via the public Binance mirror (e.g. SOL)
+        import binance_vision
+        binance_vision.fetch_daily(asset, force=force)
+        return load_cached(asset)
     url = f"{CM_BASE}/{fname}"
     print(f"[data] downloading {asset} from {url}", file=sys.stderr)
     req = urllib.request.Request(url, headers={"User-Agent": "research/1.0"})
