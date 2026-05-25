@@ -1,0 +1,161 @@
+{
+  "coins": {
+    "SOL": {
+      "engine": "mr_z_1h",
+      "summary": {
+        "asset": "SOL",
+        "family": "mr_z_1h",
+        "n_folds": 39,
+        "oos_cagr": -0.0233,
+        "oos_sharpe": 0.033,
+        "oos_sortino": 0.018,
+        "oos_max_dd": -0.9947,
+        "oos_calmar": -0.023,
+        "oos_vol": 0.2514,
+        "avg_exposure": 0.497,
+        "ann_turnover": 28.62,
+        "fold_pass_rate": 0.538,
+        "avg_fold_sharpe": 0.094,
+        "param_stability_pct": 192.5,
+        "oos_days": 46786
+      },
+      "cagr_daily": -0.4323,
+      "per_year": {
+        "2021": 1.8543,
+        "2022": -0.9786,
+        "2023": 2.6649,
+        "2024": 1.2927,
+        "2025": -0.863
+      }
+    },
+    "ETH": {
+      "engine": "rsi_mr_1h",
+      "summary": {
+        "asset": "ETH",
+        "family": "rsi_mr_1h",
+        "n_folds": 40,
+        "oos_cagr": -0.0418,
+        "oos_sharpe": -0.224,
+        "oos_sortino": -0.067,
+        "oos_max_dd": -0.9974,
+        "oos_calmar": -0.042,
+        "oos_vol": 0.1431,
+        "avg_exposure": 0.203,
+        "ann_turnover": 7.79,
+        "fold_pass_rate": 0.275,
+        "avg_fold_sharpe": -0.103,
+        "param_stability_pct": 92.77,
+        "oos_days": 47980
+      },
+      "cagr_daily": -0.6413,
+      "per_year": {
+        "2021": -0.7033,
+        "2022": -0.6917,
+        "2023": -0.0609,
+        "2024": -0.1858,
+        "2025": -0.9109
+      }
+    },
+    "BTC": {
+      "engine": "rsi_mr_1h",
+      "summary": {
+        "asset": "BTC",
+        "family": "rsi_mr_1h",
+        "n_folds": 40,
+        "oos_cagr": -0.0108,
+        "oos_sharpe": -0.025,
+        "oos_sortino": -0.008,
+        "oos_max_dd": -0.9337,
+        "oos_calmar": -0.012,
+        "oos_vol": 0.1245,
+        "avg_exposure": 0.196,
+        "ann_turnover": 7.57,
+        "fold_pass_rate": 0.45,
+        "avg_fold_sharpe": 0.041,
+        "param_stability_pct": 138.81,
+        "oos_days": 47980
+      },
+      "cagr_daily": -0.2293,
+      "per_year": {
+        "2021": 0.165,
+        "2022": -0.6906,
+        "2023": -0.0009,
+        "2024": -0.2419,
+        "2025": -0.1769
+      }
+    },
+    "DOGE": {
+      "engine": "rsi_mr_1h",
+      "summary": {
+        "asset": "DOGE",
+        "family": "rsi_mr_1h",
+        "n_folds": 40,
+        "oos_cagr": -0.0102,
+        "oos_sharpe": 0.063,
+        "oos_sortino": 0.017,
+        "oos_max_dd": -0.9598,
+        "oos_calmar": -0.011,
+        "oos_vol": 0.1964,
+        "avg_exposure": 0.169,
+        "ann_turnover": 9.02,
+        "fold_pass_rate": 0.45,
+        "avg_fold_sharpe": 0.11,
+        "param_stability_pct": 122.22,
+        "oos_days": 47980
+      },
+      "cagr_daily": -0.2183,
+      "per_year": {
+        "2021": -0.8665,
+        "2022": 0.6655,
+        "2023": 0.6014,
+        "2024": -0.3743,
+        "2025": 0.5621
+      }
+    },
+    "XRP": {
+      "engine": "rsi_mr_1h",
+      "summary": {
+        "asset": "XRP",
+        "family": "rsi_mr_1h",
+        "n_folds": 40,
+        "oos_cagr": -0.0051,
+        "oos_sharpe": 0.034,
+        "oos_sortino": 0.009,
+        "oos_max_dd": -0.8519,
+        "oos_calmar": -0.006,
+        "oos_vol": 0.1385,
+        "avg_exposure": 0.145,
+        "ann_turnover": 6.98,
+        "fold_pass_rate": 0.575,
+        "avg_fold_sharpe": 0.149,
+        "param_stability_pct": 153.97,
+        "oos_days": 47980
+      },
+      "cagr_daily": -0.1145,
+      "per_year": {
+        "2021": -0.4287,
+        "2022": -0.5583,
+        "2023": 1.4965,
+        "2024": -0.0136,
+        "2025": 0.1634
+      }
+    }
+  },
+  "bars_per_year": 8760,
+  "book": {
+    "coins": [
+      "SOL",
+      "ETH",
+      "BTC",
+      "DOGE",
+      "XRP"
+    ],
+    "per_year": {
+      "2021": -0.0664,
+      "2022": -0.6095,
+      "2023": 0.9021,
+      "2024": 0.1205,
+      "2025": -0.4547
+    }
+  }
+}
