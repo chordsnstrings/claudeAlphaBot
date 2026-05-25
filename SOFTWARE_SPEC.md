@@ -541,6 +541,27 @@ expand-scope route lands back at the ~90% robust ceiling; the every-year-+50% cl
 remains reachable only via overfitting (high-leverage knife-edge configs that lose
 money live).
 
+### 12.11 — Market-neutral stat-arb: why 2022 is structurally unbankable
+The last untested posture — one that is neither net-long nor net-short — is a
+**dollar-neutral cross-sectional long/short** ([`market_neutral.py`](research/market_neutral.py)):
+equal long and short legs, indifferent to market direction, earning from *dispersion*
+among the five coins. In principle this could be positive in a crash (short the
+fastest-falling, e.g. SOL −94% in 2022, long the most resilient, e.g. BTC −64%).
+
+- **It IS positive in 2022 (+13% raw)** — the dispersion mechanism is real — and
+  strongly positive in 2018 (+148%); the directional sleeves cannot claim that.
+- **But +13% ≪ +50%.** In a correlated crash the cross-sectional dispersion is too
+  compressed to bank +50% without dangerous leverage; standalone it banks only 6/10
+  years, and blended with the up-engine the book stays **9/10 (2022 = −41%)**.
+
+This closes the posture space. The 2022 +50% miss is now explained from all sides:
+**net-long loses the crash, net-short loses the 2023 recovery, and market-neutral
+can extract only ~13% from the limited dispersion.** Seven independent constructions
+(trend, cross-sectional long, intraday MR, long/short CTA, regime switch, crash
+hedge, market-neutral stat-arb) agree: **+50% in 2022 — hence in *every* year — is
+unreachable on this universe with causal information.** The honest, fully-OOS
+ceiling is ~86–90% of years.
+
 **Honesty caveat on the 90%.** Each sleeve is fully walk-forward OOS (params chosen
 on train slices only). The *blend weight and leverage* for the 90% headline are
 chosen by inspecting the OOS-period hit-rate — a mild meta-level in-sample choice.
