@@ -542,12 +542,21 @@ remains reachable only via overfitting (high-leverage knife-edge configs that lo
 money live).
 
 **Honesty caveat on the 90%.** Each sleeve is fully walk-forward OOS (params chosen
-on train slices only). The *blend weight and leverage* are chosen by inspecting the
-OOS-period hit-rate — a mild meta-level in-sample choice — so the 90% is the best
-static allocation *in hindsight over the OOS streams*. Its credibility rests on
-robustness (a broad weight band gives 9/10) and on the fact that 2022 stays missed
-in **every** configuration. A fully clean test would also walk-forward the
-allocation; that is left as the deployment-time validation gate.
+on train slices only). The *blend weight and leverage* for the 90% headline are
+chosen by inspecting the OOS-period hit-rate — a mild meta-level in-sample choice.
+
+**Allocation walk-forward (the last gap, now closed).**
+[`alloc_wf.py`](research/alloc_wf.py) removes that hindsight: an expanding-window
+walk-forward that picks (weight, leverage) using **only prior years** and applies
+it to the next **unseen** year. Result — **6/7 testable years bank +50% (86%)**,
+the allocation converging on w≈0.4 / m=3, with **2022 the sole miss**:
+
+> 2019 +123%✅ · 2020 +53%✅ · 2021 +62%✅ · **2022 −41%** · 2023 +83%✅ ·
+> 2024 +52%✅ · 2025 +74%✅  → **6/7 (86%), fully out-of-sample, no hindsight.**
+
+So the genuine, hindsight-free figure is **~86%** (90% with the best static
+allocation). Both agree on the structural miss (2022). This is the most rigorous
+"OOS and walk-forward validated" number the study can produce.
 
 ---
 
@@ -687,7 +696,7 @@ the signature of fraud, not an edge.
 [`combine.py`](research/combine.py) · [`xsection.py`](research/xsection.py) ·
 [`xs_blend.py`](research/xs_blend.py) · [`defensive_blend.py`](research/defensive_blend.py) ·
 [`regime_switch.py`](research/regime_switch.py) · [`ls_trend_test.py`](research/ls_trend_test.py) ·
-[`crash_hedge.py`](research/crash_hedge.py)
+[`crash_hedge.py`](research/crash_hedge.py) · [`alloc_wf.py`](research/alloc_wf.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·
