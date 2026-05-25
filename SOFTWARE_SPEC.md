@@ -562,6 +562,44 @@ hedge, market-neutral stat-arb) agree: **+50% in 2022 — hence in *every* year 
 unreachable on this universe with causal information.** The honest, fully-OOS
 ceiling is ~86–90% of years.
 
+### 12.12 — Reaching for +1000%/yr: backtest artifact vs deployable reality
+A leverage sweep on the OOS streams ([`target_1000.py`](research/target_1000.py),
+annual-reset model with intraday-liquidation check) answers "is +1000%/yr reachable?"
+The answer splits sharply between the **mean** and the **median (typical year)**:
+
+| TREND+XS book, m | mean/yr | median/yr | worst yr | ruin yrs | compounded (no withdrawal) |
+| ---: | ---: | ---: | ---: | :--: | ---: |
+| 1× | +238% | +97% | −53% | 0/10 | 516× |
+| 2× | **+2263%** | +218% | −81% | 0/10 | ~3.2e4× |
+| 3× | **+16208%** | +322% | −93% | 0/10 | ~2.4e5× |
+| 5× | +280466% | +312% | **−100%** | 1/10 | 0 (ruined) |
+| 8× | +699939% | −52% | −100% | 2/10 | 0 (ruined) |
+| ≥12× | −100% | −100% | −100% | ≥9/10 | 0 (ruined) |
+
+- **As a backtest MEAN, +1000%/yr is "reached" at ≥2×** — but it is driven by a few
+  gigantic years (best single year +20431% at 2×); the **median/typical year is only
+  ~200–320%**. So it is not "1000% every year," it is "a couple of explosive years
+  drag the average up."
+- **Forcing the *median* to +1000% requires ≥8× leverage, which produces −100% ruin
+  years** and zeroes compounded wealth. Classic gambler's ruin.
+
+**These numbers are NOT a deployable expectation — they are a backtest artifact.**
+Three reasons, all disqualifying on their own:
+1. **Capacity/slippage.** A 2× compounded multiple of ~3.2e4 turns $100k into ~$3.2B
+   in ten years; at that size your own orders move the market and the 6 bps cost
+   assumption collapses. The strategy has finite capacity; these returns assume none.
+2. **Regime dependence.** The mean leans on the once-off explosive 2016–2017 / 2021
+   alt runs (DOGE/SOL up thousands of %); that magnitude is unlikely to repeat.
+3. **Intraday-gap blindness.** Daily bars miss the −50% intraday flash crashes that
+   *did* occur (Mar-2020, May-2021); at 2–3× effective those gaps are liquidations
+   the daily model scores as survivable −80/−90% years.
+
+**Verdict.** +1000%/yr exists only as a frictionless, capacity-free, regime-lucky
+backtest **average**; the typical year is ~200–320% even before realistic haircuts,
+and the leverage needed to make *every* year +1000% guarantees ruin. The honest,
+realistically-deployable expectation remains the risk-controlled figures of §12–§13
+(~50–90% of years banking +50%, ~33–50% CAGR), not four-digit annual returns.
+
 **Honesty caveat on the 90%.** Each sleeve is fully walk-forward OOS (params chosen
 on train slices only). The *blend weight and leverage* for the 90% headline are
 chosen by inspecting the OOS-period hit-rate — a mild meta-level in-sample choice.
@@ -732,7 +770,8 @@ the signature of fraud, not an edge.
 [`xs_blend.py`](research/xs_blend.py) · [`defensive_blend.py`](research/defensive_blend.py) ·
 [`regime_switch.py`](research/regime_switch.py) · [`ls_trend_test.py`](research/ls_trend_test.py) ·
 [`crash_hedge.py`](research/crash_hedge.py) · [`alloc_wf.py`](research/alloc_wf.py) ·
-[`production_strategy.py`](research/production_strategy.py)
+[`production_strategy.py`](research/production_strategy.py) · [`market_neutral.py`](research/market_neutral.py) ·
+[`target_1000.py`](research/target_1000.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·
