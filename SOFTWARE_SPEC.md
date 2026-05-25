@@ -518,6 +518,29 @@ required postures (sustained-short vs rotate-long) are opposite. The 2022 ⊻ 20
 trade-off is therefore confirmed by four independent constructions (dense simplex
 blend, 3-sleeve defensive blend, causal regime switch, long/short CTA).
 
+### 12.10 — Crash-hedge overlay (expand-scope route) ⟶ real bear-alpha, still not a guarantee
+The only honest way past the all-long ceiling is to *add an instrument that profits
+in a broad crash without bleeding otherwise* — a **trend-following short-basket
+hedge** ([`crash_hedge.py`](research/crash_hedge.py)): short the equal-weight basket
+when it is below a slow SMA *and* a fast EMA is falling (nimble exit), flat otherwise.
+
+- **It generalises (not a 2022 fit).** Standalone the hedge profits in *both* bear
+  markets — **2018 +72%, 2022 +70%** — and is negative/flat in up years.
+- **Blended in, it does bank 2022** (e.g. +58%) while the XS sleeve still carries
+  2023 (+69%), because the hedge is *additive* (short-only, mostly flat), not a
+  reallocation — this is what the momentum-only sleeves could not do.
+- **But it is NOT a robust every-year fix.** Rigorous robustness over 72 settings:
+  only **1/72** reaches 11/12 years and it needs **5× leverage** (overfit, knife-edge);
+  at sane leverage (m ≤ 3) the best is **9/12**, because the hedge's drag during
+  *bull-market corrections* (false shorts: 2021 −19%, 2024 −25% standalone) cancels
+  its crash gains. **No setting reaches 12/12.**
+
+**Verdict on the hedge.** Its honest, deployable value is **drawdown reduction /
+softer bear years** (a tail hedge), not a guaranteed +50% in the bear. Even this
+expand-scope route lands back at the ~90% robust ceiling; the every-year-+50% claim
+remains reachable only via overfitting (high-leverage knife-edge configs that lose
+money live).
+
 **Honesty caveat on the 90%.** Each sleeve is fully walk-forward OOS (params chosen
 on train slices only). The *blend weight and leverage* are chosen by inspecting the
 OOS-period hit-rate — a mild meta-level in-sample choice — so the 90% is the best
@@ -663,7 +686,8 @@ the signature of fraud, not an edge.
 [`kucoin_loader.py`](research/kucoin_loader.py) · [`intraday.py`](research/intraday.py) ·
 [`combine.py`](research/combine.py) · [`xsection.py`](research/xsection.py) ·
 [`xs_blend.py`](research/xs_blend.py) · [`defensive_blend.py`](research/defensive_blend.py) ·
-[`regime_switch.py`](research/regime_switch.py) · [`ls_trend_test.py`](research/ls_trend_test.py)
+[`regime_switch.py`](research/regime_switch.py) · [`ls_trend_test.py`](research/ls_trend_test.py) ·
+[`crash_hedge.py`](research/crash_hedge.py)
 
 **Results:** [`research_results.json`](research/results/research_results.json) ·
 [`strategy_configs.json`](research/results/strategy_configs.json) ·
