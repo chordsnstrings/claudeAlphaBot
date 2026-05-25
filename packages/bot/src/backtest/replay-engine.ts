@@ -44,6 +44,13 @@ import {
   simulateExitForCandle,
   type FeeOptions,
 } from "./fill-sim.js";
+import {
+  applySkim,
+  utcMonthIndex,
+  utcMonthKey,
+  type WithdrawalEvent,
+  type WithdrawalPolicy,
+} from "./withdrawal.js";
 
 /**
  * A strategy evaluator consumed by the replay engine.
@@ -67,6 +74,13 @@ export interface ReplayOptions {
   readonly risk?: RiskOptions;
   readonly fees?: FeeOptions;
   readonly circuitBreakers?: CircuitBreakerOptions;
+  /**
+   * Optional monthly profit-withdrawal policy. When set to `skim-to-base`,
+   * realized equity above the base is pulled out of the account at each UTC
+   * month boundary, so working capital — and therefore position sizing —
+   * stays anchored to the base instead of compounding. Defaults to no skim.
+   */
+  readonly withdrawal?: WithdrawalPolicy;
 }
 
 export interface ReplayInputs {
@@ -84,6 +98,10 @@ export interface ReplayResult {
   readonly finalEquity: number;
   readonly skippedSignals: number;
   readonly blockedByPretrade: number;
+  /** Monthly profit skims applied (empty unless a withdrawal policy is set). */
+  readonly withdrawals: readonly WithdrawalEvent[];
+  /** Sum of all monthly skims — the realized, banked yield. */
+  readonly totalWithdrawn: number;
 }
 
 /** Run a full backtest. Pure relative to inputs. */
@@ -119,7 +137,34 @@ export function runReplay(inputs: ReplayInputs): ReplayResult {
   // Sort funding by ts (already sorted typically).
   const fundingSorted = [...(inputs.funding ?? [])].sort((a, b) => a.fundingTime - b.fundingTime);
 
+  // Monthly profit-withdrawal bookkeeping.
+  const withdrawalPolicy: WithdrawalPolicy = opts.withdrawal ?? { kind: "none" };
+  const withdrawals: WithdrawalEvent[] = [];
+  let totalWithdrawn = 0;
+  let prevMonthIndex: number | null = null;
+
   for (const t of timeline) {
+    // ── PHASE 0: at each UTC month rollover, skim realized profit above base.
+    if (withdrawalPolicy.kind !== "none") {
+      const monthIdx = utcMonthIndex(t);
+      if (prevMonthIndex !== null && monthIdx !== prevMonthIndex) {
+        const before = state.equity;
+        const { equity: after, withdrawn } = applySkim(before, withdrawalPolicy);
+        if (withdrawn > 0) {
+          state.equity = after;
+          totalWithdrawn += withdrawn;
+          withdrawals.push({
+            atUtc: t,
+            monthKey: utcMonthKey(t - 1), // label with the month that just ended
+            equityBefore: before,
+            amountWithdrawn: withdrawn,
+            equityAfter: after,
+          });
+        }
+      }
+      prevMonthIndex = monthIdx;
+    }
+
     // ── PHASE 1: process exits for any open position whose symbol has a candle at t.
     // We iterate a copy because closures may remove from openPositions.
     const positionsAtT = state.openPositions.filter((p) => {
@@ -336,6 +381,8 @@ export function runReplay(inputs: ReplayInputs): ReplayResult {
     finalEquity: state.equity,
     skippedSignals,
     blockedByPretrade,
+    withdrawals,
+    totalWithdrawn,
   };
 }
 

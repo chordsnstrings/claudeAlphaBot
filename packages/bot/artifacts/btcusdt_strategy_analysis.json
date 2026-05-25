@@ -1,0 +1,2115 @@
+{
+  "generatedAt": "2026-05-25T07:35:42.239Z",
+  "dataWindow": {
+    "firstOpen": "2024-11-01T00:00:00.000Z",
+    "lastOpen": "2026-05-24T23:00:00.000Z",
+    "candles": 13680
+  },
+  "baseEquity": 10000,
+  "targetMonthlyPct": 20,
+  "riskLevels": [
+    0.02,
+    0.05,
+    0.1
+  ],
+  "best": {
+    "strategy": "WEEKEND_MR",
+    "riskPct": 0.05,
+    "medianMonthlyPct": 0,
+    "meanMonthlyPct": 1.6176535706619548,
+    "monthsAboveTarget": 1,
+    "months": 19,
+    "totalWithdrawn": 2964.5786179930565,
+    "skimMaxDdPct": 23.267521265040674
+  },
+  "runs": [
+    {
+      "strategy": "ARB",
+      "riskPct": 0.02,
+      "trades": 70,
+      "winRatePct": 47.14285714285714,
+      "compoundTotalReturnPct": -6.235016417202041,
+      "compoundAnnualizedPct": -4.038966363318486,
+      "compoundMaxDdPct": 11.791989620506833,
+      "sharpe": -0.3336515298174262,
+      "months": 19,
+      "medianMonthlyPct": -1.0956084656385445,
+      "meanMonthlyPct": -0.2837967650462301,
+      "bestMonthlyPct": 6.272419928521228,
+      "worstMonthlyPct": -6.606304218136416,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 520.2049793456445,
+      "withdrawnPctOfBase": 5.202049793456444,
+      "skimMaxDdPct": 14.472253616078188,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 10149.353954945447,
+          "returnPct": 1.4935395494544719,
+          "trades": 2,
+          "winRatePct": 50
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 10000,
+          "endEquity": 9695.455554190006,
+          "returnPct": -3.045444458099937,
+          "trades": 4,
+          "winRatePct": 25
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 9695.455554190006,
+          "endEquity": 9794.292244759105,
+          "returnPct": 1.0194125486593022,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 9794.292244759105,
+          "endEquity": 9603.415805001667,
+          "returnPct": -1.948853832287628,
+          "trades": 3,
+          "winRatePct": 33.33333333333333
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 9603.415805001667,
+          "endEquity": 9730.459573629081,
+          "returnPct": 1.3229018841530045,
+          "trades": 2,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 9730.459573629081,
+          "endEquity": 9623.851834794865,
+          "returnPct": -1.0956084656385445,
+          "trades": 2,
+          "winRatePct": 50
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 9623.851834794865,
+          "endEquity": 9093.691072357959,
+          "returnPct": -5.5088209122268434,
+          "trades": 4,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 9093.691072357959,
+          "endEquity": 9247.93086660521,
+          "returnPct": 1.6961186939381807,
+          "trades": 5,
+          "winRatePct": 60
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 9247.93086660521,
+          "endEquity": 9758.741761386093,
+          "returnPct": 5.523515499293465,
+          "trades": 7,
+          "winRatePct": 71.42857142857143
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 9758.741761386093,
+          "endEquity": 10370.851024400197,
+          "returnPct": 6.272419928521228,
+          "trades": 5,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 10000,
+          "endEquity": 9885.566498321745,
+          "returnPct": -1.1443350167825521,
+          "trades": 5,
+          "winRatePct": 40
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 9885.566498321745,
+          "endEquity": 9525.612379796095,
+          "returnPct": -3.6412088127347904,
+          "trades": 5,
+          "winRatePct": 40
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 9525.612379796095,
+          "endEquity": 8896.321447346301,
+          "returnPct": -6.606304218136416,
+          "trades": 5,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 8896.321447346301,
+          "endEquity": 9101.488281033857,
+          "returnPct": 2.3061985215108773,
+          "trades": 2,
+          "winRatePct": 50
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 9101.488281033857,
+          "endEquity": 9314.901947492745,
+          "returnPct": 2.3448216365186116,
+          "trades": 2,
+          "winRatePct": 100
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 9314.901947492745,
+          "endEquity": 9119.329364519805,
+          "returnPct": -2.0995667380651435,
+          "trades": 3,
+          "winRatePct": 33.33333333333333
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 9119.329364519805,
+          "endEquity": 9325.00985642204,
+          "returnPct": 2.255434404008574,
+          "trades": 6,
+          "winRatePct": 50
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 9325.00985642204,
+          "endEquity": 9078.0133149392,
+          "returnPct": -2.648753677324386,
+          "trades": 5,
+          "winRatePct": 40
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 9078.0133149392,
+          "endEquity": 8906.656275293048,
+          "returnPct": -1.8876050706398466,
+          "trades": 2,
+          "winRatePct": 0
+        }
+      ]
+    },
+    {
+      "strategy": "ARB",
+      "riskPct": 0.05,
+      "trades": 50,
+      "winRatePct": 48,
+      "compoundTotalReturnPct": -15.088854936443042,
+      "compoundAnnualizedPct": -9.944725069712334,
+      "compoundMaxDdPct": 23.29137807877407,
+      "sharpe": -0.43932480307406685,
+      "months": 19,
+      "medianMonthlyPct": 0,
+      "meanMonthlyPct": -0.6466281588675739,
+      "bestMonthlyPct": 14.416785077781539,
+      "worstMonthlyPct": -14.824102959947034,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 1021.3224535809641,
+      "withdrawnPctOfBase": 10.21322453580964,
+      "skimMaxDdPct": 29.67712435795185,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 10370.265432032162,
+          "returnPct": 3.7026543203216167,
+          "trades": 2,
+          "winRatePct": 50
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 10000,
+          "endEquity": 9258.526660247177,
+          "returnPct": -7.414733397528235,
+          "trades": 4,
+          "winRatePct": 25
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 9258.526660247177,
+          "endEquity": 9495.734717613012,
+          "returnPct": 2.5620497307019927,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 9495.734717613012,
+          "endEquity": 9190.587627597351,
+          "returnPct": -3.213517427457855,
+          "trades": 3,
+          "winRatePct": 33.33333333333333
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 9190.587627597351,
+          "endEquity": 9496.685647567327,
+          "returnPct": 3.330559833310646,
+          "trades": 2,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 9496.685647567327,
+          "endEquity": 9225.536949718578,
+          "returnPct": -2.8551929368979985,
+          "trades": 2,
+          "winRatePct": 50
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 9225.536949718578,
+          "endEquity": 8237.756850145746,
+          "returnPct": -10.707020143721433,
+          "trades": 4,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 8237.756850145746,
+          "endEquity": 8484.347012334818,
+          "returnPct": 2.9934139435629112,
+          "trades": 5,
+          "winRatePct": 60
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 8484.347012334818,
+          "endEquity": 9308.99868783074,
+          "returnPct": 9.719683486507774,
+          "trades": 7,
+          "winRatePct": 71.42857142857143
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 9308.99868783074,
+          "endEquity": 10651.057021548802,
+          "returnPct": 14.416785077781539,
+          "trades": 5,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 10000,
+          "endEquity": 9652.886624880226,
+          "returnPct": -3.47113375119774,
+          "trades": 5,
+          "winRatePct": 40
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 9652.886624880226,
+          "endEquity": 9022.999015001411,
+          "returnPct": -6.525380793920085,
+          "trades": 5,
+          "winRatePct": 40
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 9022.999015001411,
+          "endEquity": 7685.420350942595,
+          "returnPct": -14.824102959947034,
+          "trades": 5,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 7685.420350942595,
+          "endEquity": 7685.420350942595,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 7685.420350942595,
+          "endEquity": 7685.420350942595,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 7685.420350942595,
+          "endEquity": 7685.420350942595,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 7685.420350942595,
+          "endEquity": 7685.420350942595,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 7685.420350942595,
+          "endEquity": 7685.420350942595,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 7685.420350942595,
+          "endEquity": 7685.420350942595,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        }
+      ]
+    },
+    {
+      "strategy": "ARB",
+      "riskPct": 0.1,
+      "trades": 49,
+      "winRatePct": 48.97959183673469,
+      "compoundTotalReturnPct": -11.78670518841789,
+      "compoundAnnualizedPct": -7.717335126132674,
+      "compoundMaxDdPct": 24.42969270567397,
+      "sharpe": -0.23270464085403514,
+      "months": 19,
+      "medianMonthlyPct": 0,
+      "meanMonthlyPct": -0.6014086384543142,
+      "bestMonthlyPct": 16.247131342867945,
+      "worstMonthlyPct": -17.63311109525153,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 1590.2034129752883,
+      "withdrawnPctOfBase": 15.90203412975288,
+      "skimMaxDdPct": 35.26815277231447,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 10633.98683610731,
+          "returnPct": 6.339868361073095,
+          "trades": 2,
+          "winRatePct": 50
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 10000,
+          "endEquity": 9149.338620399247,
+          "returnPct": -8.506613796007532,
+          "trades": 4,
+          "winRatePct": 25
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 9149.338620399247,
+          "endEquity": 9395.910153713732,
+          "returnPct": 2.694965653197409,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 9395.910153713732,
+          "endEquity": 9189.367289676047,
+          "returnPct": -2.198220935052778,
+          "trades": 3,
+          "winRatePct": 33.33333333333333
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 9189.367289676047,
+          "endEquity": 9627.673165282888,
+          "returnPct": 4.769706790360448,
+          "trades": 2,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 9627.673165282888,
+          "endEquity": 9377.122499759525,
+          "returnPct": -2.60240102901333,
+          "trades": 2,
+          "winRatePct": 50
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 9377.122499759525,
+          "endEquity": 8305.232602160457,
+          "returnPct": -11.430904284619906,
+          "trades": 4,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 8305.232602160457,
+          "endEquity": 8574.237588818034,
+          "returnPct": 3.2389819712888053,
+          "trades": 5,
+          "winRatePct": 60
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 8574.237588818034,
+          "endEquity": 9424.935007258715,
+          "returnPct": 9.921551737149265,
+          "trades": 7,
+          "winRatePct": 71.42857142857143
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 9424.935007258715,
+          "endEquity": 10956.216576867979,
+          "returnPct": 16.247131342867945,
+          "trades": 5,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 10000,
+          "endEquity": 9577.049422459617,
+          "returnPct": -4.229505775403831,
+          "trades": 5,
+          "winRatePct": 40
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 9577.049422459617,
+          "endEquity": 8807.225783946265,
+          "returnPct": -8.038213071220031,
+          "trades": 5,
+          "winRatePct": 40
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 8807.225783946265,
+          "endEquity": 7254.237877053383,
+          "returnPct": -17.63311109525153,
+          "trades": 5,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 7254.237877053383,
+          "endEquity": 7254.237877053383,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 7254.237877053383,
+          "endEquity": 7254.237877053383,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 7254.237877053383,
+          "endEquity": 7254.237877053383,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 7254.237877053383,
+          "endEquity": 7254.237877053383,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 7254.237877053383,
+          "endEquity": 7254.237877053383,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 7254.237877053383,
+          "endEquity": 7254.237877053383,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        }
+      ]
+    },
+    {
+      "strategy": "NY_OPEN",
+      "riskPct": 0.02,
+      "trades": 230,
+      "winRatePct": 42.608695652173914,
+      "compoundTotalReturnPct": -32.639466243898354,
+      "compoundAnnualizedPct": -22.35539386242027,
+      "compoundMaxDdPct": 53.12922426460707,
+      "sharpe": -1.0175689510291483,
+      "months": 19,
+      "medianMonthlyPct": -4.133505307442269,
+      "meanMonthlyPct": -1.7932477969425193,
+      "bestMonthlyPct": 16.2682604905825,
+      "worstMonthlyPct": -13.183056569547313,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 0,
+      "withdrawnPctOfBase": 0,
+      "skimMaxDdPct": 53.12922426460707,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 9571.219020135004,
+          "returnPct": -4.28780979864996,
+          "trades": 15,
+          "winRatePct": 33.33333333333333
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 9571.219020135004,
+          "endEquity": 9033.419043181804,
+          "returnPct": -5.618928746921664,
+          "trades": 12,
+          "winRatePct": 41.66666666666667
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 9033.419043181804,
+          "endEquity": 8979.021555365533,
+          "returnPct": -0.6021804983942323,
+          "trades": 13,
+          "winRatePct": 46.15384615384615
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 8979.021555365533,
+          "endEquity": 8356.744937505964,
+          "returnPct": -6.930338835056241,
+          "trades": 10,
+          "winRatePct": 40
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 8356.744937505964,
+          "endEquity": 7255.070525021772,
+          "returnPct": -13.183056569547313,
+          "trades": 15,
+          "winRatePct": 26.666666666666668
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 7255.070525021772,
+          "endEquity": 7045.77277127179,
+          "returnPct": -2.8848479560349114,
+          "trades": 17,
+          "winRatePct": 47.05882352941176
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 7045.77277127179,
+          "endEquity": 6258.988245904776,
+          "returnPct": -11.166759855995132,
+          "trades": 11,
+          "winRatePct": 18.181818181818183
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 6258.988245904776,
+          "endEquity": 5674.558738006033,
+          "returnPct": -9.337443767866665,
+          "trades": 9,
+          "winRatePct": 11.11111111111111
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 5674.558738006033,
+          "endEquity": 5190.01704016021,
+          "returnPct": -8.538843639075363,
+          "trades": 14,
+          "winRatePct": 42.857142857142854
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 5190.01704016021,
+          "endEquity": 5371.987029710548,
+          "returnPct": 3.506153990290578,
+          "trades": 10,
+          "winRatePct": 70
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 5371.987029710548,
+          "endEquity": 5495.042040891494,
+          "returnPct": 2.290679603289671,
+          "trades": 14,
+          "winRatePct": 42.857142857142854
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 5495.042040891494,
+          "endEquity": 6015.15923329603,
+          "returnPct": 9.465208610490519,
+          "trades": 16,
+          "winRatePct": 62.5
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 6015.15923329603,
+          "endEquity": 6993.721006291953,
+          "returnPct": 16.2682604905825,
+          "trades": 7,
+          "winRatePct": 85.71428571428571
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 6993.721006291953,
+          "endEquity": 7039.060321771575,
+          "returnPct": 0.6482860188279223,
+          "trades": 10,
+          "winRatePct": 50
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 7039.060321771575,
+          "endEquity": 7407.033003698199,
+          "returnPct": 5.2275824485904225,
+          "trades": 9,
+          "winRatePct": 66.66666666666666
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 7407.033003698199,
+          "endEquity": 7844.4805567332205,
+          "returnPct": 5.905840473731009,
+          "trades": 9,
+          "winRatePct": 44.44444444444444
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 7844.4805567332205,
+          "endEquity": 7520.228536579376,
+          "returnPct": -4.133505307442269,
+          "trades": 13,
+          "winRatePct": 38.46153846153847
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 7520.228536579376,
+          "endEquity": 7206.125875379229,
+          "returnPct": -4.17677015628329,
+          "trades": 11,
+          "winRatePct": 27.27272727272727
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 7206.125875379229,
+          "endEquity": 6736.053375610165,
+          "returnPct": -6.523234646443448,
+          "trades": 15,
+          "winRatePct": 33.33333333333333
+        }
+      ]
+    },
+    {
+      "strategy": "NY_OPEN",
+      "riskPct": 0.05,
+      "trades": 11,
+      "winRatePct": 36.36363636363637,
+      "compoundTotalReturnPct": -10.189416748174516,
+      "compoundAnnualizedPct": -6.650703452105633,
+      "compoundMaxDdPct": 20.634025302186046,
+      "sharpe": -0.5918676588696543,
+      "months": 19,
+      "medianMonthlyPct": 0,
+      "meanMonthlyPct": -0.5362850920091851,
+      "bestMonthlyPct": 0,
+      "worstMonthlyPct": -10.189416748174516,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 0,
+      "withdrawnPctOfBase": 0,
+      "skimMaxDdPct": 20.634025302186046,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 8981.058325182548,
+          "returnPct": -10.189416748174516,
+          "trades": 11,
+          "winRatePct": 36.36363636363637
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 8981.058325182548,
+          "endEquity": 8981.058325182548,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        }
+      ]
+    },
+    {
+      "strategy": "NY_OPEN",
+      "riskPct": 0.1,
+      "trades": 8,
+      "winRatePct": 37.5,
+      "compoundTotalReturnPct": -9.843713118853357,
+      "compoundAnnualizedPct": -6.420751514922074,
+      "compoundMaxDdPct": 18.69592142419298,
+      "sharpe": -0.4885699934041628,
+      "months": 19,
+      "medianMonthlyPct": 0,
+      "meanMonthlyPct": -0.5180901641501766,
+      "bestMonthlyPct": 0,
+      "worstMonthlyPct": -9.843713118853357,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 0,
+      "withdrawnPctOfBase": 0,
+      "skimMaxDdPct": 18.69592142419298,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 9015.628688114664,
+          "returnPct": -9.843713118853357,
+          "trades": 8,
+          "winRatePct": 37.5
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 9015.628688114664,
+          "endEquity": 9015.628688114664,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        }
+      ]
+    },
+    {
+      "strategy": "WEEKEND_MR",
+      "riskPct": 0.02,
+      "trades": 9,
+      "winRatePct": 66.66666666666666,
+      "compoundTotalReturnPct": 25.145398618403707,
+      "compoundAnnualizedPct": 15.447429601507178,
+      "compoundMaxDdPct": 5.658680280897588,
+      "sharpe": 1.5230038382896116,
+      "months": 19,
+      "medianMonthlyPct": 0,
+      "meanMonthlyPct": 1.2423838854274358,
+      "bestMonthlyPct": 12.48531227290858,
+      "worstMonthlyPct": -2.18976163316618,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 2321.8709429575047,
+      "withdrawnPctOfBase": 23.218709429575046,
+      "skimMaxDdPct": 13.715247304128178,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 9787.468638230104,
+          "returnPct": -2.1253136176989575,
+          "trades": 1,
+          "winRatePct": 0
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 9787.468638230104,
+          "endEquity": 9573.146405131969,
+          "returnPct": -2.18976163316618,
+          "trades": 1,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 9573.146405131969,
+          "endEquity": 9842.944504415602,
+          "returnPct": 2.8182803006021047,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 9842.944504415602,
+          "endEquity": 9842.944504415602,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 9842.944504415602,
+          "endEquity": 11071.866862640984,
+          "returnPct": 12.48531227290858,
+          "trades": 2,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 10000,
+          "endEquity": 9789.393025664183,
+          "returnPct": -2.1060697433581663,
+          "trades": 1,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 9789.393025664183,
+          "endEquity": 10332.001657074235,
+          "returnPct": 5.542822011411046,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 10000,
+          "endEquity": 10360.358347993588,
+          "returnPct": 3.603583479935878,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 10000,
+          "endEquity": 10557.644075248698,
+          "returnPct": 5.576440752486978,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        }
+      ]
+    },
+    {
+      "strategy": "WEEKEND_MR",
+      "riskPct": 0.05,
+      "trades": 9,
+      "winRatePct": 66.66666666666666,
+      "compoundTotalReturnPct": 32.085745791671904,
+      "compoundAnnualizedPct": 19.507695788038504,
+      "compoundMaxDdPct": 11.705102563277595,
+      "sharpe": 1.1935383963707609,
+      "months": 19,
+      "medianMonthlyPct": 0,
+      "meanMonthlyPct": 1.6176535706619548,
+      "bestMonthlyPct": 20.60854141304316,
+      "worstMonthlyPct": -5.265174358395416,
+      "monthsAboveTarget": 1,
+      "hitRatePct": 5.263157894736842,
+      "totalWithdrawn": 2964.5786179930565,
+      "withdrawnPctOfBase": 29.645786179930568,
+      "skimMaxDdPct": 23.267521265040674,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 9491.559588381253,
+          "returnPct": -5.0844041161874705,
+          "trades": 1,
+          "winRatePct": 0
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 9491.559588381253,
+          "endEquity": 9165.041823862617,
+          "returnPct": -3.440085493624575,
+          "trades": 1,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 9165.041823862617,
+          "endEquity": 9816.278615236904,
+          "returnPct": 7.105660878477289,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 9816.278615236904,
+          "endEquity": 9816.278615236904,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 9816.278615236904,
+          "endEquity": 11839.270458877701,
+          "returnPct": 20.60854141304316,
+          "trades": 2,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 10000,
+          "endEquity": 9473.482564160458,
+          "returnPct": -5.265174358395416,
+          "trades": 1,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 9473.482564160458,
+          "endEquity": 9999.504905527408,
+          "returnPct": 5.552576233759778,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 9999.504905527408,
+          "endEquity": 9999.504905527408,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 9999.504905527408,
+          "endEquity": 9999.504905527408,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 9999.504905527408,
+          "endEquity": 9999.504905527408,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 9999.504905527408,
+          "endEquity": 9999.504905527408,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 9999.504905527408,
+          "endEquity": 10546.34239863656,
+          "returnPct": 5.4686456807164205,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 10000,
+          "endEquity": 10578.965760478795,
+          "returnPct": 5.789657604787953,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        }
+      ]
+    },
+    {
+      "strategy": "WEEKEND_MR",
+      "riskPct": 0.1,
+      "trades": 8,
+      "winRatePct": 62.5,
+      "compoundTotalReturnPct": 25.327821604476085,
+      "compoundAnnualizedPct": 15.555171576742243,
+      "compoundMaxDdPct": 11.96076129104169,
+      "sharpe": 0.9816921103293396,
+      "months": 19,
+      "medianMonthlyPct": 0,
+      "meanMonthlyPct": 1.3360956612684012,
+      "bestMonthlyPct": 20.59215937645161,
+      "worstMonthlyPct": -5.581084819899152,
+      "monthsAboveTarget": 1,
+      "hitRatePct": 5.263157894736842,
+      "totalWithdrawn": 2431.672470865533,
+      "withdrawnPctOfBase": 24.31672470865533,
+      "skimMaxDdPct": 25.392043772434462,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 9491.559588381253,
+          "returnPct": -5.0844041161874705,
+          "trades": 1,
+          "winRatePct": 0
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 9491.559588381253,
+          "endEquity": 9165.041823862617,
+          "returnPct": -3.440085493624575,
+          "trades": 1,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 9165.041823862617,
+          "endEquity": 9865.896656484469,
+          "returnPct": 7.647044564456504,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 9865.896656484469,
+          "endEquity": 9865.896656484469,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 9865.896656484469,
+          "endEquity": 11897.497819903761,
+          "returnPct": 20.59215937645161,
+          "trades": 2,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 10000,
+          "endEquity": 9441.891518010085,
+          "returnPct": -5.581084819899152,
+          "trades": 1,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 9441.891518010085,
+          "endEquity": 9441.891518010085,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 9441.891518010085,
+          "endEquity": 9441.891518010085,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 9441.891518010085,
+          "endEquity": 9441.891518010085,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 9441.891518010085,
+          "endEquity": 9441.891518010085,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 9441.891518010085,
+          "endEquity": 9441.891518010085,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 9441.891518010085,
+          "endEquity": 9958.489149749144,
+          "returnPct": 5.471336233356074,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 9958.489149749144,
+          "endEquity": 9958.489149749144,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 9958.489149749144,
+          "endEquity": 9958.489149749144,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 9958.489149749144,
+          "endEquity": 9958.489149749144,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 9958.489149749144,
+          "endEquity": 9958.489149749144,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 9958.489149749144,
+          "endEquity": 9958.489149749144,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 9958.489149749144,
+          "endEquity": 10534.174650961771,
+          "returnPct": 5.780851819546629,
+          "trades": 1,
+          "winRatePct": 100
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 10000,
+          "endEquity": 10000,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        }
+      ]
+    },
+    {
+      "strategy": "PORTFOLIO(ARB+NY+WMR)",
+      "riskPct": 0.02,
+      "trades": 268,
+      "winRatePct": 44.02985074626866,
+      "compoundTotalReturnPct": -15.673607446407075,
+      "compoundAnnualizedPct": -10.342379124506074,
+      "compoundMaxDdPct": 42.03957866724737,
+      "sharpe": -0.3090282361070491,
+      "months": 19,
+      "medianMonthlyPct": -2.2538800680538853,
+      "meanMonthlyPct": -0.64477005235578,
+      "bestMonthlyPct": 11.340478731676866,
+      "worstMonthlyPct": -11.226522601957969,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 0,
+      "withdrawnPctOfBase": 0,
+      "skimMaxDdPct": 42.03957866724737,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 8877.347739804203,
+          "returnPct": -11.226522601957969,
+          "trades": 16,
+          "winRatePct": 25
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 8877.347739804203,
+          "endEquity": 8284.127365893532,
+          "returnPct": -6.682405503287805,
+          "trades": 14,
+          "winRatePct": 35.714285714285715
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 8284.127365893532,
+          "endEquity": 8726.900907512432,
+          "returnPct": 5.344842275625043,
+          "trades": 14,
+          "winRatePct": 57.14285714285714
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 8726.900907512432,
+          "endEquity": 7759.170949545951,
+          "returnPct": -11.089044876554338,
+          "trades": 12,
+          "winRatePct": 33.33333333333333
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 7759.170949545951,
+          "endEquity": 7686.57856593689,
+          "returnPct": -0.9355688137443151,
+          "trades": 17,
+          "winRatePct": 41.17647058823529
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 7686.57856593689,
+          "endEquity": 7229.3061089855755,
+          "returnPct": -5.948972654461893,
+          "trades": 20,
+          "winRatePct": 45
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 7229.3061089855755,
+          "endEquity": 6531.9780602978935,
+          "returnPct": -9.645850350989383,
+          "trades": 15,
+          "winRatePct": 20
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 6531.9780602978935,
+          "endEquity": 6330.837157744016,
+          "returnPct": -3.0793260586166866,
+          "trades": 11,
+          "winRatePct": 36.36363636363637
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 6330.837157744016,
+          "endEquity": 6187.735363061778,
+          "returnPct": -2.2603929167123247,
+          "trades": 16,
+          "winRatePct": 50
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 6187.735363061778,
+          "endEquity": 6721.590712732501,
+          "returnPct": 8.627637065049978,
+          "trades": 12,
+          "winRatePct": 83.33333333333334
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 6721.590712732501,
+          "endEquity": 7127.142015129269,
+          "returnPct": 6.033561395348642,
+          "trades": 15,
+          "winRatePct": 53.333333333333336
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 7127.142015129269,
+          "endEquity": 7935.394039531409,
+          "returnPct": 11.340478731676866,
+          "trades": 19,
+          "winRatePct": 57.89473684210527
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 7935.394039531409,
+          "endEquity": 8804.239998967914,
+          "returnPct": 10.948995791616808,
+          "trades": 11,
+          "winRatePct": 54.54545454545454
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 8804.239998967914,
+          "endEquity": 8869.537039809136,
+          "returnPct": 0.7416544852125402,
+          "trades": 11,
+          "winRatePct": 45.45454545454545
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 8869.537039809136,
+          "endEquity": 9553.396685653328,
+          "returnPct": 7.710206776011249,
+          "trades": 11,
+          "winRatePct": 72.72727272727273
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 9553.396685653328,
+          "endEquity": 9641.397545194068,
+          "returnPct": 0.9211473409545929,
+          "trades": 11,
+          "winRatePct": 36.36363636363637
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 9641.397545194068,
+          "endEquity": 9424.092007641102,
+          "returnPct": -2.2538800680538853,
+          "trades": 15,
+          "winRatePct": 40
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 9424.092007641102,
+          "endEquity": 9029.442274763816,
+          "returnPct": -4.187668504905318,
+          "trades": 13,
+          "winRatePct": 30.76923076923077
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 9029.442274763816,
+          "endEquity": 8432.639255359292,
+          "returnPct": -6.609522506971614,
+          "trades": 15,
+          "winRatePct": 26.666666666666668
+        }
+      ]
+    },
+    {
+      "strategy": "PORTFOLIO(ARB+NY+WMR)",
+      "riskPct": 0.05,
+      "trades": 12,
+      "winRatePct": 33.33333333333333,
+      "compoundTotalReturnPct": -12.207861282080339,
+      "compoundAnnualizedPct": -7.999727124065814,
+      "compoundMaxDdPct": 20.60747004647325,
+      "sharpe": -0.6991006311333481,
+      "months": 19,
+      "medianMonthlyPct": 0,
+      "meanMonthlyPct": -0.6425190148463337,
+      "bestMonthlyPct": 0,
+      "worstMonthlyPct": -12.207861282080339,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 0,
+      "withdrawnPctOfBase": 0,
+      "skimMaxDdPct": 20.60747004647325,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 8779.213871791966,
+          "returnPct": -12.207861282080339,
+          "trades": 12,
+          "winRatePct": 33.33333333333333
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 8779.213871791966,
+          "endEquity": 8779.213871791966,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        }
+      ]
+    },
+    {
+      "strategy": "PORTFOLIO(ARB+NY+WMR)",
+      "riskPct": 0.1,
+      "trades": 9,
+      "winRatePct": 33.33333333333333,
+      "compoundTotalReturnPct": -9.63616440130896,
+      "compoundAnnualizedPct": -6.28284850858416,
+      "compoundMaxDdPct": 18.713932998384784,
+      "sharpe": -0.44209863527802706,
+      "months": 19,
+      "medianMonthlyPct": 0,
+      "meanMonthlyPct": -0.5071665474373137,
+      "bestMonthlyPct": 0,
+      "worstMonthlyPct": -9.63616440130896,
+      "monthsAboveTarget": 0,
+      "hitRatePct": 0,
+      "totalWithdrawn": 0,
+      "withdrawnPctOfBase": 0,
+      "skimMaxDdPct": 18.713932998384784,
+      "monthlyRows": [
+        {
+          "month": "2024-11",
+          "startEquity": 10000,
+          "endEquity": 9036.383559869104,
+          "returnPct": -9.63616440130896,
+          "trades": 9,
+          "winRatePct": 33.33333333333333
+        },
+        {
+          "month": "2024-12",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-01",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-02",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-03",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-04",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-05",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-06",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-07",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-08",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-09",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-10",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-11",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2025-12",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-01",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-02",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-03",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-04",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        },
+        {
+          "month": "2026-05",
+          "startEquity": 9036.383559869104,
+          "endEquity": 9036.383559869104,
+          "returnPct": 0,
+          "trades": 0,
+          "winRatePct": 0
+        }
+      ]
+    }
+  ]
+}
