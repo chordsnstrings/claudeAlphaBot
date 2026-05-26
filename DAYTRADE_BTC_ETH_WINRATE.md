@@ -33,9 +33,13 @@ unseen data. Code: [`research/daytrade_winrate.py`](research/daytrade_winrate.py
    short-term RSI dip), exit on a symmetric bracket. This **`trend_pullback`** family
    is the only one that stayed net-positive OOS with a **trustworthy trade count**.
 
-4. **Best honest answer (see verdict table below once walk-forward completes):** the
-   sustainable day-trade win rate ceiling on BTC/ETH is **~53–58%**, achieved by
-   trend-filtered pullback entries — *not* the 80% the win-rate dial advertises.
+4. **Best honest answer (rolling walk-forward, §3.2): exactly one of 24 tested
+   coin×timeframe×family combinations survives — `BTC 1H trend_pullback`**, at a
+   **53.1% out-of-sample win rate, +63.9% net, profit factor 1.22, positive in 60% of
+   15 multi-regime windows.** That ~53% is the *sustainable* day-trade win-rate ceiling
+   — not the 80% the win-rate dial advertises. **ETH has no walk-forward-robust intraday
+   edge** (best cell −18.5%), and the edge does **not** carry to 8H/12H/1D — it is
+   specifically *buying BTC 1H dips in an uptrend.*
 
 > This reconciles exactly with the rest of the repo: BTC/ETH **direction is
 > unpredictable** at short horizons ([`PREDICTION_ACCURACY_BTC_ETH.md`](PREDICTION_ACCURACY_BTC_ETH.md)),
@@ -145,22 +149,55 @@ Reported in
 [`research/results/daytrade_walkforward_results.json`](research/results/daytrade_walkforward_results.json)
 (code: [`research/daytrade_walkforward.py`](research/daytrade_walkforward.py)).
 
-| coin | tf | family | folds | OOS trades | **OOS win** | OOS net | PF | fold-win-rate |
-|---|---|---|---:|---:|---:|---:|---:|---:|
-| BTC | 1h | zscore_mr | 15 | 819 | 50.4% | −63.3% | 0.93 | 33% |
-| BTC | 1h | rsi_mr | 14 | 394 | 45.9% | −65.6% | 0.81 | 29% |
-| **BTC** | **1h** | **trend_pullback** | **15** | **258** | **53.1%** | **+63.9%** | **1.22** | **60%** |
-| BTC | 8h | zscore_mr | 15 | 220 | 45.0% | −58.3% | 0.76 | 33% |
+**Complete grid — every coin × timeframe × family (net of cost, pooled OOS):**
 
-**This is the headline, validated.** Pure mean reversion delivers a ~50% win rate
-that still **bleeds out after costs** across folds (negative net, profit factor < 1,
-fold-win-rate ≈ ⅓). **BTC 1H trend-filtered pullback is the one family that holds
-up: 53.1% OOS win rate, +63.9% net, PF 1.22, and 60% of the 15 test windows were
-net-positive** — an edge spread across regimes, not a single lucky fold. Per-fold
-win rate ranged 30%→73% (median 50%); the *positive expectancy*, not a freakish hit
-rate, is what compounds. *(Remaining ETH / 8H / 12H / 1D rows append when the full
-sweep completes; the verdict does not depend on them — reversion has already failed
-on every slice tested and ETH 1H lost −85% on the single split.)*
+| coin | tf | family | OOS trades | **OOS win** | OOS net | PF | fold-win-rate |
+|---|---|---|---:|---:|---:|---:|---:|
+| **BTC** | **1h** | **trend_pullback** | **258** | **53.1%** | **+63.9%** | **1.22** | **60%** ✅ |
+| BTC | 1h | zscore_mr | 819 | 50.4% | −63.3% | 0.93 | 33% |
+| BTC | 1h | rsi_mr | 394 | 45.9% | −65.6% | 0.81 | 29% |
+| BTC | 8h | trend_pullback | 128 | 47.7% | −27.0% | 0.84 | 33% |
+| BTC | 8h | zscore_mr | 220 | 45.0% | −58.3% | 0.76 | 33% |
+| BTC | 8h | rsi_mr | 177 | 38.4% | −57.5% | 0.68 | 13% |
+| BTC | 12h | trend_pullback | 81 | 40.7% | −19.4% | 0.87 | 43% |
+| BTC | 12h | zscore_mr | 116 | 45.7% | −36.1% | 0.84 | 43% |
+| BTC | 12h | rsi_mr | 122 | 42.6% | −41.8% | 0.79 | 53% |
+| BTC | 1d | trend_pullback | 102 | 39.2% | −43.5% | 0.72 | 40% |
+| BTC | 1d | zscore_mr | 131 | 51.9% | −21.8% | 0.94 | 40% |
+| BTC | 1d | rsi_mr | 76 | 44.7% | −7.1% | 0.98 | 50% |
+| ETH | 1h | trend_pullback | 203 | 49.8% | −18.5% | 0.93 | 53% |
+| ETH | 1h | zscore_mr | 1413 | 44.0% | −96.2% | 0.83 | 13% |
+| ETH | 1h | rsi_mr | 174 | 42.5% | −61.7% | 0.58 | 29% |
+| ETH | 8h | trend_pullback | 140 | 41.4% | −33.7% | 0.81 | 27% |
+| ETH | 8h | zscore_mr | 249 | 34.9% | −66.9% | 0.68 | 13% |
+| ETH | 8h | rsi_mr | 229 | 32.3% | −77.9% | 0.56 | 20% |
+| ETH | 12h | trend_pullback | 110 | 46.4% | −48.8% | 0.77 | 27% |
+| ETH | 12h | zscore_mr | 182 | 41.2% | −76.8% | 0.69 | 33% |
+| ETH | 12h | rsi_mr | 105 | 41.9% | −59.8% | 0.70 | 40% |
+| ETH | 1d | trend_pullback | 95 | 49.5% | −23.6% | 0.88 | 36% |
+| ETH | 1d | zscore_mr | 118 | 44.9% | −49.5% | 0.81 | 33% |
+| ETH | 1d | rsi_mr | 77 | 44.2% | −52.3% | 0.68 | 36% |
+
+**This is the verdict, and it is unambiguous: of all 24 combinations, exactly ONE is
+net-positive out-of-sample — `BTC 1H trend_pullback`** (53.1% win, +63.9% net, PF
+1.22, **60% of 15 multi-regime windows positive**; per-fold win 30%→73%, median 50%).
+Everything else loses after costs across folds:
+
+- **Pure mean reversion fails everywhere** — a ~50% raw win rate that still bleeds
+  out (PF < 1, fold-win ≈ ⅓) on every timeframe and both coins. The single-split's
+  flashy "83% / 58%" reversion cells (§3) were small-sample lucky windows; multi-fold
+  WF erases them.
+- **The edge is timeframe-specific.** Even trend-pullback only works on **BTC 1H**;
+  on 8H/12H/1D it goes negative (−19% to −44%). Higher timeframes simply don't
+  generate enough day-trade opportunities for the thin edge to compound past costs.
+- **ETH has no walk-forward-robust intraday edge at all.** Its best cell (1H
+  trend_pullback) is −18.5%; everything else is worse. ETH's day-trade "wins" in the
+  single split do not survive. (Consistent with the daily study: ETH is the most
+  cost-sensitive major — it belongs in the daily momentum book, not a 1H scalp.)
+
+So the most profitable, highest *sustainable* win-rate day-trade option on these
+timeframes is a single, specific thing: **buy BTC 1H dips in an uptrend.** Its OOS
+equity curve is [`research/results/dtwf_BTC_1h_trend_pullback_oos_eq.csv`](research/results/dtwf_BTC_1h_trend_pullback_oos_eq.csv).
 
 ---
 
@@ -178,24 +215,28 @@ on every slice tested and ETH 1H lost −85% on the single split.)*
 | Sizing | one position at a time; 1× (cap leverage ≤ 2–3× — at 1× the max DD is already −22%) |
 | Direction | **long-only** — shorting the dips/pops did not improve OOS (consistent with the daily book) |
 
-Expected profile: **~55% win rate, profit factor ~1.3, ~+0.35%/trade after cost**,
-concentrated in trending months, ~flat in chop. Use **limit (maker) entries** to beat
-the 12 bps round-trip assumption — costs are the main thing that can kill it.
+Expected profile (walk-forward OOS): **~53% win rate, profit factor ~1.2,
+~+0.2%/trade after cost** (full-sample, the friendlier number, is 54.8% / PF 1.34 /
++0.35%), concentrated in trending months, ~flat in chop. Use **limit (maker) entries**
+to beat the 12 bps round-trip assumption — costs are the main thing that can kill it.
 
-**Secondary: ETH is weaker intraday — use a different shape.** ETH's only OOS-positive
-day-trade fit is 8H/12H trend-pullback with an **asymmetric 2:1 bracket** (TP +3% /
-SL −1.5%): full-sample **40% win but PF 1.16, +30% net** — it wins *less* than half
-the time and still profits because winners are twice the losers. If you must
-day-trade ETH, trade it on 8H/12H with reward:risk ≥ 2:1, not on 1H (where it loses
-−85% OOS). Otherwise ETH is better left to the daily momentum book
-([`STRATEGY_FINDINGS.md`](STRATEGY_FINDINGS.md)).
+**ETH: do not day-trade it on these timeframes.** This is the result that surprised
+me, and it is worth stating plainly because the single-split made ETH look tradeable
+(8H/12H showed +13–29% on one window). **Under rolling walk-forward, no ETH cell
+survives** — every coin/TF/family combination is net-negative, the best being 1H
+trend_pullback at **−18.5%**. ETH's intraday "wins" were lucky windows, not an edge.
+ETH is the most cost-sensitive major (see [`STRATEGY_FINDINGS.md`](STRATEGY_FINDINGS.md));
+its real, validated edge is **daily momentum (long-or-flat)**, not an intraday scalp.
+Trade ETH on the daily book; day-trade only BTC 1H.
 
-**What to *not* do:** chase the 80% win rate (tight-TP scalp) — §2 shows it is the
-worst net of all. And do not run naive 1H mean reversion on either coin.
+**What to *not* do:** (1) chase the 80% win rate (tight-TP scalp) — §2 shows it is the
+worst net of all; (2) run naive 1H mean reversion on either coin (−63% to −96% OOS);
+(3) day-trade either coin on 8H/12H/1D expecting the 1H edge to carry over — it does
+not (all negative under walk-forward).
 
 ---
 
-## 4. Honest caveats
+## 5. Honest caveats
 
 - **Spot, long-biased sample.** 2020-2026 is net bullish; a trend-pullback (mostly
   long) book is helped by that. The walk-forward spans the 2022 bear and 2025
@@ -210,7 +251,7 @@ worst net of all. And do not run naive 1H mean reversion on either coin.
 - **Past performance is not predictive.** Walk-forward reduces overfit risk; it does
   not remove regime risk. Paper-trade before risking capital.
 
-## 5. Reproduce
+## 6. Reproduce
 
 ```bash
 pip install numpy pandas
