@@ -82,3 +82,32 @@ HARD RULES:     never add external capital to Phase 2; flat any coin whose raw<=
 **Bottom line:** you cannot get consistent 20–30%/month at 10–20× (proven). You *can* get
 your principal back reliably in ~7–10 months at 2.5×, then run house money at 5× for the
 big-return swings you want — which is the survivable form of your exact plan.
+
+---
+
+## Running the bot (code: `research/bot.py`)
+```bash
+cd research
+python bot.py init --capital 1000      # create a paper account (default mode=paper)
+python bot.py status                    # show state + TODAY's live BTC/ETH target positions
+python bot.py run                       # one daily cycle: mark-to-market, rebalance, report
+python bot.py backtest --capital 1000   # full-history paper run -> phase path & principal return
+```
+- **Live data:** BTCUSDT/ETHUSDT daily from Binance Vision (reachable). Signal is the
+  validated `sig_tsmom_blend` + `build_weights` (long-only) — same code as the research.
+- **State** persists to `research/bot_state.json` (gitignored). Re-run `run` once per day
+  (e.g. a cron at 00:05 UTC).
+- **Paper mode** is fully functional (simulated fills at the daily close, 6 bps cost,
+  phase/withdrawal/breaker logic). **Live mode** is a deliberate stub: `LiveExecutor`
+  documents exactly what to implement with your own exchange keys — this file never
+  places real orders.
+
+**Backtest sanity-check (paper, $1,000, BTC/ETH 2021-04→2026, *worst-case entry right
+before the May-2021 crash*):** Phase 1 at 2.5× cash-filtered the 2022 bear to −25%, the
+2023 recovery took equity through 2× → **withdrew the full $1,000 principal** (goal met),
+flipped to Phase 2. Phase-2 house money at 5× then bled to ~$304 in the 2024–26 chop.
+Net **$1,304 total (principal $1,000 returned + $304 house) from $1,000** — even on the
+worst entry. Takeaways: (1) the core goal (return principal) held even with bad timing;
+(2) **Phase-2 5× has negative drift in chop — set `lev_phase2=3.0` if you want house money
+to grow rather than gamble it.** Today's live signal: **CASH** (neither BTC nor ETH in a
+confirmed uptrend — the engine correctly sits out the current downtrend).

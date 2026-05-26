@@ -30,3 +30,6 @@ research_venv/
 research/__pycache__/
 research/**/__pycache__/
 *.pyc
+
+# bot runtime state
+research/bot_state.json
