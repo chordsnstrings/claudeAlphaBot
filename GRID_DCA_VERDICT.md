@@ -56,3 +56,27 @@ backtest that says otherwise is lying to you via close-only liquidation. DCA ave
 down at high leverage isn't risk management — it's **adding chips to a hand the exchange
 will eventually take all at once.** Same fate as every leveraged no-cut-loss variant
 tested here; the 2022 trend is the universal executioner.
+
+## "Start from 2023 instead" — it doesn't save 20×, it just changes how it dies
+Re-ran starting 2023-01-01 (skipping the 2022 bear entirely) and through the FTX window:
+
+| Window | 20× | 10× | 5× |
+|---|--:|--:|--:|
+| **From 2023-01** (to 2026-05) | **0.09× (−91%)** | 0.65× (−35%) | 1.41× (+41%) |
+| FTX window (Oct-22→Mar-23) | 0.76× (−24%, 37 liqs) | 1.41× | 0.93× |
+| ETH buy-and-hold, 2023→2026 | — | — | **1.73×** |
+
+- **20× still loses 91%** even starting after 2022 — not a one-day blow-up this time, a
+  *slow death* by repeated liquidations through the 2024 correction and the 2025→2026 ETH
+  selloff (price fell from ~$4,100 to ~$2,065, −50%). There is **no entry year that makes
+  20× safe**, because ETH always has periodic −30%/−50% drawdowns and 20× dies on each one.
+- The **FTX collapse (Nov-2022)** caused 37 liquidations and a −24% hit at 20× in that
+  window — survivable over a few months, but only because it was a short window.
+- The only leverage that survived (5×) made **+41%** from 2023 — but **simply holding ETH
+  made +73%** over the same window. So even the non-blow-up grid **underperformed doing
+  nothing**, while taking liquidation risk and a 96% "win rate" that hid the bleed.
+
+**The lesson generalises:** picking a start date *after* the crash that killed it is
+regime cherry-picking, and even then the next drawdown (there is always a next drawdown)
+liquidates 20×. The grid's high win rate is constant (83–96%) across every window; it
+still loses at high leverage, because the losses are liquidations. Win rate is not edge.
