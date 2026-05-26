@@ -1,0 +1,2773 @@
+{
+  "cost_bps_per_side": 6.0,
+  "train_frac": 0.7,
+  "results": [
+    {
+      "coin": "BTC",
+      "tf": "1h",
+      "bars": 52537,
+      "train_span": [
+        "2020-05-26",
+        "2024-08-06"
+      ],
+      "test_span": [
+        "2024-08-06",
+        "2026-05-25"
+      ],
+      "families": {
+        "zscore_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 10,
+              "z": 1.5,
+              "long_only": false,
+              "tp": 0.03,
+              "sl": 0.03,
+              "max_hold": 48
+            },
+            "train": {
+              "n": 1441,
+              "win_rate": 0.5190839694656488,
+              "net_total": -0.44441784740224854,
+              "expectancy": -3.0212869045128488e-05,
+              "profit_factor": 0.9976791469264589,
+              "avg_win": 0.025020593013334154,
+              "avg_loss": -0.027069177948438636,
+              "max_dd": -0.6072530329455879,
+              "avg_hold": 21.20471894517696,
+              "exposure_bars": 30556
+            },
+            "test": {
+              "n": 460,
+              "win_rate": 0.45217391304347826,
+              "net_total": -0.7391311340877716,
+              "expectancy": -0.0025966356730423587,
+              "profit_factor": 0.7992265308053336,
+              "avg_win": 0.022859624105922356,
+              "avg_loss": -0.023608151681076727,
+              "max_dd": -0.8270884699191035,
+              "avg_hold": 30.07608695652174,
+              "exposure_bars": 13835
+            }
+          },
+          "best_by_winrate_netpos": null
+        },
+        "rsi_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 7,
+              "lo": 30,
+              "hi": 70,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.03,
+              "max_hold": 24
+            },
+            "train": {
+              "n": 907,
+              "win_rate": 0.5060639470782801,
+              "net_total": -0.6951873406567403,
+              "expectancy": -0.0009991656378073757,
+              "profit_factor": 0.914610117408993,
+              "avg_win": 0.021147628677077816,
+              "avg_loss": -0.02368974284881698,
+              "max_dd": -0.8026356736742908,
+              "avg_hold": 15.199558985667034,
+              "exposure_bars": 13786
+            },
+            "test": {
+              "n": 342,
+              "win_rate": 0.47368421052631576,
+              "net_total": -0.577817910950557,
+              "expectancy": -0.002280424159773734,
+              "profit_factor": 0.7843944674457858,
+              "avg_win": 0.017514645272236465,
+              "avg_loss": -0.020095986648582916,
+              "max_dd": -0.6467268317993529,
+              "avg_hold": 19.359649122807017,
+              "exposure_bars": 6621
+            }
+          },
+          "best_by_winrate_netpos": null
+        },
+        "trend_pullback": {
+          "best_by_expectancy": {
+            "params": {
+              "slow": 50,
+              "rsi_lb": 7,
+              "dip": 35,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.03,
+              "max_hold": 48
+            },
+            "train": {
+              "n": 190,
+              "win_rate": 0.5526315789473685,
+              "net_total": 0.8117953776516957,
+              "expectancy": 0.00346967501645624,
+              "profit_factor": 1.3344590481063563,
+              "avg_win": 0.025050442518721572,
+              "avg_loss": -0.023188920133400934,
+              "max_dd": -0.22565349068622387,
+              "avg_hold": 24.95263157894737,
+              "exposure_bars": 4741
+            },
+            "test": {
+              "n": 88,
+              "win_rate": 0.5340909090909091,
+              "net_total": 0.294688067682338,
+              "expectancy": 0.003251220767074017,
+              "profit_factor": 1.3309339199780048,
+              "avg_win": 0.02448197693583206,
+              "avg_loss": -0.021086475328819364,
+              "max_dd": -0.10717347506099295,
+              "avg_hold": 32.77272727272727,
+              "exposure_bars": 2884
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "slow": 50,
+              "rsi_lb": 7,
+              "dip": 35,
+              "long_only": true,
+              "tp": 0.02,
+              "sl": 0.02,
+              "max_hold": 12
+            },
+            "train": {
+              "n": 202,
+              "win_rate": 0.5841584158415841,
+              "net_total": 0.20775011332615767,
+              "expectancy": 0.0010571673229788504,
+              "profit_factor": 1.1660776802689898,
+              "avg_win": 0.012706598439460029,
+              "avg_loss": -0.015307509721601867,
+              "max_dd": -0.17152555458767538,
+              "avg_hold": 8.589108910891088,
+              "exposure_bars": 1735
+            },
+            "test": {
+              "n": 95,
+              "win_rate": 0.5789473684210527,
+              "net_total": 0.11359597481577288,
+              "expectancy": 0.0012269267592728188,
+              "profit_factor": 1.2417456224900678,
+              "avg_win": 0.010885630116728216,
+              "avg_loss": -0.012053790357228353,
+              "max_dd": -0.09803005850303925,
+              "avg_hold": 10.621052631578948,
+              "exposure_bars": 1009
+            }
+          }
+        }
+      }
+    },
+    {
+      "coin": "BTC",
+      "tf": "8h",
+      "bars": 6571,
+      "train_span": [
+        "2020-05-26",
+        "2024-08-05"
+      ],
+      "test_span": [
+        "2024-08-06",
+        "2026-05-25"
+      ],
+      "families": {
+        "zscore_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 10,
+              "z": 2.5,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.015,
+              "max_hold": 3
+            },
+            "train": {
+              "n": 52,
+              "win_rate": 0.40384615384615385,
+              "net_total": -0.04091178627514125,
+              "expectancy": -0.0006392536187257863,
+              "profit_factor": 0.9237724740917406,
+              "avg_win": 0.019182731019264616,
+              "avg_loss": -0.014067049663816049,
+              "max_dd": -0.12424127132776264,
+              "avg_hold": 2.25,
+              "exposure_bars": 117
+            },
+            "test": {
+              "n": 21,
+              "win_rate": 0.38095238095238093,
+              "net_total": -0.07609333453653211,
+              "expectancy": -0.0036101108615157473,
+              "profit_factor": 0.6353815573834971,
+              "avg_win": 0.0165137543325393,
+              "avg_loss": -0.015994027904011162,
+              "max_dd": -0.1002385141461325,
+              "avg_hold": 2.142857142857143,
+              "exposure_bars": 45
+            }
+          },
+          "best_by_winrate_netpos": null
+        },
+        "rsi_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 21,
+              "lo": 20,
+              "hi": 80,
+              "long_only": false,
+              "tp": 0.01,
+              "sl": 0.02,
+              "max_hold": 9
+            },
+            "train": {
+              "n": 31,
+              "win_rate": 0.6774193548387096,
+              "net_total": -0.03750591710336604,
+              "expectancy": -0.0011347632832058553,
+              "profit_factor": 0.8340676331161249,
+              "avg_win": 0.008420111343838983,
+              "avg_loss": -0.021200000000000017,
+              "max_dd": -0.092085073087661,
+              "avg_hold": 1.7096774193548387,
+              "exposure_bars": 53
+            },
+            "test": {
+              "n": 5,
+              "win_rate": 0.6,
+              "net_total": -0.016434827854231338,
+              "expectancy": -0.0032000000000000015,
+              "profit_factor": 0.6226415094339623,
+              "avg_win": 0.00880000000000001,
+              "avg_loss": -0.021200000000000017,
+              "max_dd": -0.021199999999999997,
+              "avg_hold": 1.0,
+              "exposure_bars": 5
+            }
+          },
+          "best_by_winrate_netpos": null
+        },
+        "trend_pullback": {
+          "best_by_expectancy": {
+            "params": {
+              "slow": 200,
+              "rsi_lb": 14,
+              "dip": 35,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.03,
+              "max_hold": 9
+            },
+            "train": {
+              "n": 32,
+              "win_rate": 0.625,
+              "net_total": 0.10205516653462565,
+              "expectancy": 0.0034085947510821,
+              "profit_factor": 1.3056724848926007,
+              "avg_win": 0.023295565540750345,
+              "avg_loss": -0.029736356565031628,
+              "max_dd": -0.13440995892649155,
+              "avg_hold": 3.75,
+              "exposure_bars": 120
+            },
+            "test": {
+              "n": 8,
+              "win_rate": 0.75,
+              "net_total": 0.05003048530423326,
+              "expectancy": 0.006408792875853768,
+              "profit_factor": 1.8216401122889452,
+              "avg_win": 0.01894505716780501,
+              "avg_loss": -0.03119999999999997,
+              "max_dd": -0.05698774273574592,
+              "avg_hold": 5.0,
+              "exposure_bars": 40
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "slow": 200,
+              "rsi_lb": 14,
+              "dip": 35,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.03,
+              "max_hold": 9
+            },
+            "train": {
+              "n": 32,
+              "win_rate": 0.625,
+              "net_total": 0.10205516653462565,
+              "expectancy": 0.0034085947510821,
+              "profit_factor": 1.3056724848926007,
+              "avg_win": 0.023295565540750345,
+              "avg_loss": -0.029736356565031628,
+              "max_dd": -0.13440995892649155,
+              "avg_hold": 3.75,
+              "exposure_bars": 120
+            },
+            "test": {
+              "n": 8,
+              "win_rate": 0.75,
+              "net_total": 0.05003048530423326,
+              "expectancy": 0.006408792875853768,
+              "profit_factor": 1.8216401122889452,
+              "avg_win": 0.01894505716780501,
+              "avg_loss": -0.03119999999999997,
+              "max_dd": -0.05698774273574592,
+              "avg_hold": 5.0,
+              "exposure_bars": 40
+            }
+          }
+        }
+      }
+    },
+    {
+      "coin": "BTC",
+      "tf": "12h",
+      "bars": 4381,
+      "train_span": [
+        "2020-05-26",
+        "2024-08-05"
+      ],
+      "test_span": [
+        "2024-08-06",
+        "2026-05-25"
+      ],
+      "families": {
+        "zscore_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 40,
+              "z": 2.5,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.04,
+              "max_hold": 6
+            },
+            "train": {
+              "n": 36,
+              "win_rate": 0.5277777777777778,
+              "net_total": 0.14526418742084757,
+              "expectancy": 0.004476639088131522,
+              "profit_factor": 1.279770032305775,
+              "avg_win": 0.038800000000000036,
+              "avg_loss": -0.033884764283956814,
+              "max_dd": -0.22958354590469576,
+              "avg_hold": 2.6666666666666665,
+              "exposure_bars": 96
+            },
+            "test": {
+              "n": 12,
+              "win_rate": 0.4166666666666667,
+              "net_total": -0.10424004975507972,
+              "expectancy": -0.008486120017139824,
+              "profit_factor": 0.6073952828759611,
+              "avg_win": 0.03150912280069127,
+              "avg_loss": -0.037054150601304896,
+              "max_dd": -0.13769739098486689,
+              "avg_hold": 2.4166666666666665,
+              "exposure_bars": 29
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "lb": 10,
+              "z": 2.5,
+              "long_only": true,
+              "tp": 0.06,
+              "sl": 0.06,
+              "max_hold": 4
+            },
+            "train": {
+              "n": 30,
+              "win_rate": 0.6666666666666666,
+              "net_total": 0.05688994300816308,
+              "expectancy": 0.0028719352259280926,
+              "profit_factor": 1.1627895570492979,
+              "avg_win": 0.030770919981862637,
+              "avg_loss": -0.05292603428594099,
+              "max_dd": -0.29739876406494004,
+              "avg_hold": 3.933333333333333,
+              "exposure_bars": 118
+            },
+            "test": {
+              "n": 12,
+              "win_rate": 0.8333333333333334,
+              "net_total": 0.28521742412037954,
+              "expectancy": 0.02175449978375488,
+              "profit_factor": 3.886157530450106,
+              "avg_win": 0.035150436078641795,
+              "avg_loss": -0.04522518169067965,
+              "max_dd": -0.0886602411424201,
+              "avg_hold": 4.25,
+              "exposure_bars": 51
+            }
+          }
+        },
+        "rsi_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 7,
+              "lo": 25,
+              "hi": 75,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.04,
+              "max_hold": 2
+            },
+            "train": {
+              "n": 89,
+              "win_rate": 0.5617977528089888,
+              "net_total": 0.4446795601740754,
+              "expectancy": 0.004681014211328763,
+              "profit_factor": 1.368319764737459,
+              "avg_win": 0.030954410493609464,
+              "avg_loss": -0.029002827176210604,
+              "max_dd": -0.20419274827456602,
+              "avg_hold": 2.0786516853932584,
+              "exposure_bars": 185
+            },
+            "test": {
+              "n": 34,
+              "win_rate": 0.47058823529411764,
+              "net_total": -0.21592761480028522,
+              "expectancy": -0.006725739374420768,
+              "profit_factor": 0.5634089580706481,
+              "avg_win": 0.018443693479049734,
+              "avg_loss": -0.02909856857750566,
+              "max_dd": -0.37681077059346646,
+              "avg_hold": 2.323529411764706,
+              "exposure_bars": 79
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "lb": 7,
+              "lo": 25,
+              "hi": 75,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.04,
+              "max_hold": 2
+            },
+            "train": {
+              "n": 89,
+              "win_rate": 0.5617977528089888,
+              "net_total": 0.4446795601740754,
+              "expectancy": 0.004681014211328763,
+              "profit_factor": 1.368319764737459,
+              "avg_win": 0.030954410493609464,
+              "avg_loss": -0.029002827176210604,
+              "max_dd": -0.20419274827456602,
+              "avg_hold": 2.0786516853932584,
+              "exposure_bars": 185
+            },
+            "test": {
+              "n": 34,
+              "win_rate": 0.47058823529411764,
+              "net_total": -0.21592761480028522,
+              "expectancy": -0.006725739374420768,
+              "profit_factor": 0.5634089580706481,
+              "avg_win": 0.018443693479049734,
+              "avg_loss": -0.02909856857750566,
+              "max_dd": -0.37681077059346646,
+              "avg_hold": 2.323529411764706,
+              "exposure_bars": 79
+            }
+          }
+        },
+        "trend_pullback": {
+          "best_by_expectancy": {
+            "params": {
+              "slow": 100,
+              "rsi_lb": 14,
+              "dip": 40,
+              "long_only": false,
+              "tp": 0.06,
+              "sl": 0.06,
+              "max_hold": 6
+            },
+            "train": {
+              "n": 39,
+              "win_rate": 0.5641025641025641,
+              "net_total": 0.2725356630418909,
+              "expectancy": 0.007275013851060679,
+              "profit_factor": 1.4295748306208576,
+              "avg_win": 0.04291842899595177,
+              "avg_loss": -0.038851758689386603,
+              "max_dd": -0.29332996344464746,
+              "avg_hold": 5.0256410256410255,
+              "exposure_bars": 196
+            },
+            "test": {
+              "n": 11,
+              "win_rate": 0.5454545454545454,
+              "net_total": 0.19437915494526936,
+              "expectancy": 0.016857114372038445,
+              "profit_factor": 3.254234911433418,
+              "avg_win": 0.04461433219094152,
+              "avg_loss": -0.01645154701064524,
+              "max_dd": -0.042460187023151574,
+              "avg_hold": 6.454545454545454,
+              "exposure_bars": 71
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "slow": 100,
+              "rsi_lb": 14,
+              "dip": 40,
+              "long_only": false,
+              "tp": 0.06,
+              "sl": 0.06,
+              "max_hold": 4
+            },
+            "train": {
+              "n": 41,
+              "win_rate": 0.6097560975609756,
+              "net_total": 0.17992630684509492,
+              "expectancy": 0.004874816361534402,
+              "profit_factor": 1.3394058585362167,
+              "avg_win": 0.03154968066910455,
+              "avg_loss": -0.03680465911904395,
+              "max_dd": -0.2829758634008023,
+              "avg_hold": 4.170731707317073,
+              "exposure_bars": 171
+            },
+            "test": {
+              "n": 11,
+              "win_rate": 0.5454545454545454,
+              "net_total": 0.1553988609062258,
+              "expectancy": 0.013562829166926917,
+              "profit_factor": 3.4673369844167383,
+              "avg_win": 0.034942929312661,
+              "avg_loss": -0.012093291007953975,
+              "max_dd": -0.04820484303752026,
+              "avg_hold": 4.7272727272727275,
+              "exposure_bars": 52
+            }
+          }
+        }
+      }
+    },
+    {
+      "coin": "BTC",
+      "tf": "1d",
+      "bars": 2191,
+      "train_span": [
+        "2020-05-26",
+        "2024-08-05"
+      ],
+      "test_span": [
+        "2024-08-06",
+        "2026-05-25"
+      ],
+      "families": {
+        "zscore_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 10,
+              "z": 1.5,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.04,
+              "max_hold": 3
+            },
+            "train": {
+              "n": 95,
+              "win_rate": 0.5473684210526316,
+              "net_total": 0.13428183614458322,
+              "expectancy": 0.001992968803993524,
+              "profit_factor": 1.1221725844585793,
+              "avg_win": 0.03344310986950466,
+              "avg_loss": -0.03603975992639205,
+              "max_dd": -0.2974440344285706,
+              "avg_hold": 2.1578947368421053,
+              "exposure_bars": 205
+            },
+            "test": {
+              "n": 39,
+              "win_rate": 0.4358974358974359,
+              "net_total": -0.25259029318523196,
+              "expectancy": -0.006849587958727206,
+              "profit_factor": 0.6534565675292132,
+              "avg_win": 0.02963051412851289,
+              "avg_loss": -0.03503875775341273,
+              "max_dd": -0.34425857369842405,
+              "avg_hold": 2.4615384615384617,
+              "exposure_bars": 96
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "lb": 10,
+              "z": 1.5,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.04,
+              "max_hold": 2
+            },
+            "train": {
+              "n": 97,
+              "win_rate": 0.5670103092783505,
+              "net_total": 0.09011347785555301,
+              "expectancy": 0.0015049925005736864,
+              "profit_factor": 1.0983545002882904,
+              "avg_win": 0.029640919930699953,
+              "avg_loss": -0.03533967437221073,
+              "max_dd": -0.291652333834581,
+              "avg_hold": 1.9278350515463918,
+              "exposure_bars": 187
+            },
+            "test": {
+              "n": 42,
+              "win_rate": 0.5,
+              "net_total": -0.14942060483901376,
+              "expectancy": -0.0032839434391795826,
+              "profit_factor": 0.808440158259317,
+              "avg_win": 0.027718458415505656,
+              "avg_loss": -0.03428634529386481,
+              "max_dd": -0.27500888673991575,
+              "avg_hold": 2.1666666666666665,
+              "exposure_bars": 91
+            }
+          }
+        },
+        "rsi_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 7,
+              "lo": 25,
+              "hi": 75,
+              "long_only": true,
+              "tp": 0.06,
+              "sl": 0.03,
+              "max_hold": 3
+            },
+            "train": {
+              "n": 41,
+              "win_rate": 0.3902439024390244,
+              "net_total": 0.07864688836444289,
+              "expectancy": 0.0026806234498872247,
+              "profit_factor": 1.1498124049544365,
+              "avg_win": 0.05272042473794555,
+              "avg_loss": -0.029344849374470097,
+              "max_dd": -0.1465646049174978,
+              "avg_hold": 2.048780487804878,
+              "exposure_bars": 84
+            },
+            "test": {
+              "n": 15,
+              "win_rate": 0.4,
+              "net_total": -0.08310906445760236,
+              "expectancy": -0.005167696194662602,
+              "profit_factor": 0.72394785284922,
+              "avg_win": 0.03388075951334351,
+              "avg_loss": -0.031200000000000012,
+              "max_dd": -0.17886741330282907,
+              "avg_hold": 2.3333333333333335,
+              "exposure_bars": 35
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "lb": 7,
+              "lo": 25,
+              "hi": 75,
+              "long_only": true,
+              "tp": 0.06,
+              "sl": 0.03,
+              "max_hold": 1
+            },
+            "train": {
+              "n": 43,
+              "win_rate": 0.46511627906976744,
+              "net_total": 0.04465581954612308,
+              "expectancy": 0.001684880843588219,
+              "profit_factor": 1.1079531951157724,
+              "avg_win": 0.03717864571667417,
+              "avg_loss": -0.029179262524312598,
+              "max_dd": -0.1465646049174978,
+              "avg_hold": 1.6046511627906976,
+              "exposure_bars": 69
+            },
+            "test": {
+              "n": 16,
+              "win_rate": 0.375,
+              "net_total": -0.09270590058203132,
+              "expectancy": -0.005614901360369552,
+              "profit_factor": 0.650441302357493,
+              "avg_win": 0.0278611386534206,
+              "avg_loss": -0.025700525368643645,
+              "max_dd": -0.14001194205632228,
+              "avg_hold": 1.5,
+              "exposure_bars": 24
+            }
+          }
+        },
+        "trend_pullback": {
+          "best_by_expectancy": {
+            "params": {
+              "slow": 50,
+              "rsi_lb": 7,
+              "dip": 35,
+              "long_only": false,
+              "tp": 0.06,
+              "sl": 0.03,
+              "max_hold": 1
+            },
+            "train": {
+              "n": 31,
+              "win_rate": 0.5483870967741935,
+              "net_total": 0.1630890020961564,
+              "expectancy": 0.005488583472713705,
+              "profit_factor": 1.4587327217059975,
+              "avg_win": 0.03182651244937907,
+              "avg_loss": -0.026493187427522796,
+              "max_dd": -0.18630097071532892,
+              "avg_hold": 1.6774193548387097,
+              "exposure_bars": 52
+            },
+            "test": {
+              "n": 7,
+              "win_rate": 0.5714285714285714,
+              "net_total": 0.08587558477414836,
+              "expectancy": 0.012299223014506663,
+              "profit_factor": 2.6362242073723103,
+              "avg_win": 0.03467809684582971,
+              "avg_loss": -0.0175392754272574,
+              "max_dd": -0.04995517228501212,
+              "avg_hold": 2.0,
+              "exposure_bars": 14
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "slow": 50,
+              "rsi_lb": 7,
+              "dip": 35,
+              "long_only": false,
+              "tp": 0.06,
+              "sl": 0.06,
+              "max_hold": 1
+            },
+            "train": {
+              "n": 30,
+              "win_rate": 0.6333333333333333,
+              "net_total": 0.1466666011539468,
+              "expectancy": 0.005354207835129297,
+              "profit_factor": 1.4064458384306318,
+              "avg_win": 0.02925386212220864,
+              "avg_loss": -0.035927013206189566,
+              "max_dd": -0.22946574555953436,
+              "avg_hold": 1.8,
+              "exposure_bars": 54
+            },
+            "test": {
+              "n": 7,
+              "win_rate": 0.5714285714285714,
+              "net_total": 0.08834649174641829,
+              "expectancy": 0.012614151842226183,
+              "profit_factor": 2.751502480600431,
+              "avg_win": 0.03467809684582971,
+              "avg_loss": -0.016804441495911853,
+              "max_dd": -0.04779334783506073,
+              "avg_hold": 2.0,
+              "exposure_bars": 14
+            }
+          }
+        }
+      }
+    },
+    {
+      "coin": "ETH",
+      "tf": "1h",
+      "bars": 52537,
+      "train_span": [
+        "2020-05-26",
+        "2024-08-06"
+      ],
+      "test_span": [
+        "2024-08-06",
+        "2026-05-25"
+      ],
+      "families": {
+        "zscore_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 10,
+              "z": 1.5,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.03,
+              "max_hold": 12
+            },
+            "train": {
+              "n": 1685,
+              "win_rate": 0.49554896142433236,
+              "net_total": -0.8969028891241223,
+              "expectancy": -0.0010919360636388838,
+              "profit_factor": 0.8930765697109693,
+              "avg_win": 0.018404602915868606,
+              "avg_loss": -0.020244418472919776,
+              "max_dd": -0.9313857433142145,
+              "avg_hold": 9.306824925816024,
+              "exposure_bars": 15682
+            },
+            "test": {
+              "n": 709,
+              "win_rate": 0.4823695345557123,
+              "net_total": -0.8543722867020046,
+              "expectancy": -0.002468450096811799,
+              "profit_factor": 0.7705649719367421,
+              "avg_win": 0.017186760349226553,
+              "avg_loss": -0.020784749749523296,
+              "max_dd": -0.863588879220914,
+              "avg_hold": 9.867418899858956,
+              "exposure_bars": 6996
+            }
+          },
+          "best_by_winrate_netpos": null
+        },
+        "rsi_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 21,
+              "lo": 20,
+              "hi": 80,
+              "long_only": false,
+              "tp": 0.03,
+              "sl": 0.015,
+              "max_hold": 48
+            },
+            "train": {
+              "n": 53,
+              "win_rate": 0.4716981132075472,
+              "net_total": 0.167114412090954,
+              "expectancy": 0.00314775151566024,
+              "profit_factor": 1.367792835824501,
+              "avg_win": 0.024817233213199636,
+              "avg_loss": -0.016199999999999926,
+              "max_dd": -0.07897998994810329,
+              "avg_hold": 11.169811320754716,
+              "exposure_bars": 592
+            },
+            "test": {
+              "n": 29,
+              "win_rate": 0.20689655172413793,
+              "net_total": -0.1855910220761403,
+              "expectancy": -0.006889655172413776,
+              "profit_factor": 0.46376811594203016,
+              "avg_win": 0.028800000000000044,
+              "avg_loss": -0.016199999999999982,
+              "max_dd": -0.18210423286000654,
+              "avg_hold": 4.862068965517241,
+              "exposure_bars": 141
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "lb": 21,
+              "lo": 20,
+              "hi": 80,
+              "long_only": false,
+              "tp": 0.01,
+              "sl": 0.02,
+              "max_hold": 24
+            },
+            "train": {
+              "n": 56,
+              "win_rate": 0.7142857142857143,
+              "net_total": 0.007642121209022745,
+              "expectancy": 0.0002285714285714282,
+              "profit_factor": 1.0377358490566038,
+              "avg_win": 0.00880000000000001,
+              "avg_loss": -0.021200000000000024,
+              "max_dd": -0.0839766823660204,
+              "avg_hold": 3.5,
+              "exposure_bars": 196
+            },
+            "test": {
+              "n": 28,
+              "win_rate": 0.5,
+              "net_total": -0.1677320853497184,
+              "expectancy": -0.006425217230151193,
+              "profit_factor": 0.3938474311178118,
+              "avg_win": 0.008349565539697608,
+              "avg_loss": -0.021199999999999993,
+              "max_dd": -0.15712316549966998,
+              "avg_hold": 3.7857142857142856,
+              "exposure_bars": 106
+            }
+          }
+        },
+        "trend_pullback": {
+          "best_by_expectancy": {
+            "params": {
+              "slow": 100,
+              "rsi_lb": 14,
+              "dip": 35,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.03,
+              "max_hold": 48
+            },
+            "train": {
+              "n": 37,
+              "win_rate": 0.7027027027027027,
+              "net_total": 0.3918350040168137,
+              "expectancy": 0.00931977934656617,
+              "profit_factor": 2.067130210025896,
+              "avg_win": 0.025691202099846724,
+              "avg_loss": -0.029376310797551496,
+              "max_dd": -0.07573184002173228,
+              "avg_hold": 19.64864864864865,
+              "exposure_bars": 727
+            },
+            "test": {
+              "n": 20,
+              "win_rate": 0.25,
+              "net_total": -0.2771298400492651,
+              "expectancy": -0.015827277017792386,
+              "profit_factor": 0.25533988485809295,
+              "avg_win": 0.021708347253539186,
+              "avg_loss": -0.028339151774902906,
+              "max_dd": -0.25384995876266014,
+              "avg_hold": 26.7,
+              "exposure_bars": 534
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "slow": 100,
+              "rsi_lb": 14,
+              "dip": 35,
+              "long_only": true,
+              "tp": 0.01,
+              "sl": 0.02,
+              "max_hold": 48
+            },
+            "train": {
+              "n": 40,
+              "win_rate": 0.725,
+              "net_total": 0.01854612499231223,
+              "expectancy": 0.0005500000000000019,
+              "profit_factor": 1.0943396226415096,
+              "avg_win": 0.00880000000000001,
+              "avg_loss": -0.02120000000000002,
+              "max_dd": -0.09283107276908065,
+              "avg_hold": 5.475,
+              "exposure_bars": 219
+            },
+            "test": {
+              "n": 20,
+              "win_rate": 0.4,
+              "net_total": -0.17059219733718745,
+              "expectancy": -0.009200000000000003,
+              "profit_factor": 0.27672955974842783,
+              "avg_win": 0.00880000000000001,
+              "avg_loss": -0.02120000000000001,
+              "max_dd": -0.15262790900816037,
+              "avg_hold": 6.3,
+              "exposure_bars": 126
+            }
+          }
+        }
+      }
+    },
+    {
+      "coin": "ETH",
+      "tf": "8h",
+      "bars": 6571,
+      "train_span": [
+        "2020-05-26",
+        "2024-08-05"
+      ],
+      "test_span": [
+        "2024-08-06",
+        "2026-05-25"
+      ],
+      "families": {
+        "zscore_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 10,
+              "z": 1.5,
+              "long_only": false,
+              "tp": 0.03,
+              "sl": 0.015,
+              "max_hold": 6
+            },
+            "train": {
+              "n": 717,
+              "win_rate": 0.3207810320781032,
+              "net_total": -0.8492271511254881,
+              "expectancy": -0.0024332377038917665,
+              "profit_factor": 0.7765805064552996,
+              "avg_win": 0.02636581975784015,
+              "avg_loss": -0.016034435273087542,
+              "max_dd": -0.8615358181984156,
+              "avg_hold": 2.0767085076708507,
+              "exposure_bars": 1489
+            },
+            "test": {
+              "n": 295,
+              "win_rate": 0.31186440677966104,
+              "net_total": -0.53368151474732,
+              "expectancy": -0.0023727032555457593,
+              "profit_factor": 0.7867323099207008,
+              "avg_win": 0.028065936356478347,
+              "avg_loss": -0.016167554705330087,
+              "max_dd": -0.6292227184052133,
+              "avg_hold": 2.010169491525424,
+              "exposure_bars": 593
+            }
+          },
+          "best_by_winrate_netpos": null
+        },
+        "rsi_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 7,
+              "lo": 25,
+              "hi": 75,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.03,
+              "max_hold": 3
+            },
+            "train": {
+              "n": 154,
+              "win_rate": 0.525974025974026,
+              "net_total": -0.24794761636424567,
+              "expectancy": -0.001460046598716341,
+              "profit_factor": 0.8957727927236956,
+              "avg_win": 0.02385718427921373,
+              "avg_loss": -0.029551768531762043,
+              "max_dd": -0.4089941980737446,
+              "avg_hold": 1.974025974025974,
+              "exposure_bars": 304
+            },
+            "test": {
+              "n": 65,
+              "win_rate": 0.4,
+              "net_total": -0.3798173843699816,
+              "expectancy": -0.006926559034701726,
+              "profit_factor": 0.6042991490662556,
+              "avg_win": 0.02644493763881423,
+              "avg_loss": -0.029174223483712368,
+              "max_dd": -0.3951836164206959,
+              "avg_hold": 2.046153846153846,
+              "exposure_bars": 133
+            }
+          },
+          "best_by_winrate_netpos": null
+        },
+        "trend_pullback": {
+          "best_by_expectancy": {
+            "params": {
+              "slow": 100,
+              "rsi_lb": 7,
+              "dip": 40,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.015,
+              "max_hold": 9
+            },
+            "train": {
+              "n": 138,
+              "win_rate": 0.391304347826087,
+              "net_total": 0.14998788345478276,
+              "expectancy": 0.0012474520325543325,
+              "profit_factor": 1.127520092390929,
+              "avg_win": 0.02818738923275054,
+              "avg_loss": -0.01607107902471467,
+              "max_dd": -0.1476947961436691,
+              "avg_hold": 2.0652173913043477,
+              "exposure_bars": 285
+            },
+            "test": {
+              "n": 57,
+              "win_rate": 0.42105263157894735,
+              "net_total": 0.1316754030173095,
+              "expectancy": 0.0024119764506461026,
+              "profit_factor": 1.2571692062978448,
+              "avg_win": 0.028003444070284534,
+              "avg_loss": -0.016200000000000027,
+              "max_dd": -0.1461183686508628,
+              "avg_hold": 2.7719298245614037,
+              "exposure_bars": 158
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "slow": 100,
+              "rsi_lb": 7,
+              "dip": 40,
+              "long_only": true,
+              "tp": 0.03,
+              "sl": 0.03,
+              "max_hold": 3
+            },
+            "train": {
+              "n": 133,
+              "win_rate": 0.518796992481203,
+              "net_total": 0.007457514513224961,
+              "expectancy": 0.0004298397067355955,
+              "profit_factor": 1.034170186977332,
+              "avg_win": 0.02507573895300544,
+              "avg_loss": -0.026141520418149093,
+              "max_dd": -0.19982309148666688,
+              "avg_hold": 2.263157894736842,
+              "exposure_bars": 301
+            },
+            "test": {
+              "n": 52,
+              "win_rate": 0.4807692307692308,
+              "net_total": -0.022685497438706292,
+              "expectancy": -0.00013246592933802682,
+              "profit_factor": 0.9880478781617804,
+              "avg_win": 0.02277720884543523,
+              "avg_loss": -0.02134512775783177,
+              "max_dd": -0.1207258577327891,
+              "avg_hold": 2.8076923076923075,
+              "exposure_bars": 146
+            }
+          }
+        }
+      }
+    },
+    {
+      "coin": "ETH",
+      "tf": "12h",
+      "bars": 4381,
+      "train_span": [
+        "2020-05-26",
+        "2024-08-05"
+      ],
+      "test_span": [
+        "2024-08-06",
+        "2026-05-25"
+      ],
+      "families": {
+        "zscore_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 40,
+              "z": 2.0,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.04,
+              "max_hold": 4
+            },
+            "train": {
+              "n": 78,
+              "win_rate": 0.5384615384615384,
+              "net_total": 0.0787105024546515,
+              "expectancy": 0.0016837605381362425,
+              "profit_factor": 1.0971835121258113,
+              "avg_win": 0.03530305763838163,
+              "avg_loss": -0.037538752745483385,
+              "max_dd": -0.23237687226980974,
+              "avg_hold": 2.1025641025641026,
+              "exposure_bars": 164
+            },
+            "test": {
+              "n": 49,
+              "win_rate": 0.4489795918367347,
+              "net_total": -0.21543238479478366,
+              "expectancy": -0.004186287495004557,
+              "profit_factor": 0.8030232289441223,
+              "avg_win": 0.03801154690193785,
+              "avg_loss": -0.0385697081147354,
+              "max_dd": -0.3324191227347554,
+              "avg_hold": 1.9183673469387754,
+              "exposure_bars": 94
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "lb": 40,
+              "z": 2.0,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.04,
+              "max_hold": 2
+            },
+            "train": {
+              "n": 82,
+              "win_rate": 0.5609756097560976,
+              "net_total": 0.03520830922272422,
+              "expectancy": 0.0010404098410498079,
+              "profit_factor": 1.0658140478406812,
+              "avg_win": 0.030034700783864336,
+              "avg_loss": -0.03600785080810211,
+              "max_dd": -0.2506200792268669,
+              "avg_hold": 1.7804878048780488,
+              "exposure_bars": 146
+            },
+            "test": {
+              "n": 50,
+              "win_rate": 0.44,
+              "net_total": -0.2164294374833745,
+              "expectancy": -0.004179564845257138,
+              "profit_factor": 0.789800508930038,
+              "avg_win": 0.035691445746990604,
+              "avg_loss": -0.03550678745345178,
+              "max_dd": -0.34590796065370943,
+              "avg_hold": 1.68,
+              "exposure_bars": 84
+            }
+          }
+        },
+        "rsi_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 7,
+              "lo": 20,
+              "hi": 80,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.02,
+              "max_hold": 4
+            },
+            "train": {
+              "n": 49,
+              "win_rate": 0.40816326530612246,
+              "net_total": 0.05788084269067473,
+              "expectancy": 0.0015421380461058609,
+              "profit_factor": 1.122909505951834,
+              "avg_win": 0.03451823821295938,
+              "avg_loss": -0.021200000000000004,
+              "max_dd": -0.20998821945488155,
+              "avg_hold": 1.653061224489796,
+              "exposure_bars": 81
+            },
+            "test": {
+              "n": 32,
+              "win_rate": 0.4375,
+              "net_total": 0.12610492350699087,
+              "expectancy": 0.004139170239476981,
+              "profit_factor": 1.3471002297255326,
+              "avg_win": 0.03671810340451888,
+              "avg_loss": -0.021200000000000045,
+              "max_dd": -0.1101649095997348,
+              "avg_hold": 1.65625,
+              "exposure_bars": 53
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "lb": 7,
+              "lo": 20,
+              "hi": 80,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.04,
+              "max_hold": 6
+            },
+            "train": {
+              "n": 47,
+              "win_rate": 0.5319148936170213,
+              "net_total": 0.015363041422213675,
+              "expectancy": 0.0010833754692342182,
+              "profit_factor": 1.0580412092098135,
+              "avg_win": 0.03712812164584744,
+              "avg_loss": -0.03987656336782625,
+              "max_dd": -0.25140251820558845,
+              "avg_hold": 2.276595744680851,
+              "exposure_bars": 107
+            },
+            "test": {
+              "n": 29,
+              "win_rate": 0.5862068965517241,
+              "net_total": 0.16000390465607528,
+              "expectancy": 0.0058736457717335055,
+              "profit_factor": 1.3580599741141963,
+              "avg_win": 0.03800318550627493,
+              "avg_loss": -0.0396432021855335,
+              "max_dd": -0.15827143098700114,
+              "avg_hold": 2.1379310344827585,
+              "exposure_bars": 62
+            }
+          }
+        },
+        "trend_pullback": {
+          "best_by_expectancy": {
+            "params": {
+              "slow": 50,
+              "rsi_lb": 7,
+              "dip": 35,
+              "long_only": false,
+              "tp": 0.06,
+              "sl": 0.03,
+              "max_hold": 4
+            },
+            "train": {
+              "n": 48,
+              "win_rate": 0.5,
+              "net_total": 0.2656152546163564,
+              "expectancy": 0.0056748481299344865,
+              "profit_factor": 1.3786168475902603,
+              "avg_win": 0.04132642955133529,
+              "avg_loss": -0.029976733291466304,
+              "max_dd": -0.17834978408710433,
+              "avg_hold": 2.8541666666666665,
+              "exposure_bars": 137
+            },
+            "test": {
+              "n": 20,
+              "win_rate": 0.55,
+              "net_total": 0.29278026467543605,
+              "expectancy": 0.013717019548973494,
+              "profit_factor": 2.06075503322251,
+              "avg_win": 0.048451623763746635,
+              "avg_loss": -0.0287363856024159,
+              "max_dd": -0.09638260368664653,
+              "avg_hold": 2.9,
+              "exposure_bars": 58
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "slow": 100,
+              "rsi_lb": 14,
+              "dip": 45,
+              "long_only": true,
+              "tp": 0.06,
+              "sl": 0.06,
+              "max_hold": 6
+            },
+            "train": {
+              "n": 53,
+              "win_rate": 0.6037735849056604,
+              "net_total": 0.082649854971242,
+              "expectancy": 0.0026612061748790858,
+              "profit_factor": 1.1323759183682833,
+              "avg_win": 0.037703880698181896,
+              "avg_loss": -0.050737155003487105,
+              "max_dd": -0.34883228192410587,
+              "avg_hold": 4.490566037735849,
+              "exposure_bars": 238
+            },
+            "test": {
+              "n": 16,
+              "win_rate": 0.5,
+              "net_total": -0.023731095202477626,
+              "expectancy": -0.0004618291460313298,
+              "profit_factor": 0.9773203317402331,
+              "avg_win": 0.03980261166406394,
+              "avg_loss": -0.0407262699561266,
+              "max_dd": -0.11865456000000008,
+              "avg_hold": 5.5625,
+              "exposure_bars": 89
+            }
+          }
+        }
+      }
+    },
+    {
+      "coin": "ETH",
+      "tf": "1d",
+      "bars": 2191,
+      "train_span": [
+        "2020-05-26",
+        "2024-08-05"
+      ],
+      "test_span": [
+        "2024-08-06",
+        "2026-05-25"
+      ],
+      "families": {
+        "zscore_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 40,
+              "z": 2.0,
+              "long_only": true,
+              "tp": 0.06,
+              "sl": 0.03,
+              "max_hold": 3
+            },
+            "train": {
+              "n": 34,
+              "win_rate": 0.4117647058823529,
+              "net_total": 0.14698326631249548,
+              "expectancy": 0.004949224941240934,
+              "profit_factor": 1.2793896189226592,
+              "avg_win": 0.055040279598077814,
+              "avg_loss": -0.030114513318544874,
+              "max_dd": -0.1624374906709628,
+              "avg_hold": 1.6470588235294117,
+              "exposure_bars": 56
+            },
+            "test": {
+              "n": 25,
+              "win_rate": 0.2,
+              "net_total": -0.3120190496514309,
+              "expectancy": -0.014275955572002444,
+              "profit_factor": 0.42804665176272333,
+              "avg_win": 0.05342022213998794,
+              "avg_loss": -0.03120000000000004,
+              "max_dd": -0.35022577413244327,
+              "avg_hold": 1.64,
+              "exposure_bars": 41
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "lb": 40,
+              "z": 2.0,
+              "long_only": true,
+              "tp": 0.06,
+              "sl": 0.06,
+              "max_hold": 2
+            },
+            "train": {
+              "n": 32,
+              "win_rate": 0.5625,
+              "net_total": 0.0871961111850803,
+              "expectancy": 0.004085734756689323,
+              "profit_factor": 1.1749904456836233,
+              "avg_win": 0.048771671532152235,
+              "avg_loss": -0.0533676125260487,
+              "max_dd": -0.28289491860859717,
+              "avg_hold": 1.78125,
+              "exposure_bars": 57
+            },
+            "test": {
+              "n": 21,
+              "win_rate": 0.38095238095238093,
+              "net_total": -0.1665409600313391,
+              "expectancy": -0.0073529653724193475,
+              "profit_factor": 0.7292566427008805,
+              "avg_win": 0.0519893529394635,
+              "avg_loss": -0.04387131510280879,
+              "max_dd": -0.2167612939967849,
+              "avg_hold": 2.0952380952380953,
+              "exposure_bars": 44
+            }
+          }
+        },
+        "rsi_mr": {
+          "best_by_expectancy": {
+            "params": {
+              "lb": 7,
+              "lo": 25,
+              "hi": 75,
+              "long_only": true,
+              "tp": 0.06,
+              "sl": 0.03,
+              "max_hold": 3
+            },
+            "train": {
+              "n": 34,
+              "win_rate": 0.4117647058823529,
+              "net_total": 0.1805317166631626,
+              "expectancy": 0.005858823529411764,
+              "profit_factor": 1.3192307692307692,
+              "avg_win": 0.05880000000000006,
+              "avg_loss": -0.031200000000000033,
+              "max_dd": -0.14656460491749768,
+              "avg_hold": 1.588235294117647,
+              "exposure_bars": 54
+            },
+            "test": {
+              "n": 23,
+              "win_rate": 0.34782608695652173,
+              "net_total": -0.1564555403569563,
+              "expectancy": -0.006705640991198741,
+              "profit_factor": 0.6704492675265585,
+              "avg_win": 0.039221282150303745,
+              "avg_loss": -0.031200000000000054,
+              "max_dd": -0.2761918077650234,
+              "avg_hold": 1.7826086956521738,
+              "exposure_bars": 41
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "lb": 7,
+              "lo": 25,
+              "hi": 75,
+              "long_only": true,
+              "tp": 0.04,
+              "sl": 0.04,
+              "max_hold": 2
+            },
+            "train": {
+              "n": 37,
+              "win_rate": 0.5945945945945946,
+              "net_total": 0.15390274144859561,
+              "expectancy": 0.004620975156219791,
+              "profit_factor": 1.2766603248869457,
+              "avg_win": 0.03586254912636967,
+              "avg_loss": -0.04120000000000002,
+              "max_dd": -0.15489221680944654,
+              "avg_hold": 1.1891891891891893,
+              "exposure_bars": 44
+            },
+            "test": {
+              "n": 23,
+              "win_rate": 0.5217391304347826,
+              "net_total": 0.009724480234248878,
+              "expectancy": 0.0011553033474756026,
+              "profit_factor": 1.0641940553969167,
+              "avg_win": 0.036708668972697596,
+              "avg_loss": -0.037630186425493824,
+              "max_dd": -0.22309457838884905,
+              "avg_hold": 1.391304347826087,
+              "exposure_bars": 32
+            }
+          }
+        },
+        "trend_pullback": {
+          "best_by_expectancy": {
+            "params": {
+              "slow": 100,
+              "rsi_lb": 7,
+              "dip": 35,
+              "long_only": true,
+              "tp": 0.06,
+              "sl": 0.06,
+              "max_hold": 1
+            },
+            "train": {
+              "n": 37,
+              "win_rate": 0.5945945945945946,
+              "net_total": 0.45032523061403573,
+              "expectancy": 0.01112129659993455,
+              "profit_factor": 1.7687148465385187,
+              "avg_win": 0.04303551643916891,
+              "avg_loss": -0.03568622583094251,
+              "max_dd": -0.13442002111722529,
+              "avg_hold": 1.6486486486486487,
+              "exposure_bars": 61
+            },
+            "test": {
+              "n": 11,
+              "win_rate": 0.6363636363636364,
+              "net_total": 0.07428091112656587,
+              "expectancy": 0.0074692166778375065,
+              "profit_factor": 1.4617936846240933,
+              "avg_win": 0.037154189802324995,
+              "avg_loss": -0.0444794862900156,
+              "max_dd": -0.06120000000000003,
+              "avg_hold": 1.7272727272727273,
+              "exposure_bars": 19
+            }
+          },
+          "best_by_winrate_netpos": {
+            "params": {
+              "slow": 50,
+              "rsi_lb": 7,
+              "dip": 40,
+              "long_only": true,
+              "tp": 0.02,
+              "sl": 0.04,
+              "max_hold": 1
+            },
+            "train": {
+              "n": 30,
+              "win_rate": 0.7666666666666667,
+              "net_total": 0.13344661168936445,
+              "expectancy": 0.004468285011753869,
+              "profit_factor": 1.530200430246455,
+              "avg_win": 0.016820640527118968,
+              "avg_loss": -0.036118025967302854,
+              "max_dd": -0.08587469449916518,
+              "avg_hold": 1.2333333333333334,
+              "exposure_bars": 37
+            },
+            "test": {
+              "n": 9,
+              "win_rate": 0.7777777777777778,
+              "net_total": 0.013562538326641116,
+              "expectancy": 0.0017884075721863988,
+              "profit_factor": 1.195335778515505,
+              "avg_win": 0.014070809735668223,
+              "avg_loss": -0.04119999999999998,
+              "max_dd": -0.04119999999999979,
+              "avg_hold": 1.3333333333333333,
+              "exposure_bars": 12
+            }
+          }
+        }
+      }
+    }
+  ],
+  "leaderboard": {
+    "survivors": [
+      {
+        "coin": "BTC",
+        "tf": "12h",
+        "family": "zscore_mr",
+        "select": "wr",
+        "params": {
+          "lb": 10,
+          "z": 2.5,
+          "long_only": true,
+          "tp": 0.06,
+          "sl": 0.06,
+          "max_hold": 4
+        },
+        "train_win": 0.6666666666666666,
+        "train_net": 0.05688994300816308,
+        "test_n": 12,
+        "test_win": 0.8333333333333334,
+        "test_net": 0.28521742412037954,
+        "test_pf": 3.886157530450106,
+        "test_dd": -0.0886602411424201,
+        "test_exp": 0.02175449978375488,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "12h",
+        "family": "rsi_mr",
+        "select": "wr",
+        "params": {
+          "lb": 7,
+          "lo": 20,
+          "hi": 80,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 6
+        },
+        "train_win": 0.5319148936170213,
+        "train_net": 0.015363041422213675,
+        "test_n": 29,
+        "test_win": 0.5862068965517241,
+        "test_net": 0.16000390465607528,
+        "test_pf": 1.3580599741141963,
+        "test_dd": -0.15827143098700114,
+        "test_exp": 0.0058736457717335055,
+        "survived": true
+      },
+      {
+        "coin": "BTC",
+        "tf": "1h",
+        "family": "trend_pullback",
+        "select": "wr",
+        "params": {
+          "slow": 50,
+          "rsi_lb": 7,
+          "dip": 35,
+          "long_only": true,
+          "tp": 0.02,
+          "sl": 0.02,
+          "max_hold": 12
+        },
+        "train_win": 0.5841584158415841,
+        "train_net": 0.20775011332615767,
+        "test_n": 95,
+        "test_win": 0.5789473684210527,
+        "test_net": 0.11359597481577288,
+        "test_pf": 1.2417456224900678,
+        "test_dd": -0.09803005850303925,
+        "test_exp": 0.0012269267592728188,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "12h",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 50,
+          "rsi_lb": 7,
+          "dip": 35,
+          "long_only": false,
+          "tp": 0.06,
+          "sl": 0.03,
+          "max_hold": 4
+        },
+        "train_win": 0.5,
+        "train_net": 0.2656152546163564,
+        "test_n": 20,
+        "test_win": 0.55,
+        "test_net": 0.29278026467543605,
+        "test_pf": 2.06075503322251,
+        "test_dd": -0.09638260368664653,
+        "test_exp": 0.013717019548973494,
+        "survived": true
+      },
+      {
+        "coin": "BTC",
+        "tf": "1h",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 50,
+          "rsi_lb": 7,
+          "dip": 35,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 48
+        },
+        "train_win": 0.5526315789473685,
+        "train_net": 0.8117953776516957,
+        "test_n": 88,
+        "test_win": 0.5340909090909091,
+        "test_net": 0.294688067682338,
+        "test_pf": 1.3309339199780048,
+        "test_dd": -0.10717347506099295,
+        "test_exp": 0.003251220767074017,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "1d",
+        "family": "rsi_mr",
+        "select": "wr",
+        "params": {
+          "lb": 7,
+          "lo": 25,
+          "hi": 75,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 2
+        },
+        "train_win": 0.5945945945945946,
+        "train_net": 0.15390274144859561,
+        "test_n": 23,
+        "test_win": 0.5217391304347826,
+        "test_net": 0.009724480234248878,
+        "test_pf": 1.0641940553969167,
+        "test_dd": -0.22309457838884905,
+        "test_exp": 0.0011553033474756026,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "12h",
+        "family": "rsi_mr",
+        "select": "exp",
+        "params": {
+          "lb": 7,
+          "lo": 20,
+          "hi": 80,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.02,
+          "max_hold": 4
+        },
+        "train_win": 0.40816326530612246,
+        "train_net": 0.05788084269067473,
+        "test_n": 32,
+        "test_win": 0.4375,
+        "test_net": 0.12610492350699087,
+        "test_pf": 1.3471002297255326,
+        "test_dd": -0.1101649095997348,
+        "test_exp": 0.004139170239476981,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "8h",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 100,
+          "rsi_lb": 7,
+          "dip": 40,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.015,
+          "max_hold": 9
+        },
+        "train_win": 0.391304347826087,
+        "train_net": 0.14998788345478276,
+        "test_n": 57,
+        "test_win": 0.42105263157894735,
+        "test_net": 0.1316754030173095,
+        "test_pf": 1.2571692062978448,
+        "test_dd": -0.1461183686508628,
+        "test_exp": 0.0024119764506461026,
+        "survived": true
+      }
+    ],
+    "all": [
+      {
+        "coin": "BTC",
+        "tf": "1h",
+        "family": "zscore_mr",
+        "select": "exp",
+        "params": {
+          "lb": 10,
+          "z": 1.5,
+          "long_only": false,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 48
+        },
+        "train_win": 0.5190839694656488,
+        "train_net": -0.44441784740224854,
+        "test_n": 460,
+        "test_win": 0.45217391304347826,
+        "test_net": -0.7391311340877716,
+        "test_pf": 0.7992265308053336,
+        "test_dd": -0.8270884699191035,
+        "test_exp": -0.0025966356730423587,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "1h",
+        "family": "rsi_mr",
+        "select": "exp",
+        "params": {
+          "lb": 7,
+          "lo": 30,
+          "hi": 70,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 24
+        },
+        "train_win": 0.5060639470782801,
+        "train_net": -0.6951873406567403,
+        "test_n": 342,
+        "test_win": 0.47368421052631576,
+        "test_net": -0.577817910950557,
+        "test_pf": 0.7843944674457858,
+        "test_dd": -0.6467268317993529,
+        "test_exp": -0.002280424159773734,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "1h",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 50,
+          "rsi_lb": 7,
+          "dip": 35,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 48
+        },
+        "train_win": 0.5526315789473685,
+        "train_net": 0.8117953776516957,
+        "test_n": 88,
+        "test_win": 0.5340909090909091,
+        "test_net": 0.294688067682338,
+        "test_pf": 1.3309339199780048,
+        "test_dd": -0.10717347506099295,
+        "test_exp": 0.003251220767074017,
+        "survived": true
+      },
+      {
+        "coin": "BTC",
+        "tf": "1h",
+        "family": "trend_pullback",
+        "select": "wr",
+        "params": {
+          "slow": 50,
+          "rsi_lb": 7,
+          "dip": 35,
+          "long_only": true,
+          "tp": 0.02,
+          "sl": 0.02,
+          "max_hold": 12
+        },
+        "train_win": 0.5841584158415841,
+        "train_net": 0.20775011332615767,
+        "test_n": 95,
+        "test_win": 0.5789473684210527,
+        "test_net": 0.11359597481577288,
+        "test_pf": 1.2417456224900678,
+        "test_dd": -0.09803005850303925,
+        "test_exp": 0.0012269267592728188,
+        "survived": true
+      },
+      {
+        "coin": "BTC",
+        "tf": "8h",
+        "family": "zscore_mr",
+        "select": "exp",
+        "params": {
+          "lb": 10,
+          "z": 2.5,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.015,
+          "max_hold": 3
+        },
+        "train_win": 0.40384615384615385,
+        "train_net": -0.04091178627514125,
+        "test_n": 21,
+        "test_win": 0.38095238095238093,
+        "test_net": -0.07609333453653211,
+        "test_pf": 0.6353815573834971,
+        "test_dd": -0.1002385141461325,
+        "test_exp": -0.0036101108615157473,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "8h",
+        "family": "rsi_mr",
+        "select": "exp",
+        "params": {
+          "lb": 21,
+          "lo": 20,
+          "hi": 80,
+          "long_only": false,
+          "tp": 0.01,
+          "sl": 0.02,
+          "max_hold": 9
+        },
+        "train_win": 0.6774193548387096,
+        "train_net": -0.03750591710336604,
+        "test_n": 5,
+        "test_win": 0.6,
+        "test_net": -0.016434827854231338,
+        "test_pf": 0.6226415094339623,
+        "test_dd": -0.021199999999999997,
+        "test_exp": -0.0032000000000000015,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "8h",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 200,
+          "rsi_lb": 14,
+          "dip": 35,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 9
+        },
+        "train_win": 0.625,
+        "train_net": 0.10205516653462565,
+        "test_n": 8,
+        "test_win": 0.75,
+        "test_net": 0.05003048530423326,
+        "test_pf": 1.8216401122889452,
+        "test_dd": -0.05698774273574592,
+        "test_exp": 0.006408792875853768,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "8h",
+        "family": "trend_pullback",
+        "select": "wr",
+        "params": {
+          "slow": 200,
+          "rsi_lb": 14,
+          "dip": 35,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 9
+        },
+        "train_win": 0.625,
+        "train_net": 0.10205516653462565,
+        "test_n": 8,
+        "test_win": 0.75,
+        "test_net": 0.05003048530423326,
+        "test_pf": 1.8216401122889452,
+        "test_dd": -0.05698774273574592,
+        "test_exp": 0.006408792875853768,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "12h",
+        "family": "zscore_mr",
+        "select": "exp",
+        "params": {
+          "lb": 40,
+          "z": 2.5,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 6
+        },
+        "train_win": 0.5277777777777778,
+        "train_net": 0.14526418742084757,
+        "test_n": 12,
+        "test_win": 0.4166666666666667,
+        "test_net": -0.10424004975507972,
+        "test_pf": 0.6073952828759611,
+        "test_dd": -0.13769739098486689,
+        "test_exp": -0.008486120017139824,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "12h",
+        "family": "zscore_mr",
+        "select": "wr",
+        "params": {
+          "lb": 10,
+          "z": 2.5,
+          "long_only": true,
+          "tp": 0.06,
+          "sl": 0.06,
+          "max_hold": 4
+        },
+        "train_win": 0.6666666666666666,
+        "train_net": 0.05688994300816308,
+        "test_n": 12,
+        "test_win": 0.8333333333333334,
+        "test_net": 0.28521742412037954,
+        "test_pf": 3.886157530450106,
+        "test_dd": -0.0886602411424201,
+        "test_exp": 0.02175449978375488,
+        "survived": true
+      },
+      {
+        "coin": "BTC",
+        "tf": "12h",
+        "family": "rsi_mr",
+        "select": "exp",
+        "params": {
+          "lb": 7,
+          "lo": 25,
+          "hi": 75,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 2
+        },
+        "train_win": 0.5617977528089888,
+        "train_net": 0.4446795601740754,
+        "test_n": 34,
+        "test_win": 0.47058823529411764,
+        "test_net": -0.21592761480028522,
+        "test_pf": 0.5634089580706481,
+        "test_dd": -0.37681077059346646,
+        "test_exp": -0.006725739374420768,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "12h",
+        "family": "rsi_mr",
+        "select": "wr",
+        "params": {
+          "lb": 7,
+          "lo": 25,
+          "hi": 75,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 2
+        },
+        "train_win": 0.5617977528089888,
+        "train_net": 0.4446795601740754,
+        "test_n": 34,
+        "test_win": 0.47058823529411764,
+        "test_net": -0.21592761480028522,
+        "test_pf": 0.5634089580706481,
+        "test_dd": -0.37681077059346646,
+        "test_exp": -0.006725739374420768,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "12h",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 100,
+          "rsi_lb": 14,
+          "dip": 40,
+          "long_only": false,
+          "tp": 0.06,
+          "sl": 0.06,
+          "max_hold": 6
+        },
+        "train_win": 0.5641025641025641,
+        "train_net": 0.2725356630418909,
+        "test_n": 11,
+        "test_win": 0.5454545454545454,
+        "test_net": 0.19437915494526936,
+        "test_pf": 3.254234911433418,
+        "test_dd": -0.042460187023151574,
+        "test_exp": 0.016857114372038445,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "12h",
+        "family": "trend_pullback",
+        "select": "wr",
+        "params": {
+          "slow": 100,
+          "rsi_lb": 14,
+          "dip": 40,
+          "long_only": false,
+          "tp": 0.06,
+          "sl": 0.06,
+          "max_hold": 4
+        },
+        "train_win": 0.6097560975609756,
+        "train_net": 0.17992630684509492,
+        "test_n": 11,
+        "test_win": 0.5454545454545454,
+        "test_net": 0.1553988609062258,
+        "test_pf": 3.4673369844167383,
+        "test_dd": -0.04820484303752026,
+        "test_exp": 0.013562829166926917,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "1d",
+        "family": "zscore_mr",
+        "select": "exp",
+        "params": {
+          "lb": 10,
+          "z": 1.5,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 3
+        },
+        "train_win": 0.5473684210526316,
+        "train_net": 0.13428183614458322,
+        "test_n": 39,
+        "test_win": 0.4358974358974359,
+        "test_net": -0.25259029318523196,
+        "test_pf": 0.6534565675292132,
+        "test_dd": -0.34425857369842405,
+        "test_exp": -0.006849587958727206,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "1d",
+        "family": "zscore_mr",
+        "select": "wr",
+        "params": {
+          "lb": 10,
+          "z": 1.5,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 2
+        },
+        "train_win": 0.5670103092783505,
+        "train_net": 0.09011347785555301,
+        "test_n": 42,
+        "test_win": 0.5,
+        "test_net": -0.14942060483901376,
+        "test_pf": 0.808440158259317,
+        "test_dd": -0.27500888673991575,
+        "test_exp": -0.0032839434391795826,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "1d",
+        "family": "rsi_mr",
+        "select": "exp",
+        "params": {
+          "lb": 7,
+          "lo": 25,
+          "hi": 75,
+          "long_only": true,
+          "tp": 0.06,
+          "sl": 0.03,
+          "max_hold": 3
+        },
+        "train_win": 0.3902439024390244,
+        "train_net": 0.07864688836444289,
+        "test_n": 15,
+        "test_win": 0.4,
+        "test_net": -0.08310906445760236,
+        "test_pf": 0.72394785284922,
+        "test_dd": -0.17886741330282907,
+        "test_exp": -0.005167696194662602,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "1d",
+        "family": "rsi_mr",
+        "select": "wr",
+        "params": {
+          "lb": 7,
+          "lo": 25,
+          "hi": 75,
+          "long_only": true,
+          "tp": 0.06,
+          "sl": 0.03,
+          "max_hold": 1
+        },
+        "train_win": 0.46511627906976744,
+        "train_net": 0.04465581954612308,
+        "test_n": 16,
+        "test_win": 0.375,
+        "test_net": -0.09270590058203132,
+        "test_pf": 0.650441302357493,
+        "test_dd": -0.14001194205632228,
+        "test_exp": -0.005614901360369552,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "1d",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 50,
+          "rsi_lb": 7,
+          "dip": 35,
+          "long_only": false,
+          "tp": 0.06,
+          "sl": 0.03,
+          "max_hold": 1
+        },
+        "train_win": 0.5483870967741935,
+        "train_net": 0.1630890020961564,
+        "test_n": 7,
+        "test_win": 0.5714285714285714,
+        "test_net": 0.08587558477414836,
+        "test_pf": 2.6362242073723103,
+        "test_dd": -0.04995517228501212,
+        "test_exp": 0.012299223014506663,
+        "survived": false
+      },
+      {
+        "coin": "BTC",
+        "tf": "1d",
+        "family": "trend_pullback",
+        "select": "wr",
+        "params": {
+          "slow": 50,
+          "rsi_lb": 7,
+          "dip": 35,
+          "long_only": false,
+          "tp": 0.06,
+          "sl": 0.06,
+          "max_hold": 1
+        },
+        "train_win": 0.6333333333333333,
+        "train_net": 0.1466666011539468,
+        "test_n": 7,
+        "test_win": 0.5714285714285714,
+        "test_net": 0.08834649174641829,
+        "test_pf": 2.751502480600431,
+        "test_dd": -0.04779334783506073,
+        "test_exp": 0.012614151842226183,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1h",
+        "family": "zscore_mr",
+        "select": "exp",
+        "params": {
+          "lb": 10,
+          "z": 1.5,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 12
+        },
+        "train_win": 0.49554896142433236,
+        "train_net": -0.8969028891241223,
+        "test_n": 709,
+        "test_win": 0.4823695345557123,
+        "test_net": -0.8543722867020046,
+        "test_pf": 0.7705649719367421,
+        "test_dd": -0.863588879220914,
+        "test_exp": -0.002468450096811799,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1h",
+        "family": "rsi_mr",
+        "select": "exp",
+        "params": {
+          "lb": 21,
+          "lo": 20,
+          "hi": 80,
+          "long_only": false,
+          "tp": 0.03,
+          "sl": 0.015,
+          "max_hold": 48
+        },
+        "train_win": 0.4716981132075472,
+        "train_net": 0.167114412090954,
+        "test_n": 29,
+        "test_win": 0.20689655172413793,
+        "test_net": -0.1855910220761403,
+        "test_pf": 0.46376811594203016,
+        "test_dd": -0.18210423286000654,
+        "test_exp": -0.006889655172413776,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1h",
+        "family": "rsi_mr",
+        "select": "wr",
+        "params": {
+          "lb": 21,
+          "lo": 20,
+          "hi": 80,
+          "long_only": false,
+          "tp": 0.01,
+          "sl": 0.02,
+          "max_hold": 24
+        },
+        "train_win": 0.7142857142857143,
+        "train_net": 0.007642121209022745,
+        "test_n": 28,
+        "test_win": 0.5,
+        "test_net": -0.1677320853497184,
+        "test_pf": 0.3938474311178118,
+        "test_dd": -0.15712316549966998,
+        "test_exp": -0.006425217230151193,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1h",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 100,
+          "rsi_lb": 14,
+          "dip": 35,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 48
+        },
+        "train_win": 0.7027027027027027,
+        "train_net": 0.3918350040168137,
+        "test_n": 20,
+        "test_win": 0.25,
+        "test_net": -0.2771298400492651,
+        "test_pf": 0.25533988485809295,
+        "test_dd": -0.25384995876266014,
+        "test_exp": -0.015827277017792386,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1h",
+        "family": "trend_pullback",
+        "select": "wr",
+        "params": {
+          "slow": 100,
+          "rsi_lb": 14,
+          "dip": 35,
+          "long_only": true,
+          "tp": 0.01,
+          "sl": 0.02,
+          "max_hold": 48
+        },
+        "train_win": 0.725,
+        "train_net": 0.01854612499231223,
+        "test_n": 20,
+        "test_win": 0.4,
+        "test_net": -0.17059219733718745,
+        "test_pf": 0.27672955974842783,
+        "test_dd": -0.15262790900816037,
+        "test_exp": -0.009200000000000003,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "8h",
+        "family": "zscore_mr",
+        "select": "exp",
+        "params": {
+          "lb": 10,
+          "z": 1.5,
+          "long_only": false,
+          "tp": 0.03,
+          "sl": 0.015,
+          "max_hold": 6
+        },
+        "train_win": 0.3207810320781032,
+        "train_net": -0.8492271511254881,
+        "test_n": 295,
+        "test_win": 0.31186440677966104,
+        "test_net": -0.53368151474732,
+        "test_pf": 0.7867323099207008,
+        "test_dd": -0.6292227184052133,
+        "test_exp": -0.0023727032555457593,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "8h",
+        "family": "rsi_mr",
+        "select": "exp",
+        "params": {
+          "lb": 7,
+          "lo": 25,
+          "hi": 75,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 3
+        },
+        "train_win": 0.525974025974026,
+        "train_net": -0.24794761636424567,
+        "test_n": 65,
+        "test_win": 0.4,
+        "test_net": -0.3798173843699816,
+        "test_pf": 0.6042991490662556,
+        "test_dd": -0.3951836164206959,
+        "test_exp": -0.006926559034701726,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "8h",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 100,
+          "rsi_lb": 7,
+          "dip": 40,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.015,
+          "max_hold": 9
+        },
+        "train_win": 0.391304347826087,
+        "train_net": 0.14998788345478276,
+        "test_n": 57,
+        "test_win": 0.42105263157894735,
+        "test_net": 0.1316754030173095,
+        "test_pf": 1.2571692062978448,
+        "test_dd": -0.1461183686508628,
+        "test_exp": 0.0024119764506461026,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "8h",
+        "family": "trend_pullback",
+        "select": "wr",
+        "params": {
+          "slow": 100,
+          "rsi_lb": 7,
+          "dip": 40,
+          "long_only": true,
+          "tp": 0.03,
+          "sl": 0.03,
+          "max_hold": 3
+        },
+        "train_win": 0.518796992481203,
+        "train_net": 0.007457514513224961,
+        "test_n": 52,
+        "test_win": 0.4807692307692308,
+        "test_net": -0.022685497438706292,
+        "test_pf": 0.9880478781617804,
+        "test_dd": -0.1207258577327891,
+        "test_exp": -0.00013246592933802682,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "12h",
+        "family": "zscore_mr",
+        "select": "exp",
+        "params": {
+          "lb": 40,
+          "z": 2.0,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 4
+        },
+        "train_win": 0.5384615384615384,
+        "train_net": 0.0787105024546515,
+        "test_n": 49,
+        "test_win": 0.4489795918367347,
+        "test_net": -0.21543238479478366,
+        "test_pf": 0.8030232289441223,
+        "test_dd": -0.3324191227347554,
+        "test_exp": -0.004186287495004557,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "12h",
+        "family": "zscore_mr",
+        "select": "wr",
+        "params": {
+          "lb": 40,
+          "z": 2.0,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 2
+        },
+        "train_win": 0.5609756097560976,
+        "train_net": 0.03520830922272422,
+        "test_n": 50,
+        "test_win": 0.44,
+        "test_net": -0.2164294374833745,
+        "test_pf": 0.789800508930038,
+        "test_dd": -0.34590796065370943,
+        "test_exp": -0.004179564845257138,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "12h",
+        "family": "rsi_mr",
+        "select": "exp",
+        "params": {
+          "lb": 7,
+          "lo": 20,
+          "hi": 80,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.02,
+          "max_hold": 4
+        },
+        "train_win": 0.40816326530612246,
+        "train_net": 0.05788084269067473,
+        "test_n": 32,
+        "test_win": 0.4375,
+        "test_net": 0.12610492350699087,
+        "test_pf": 1.3471002297255326,
+        "test_dd": -0.1101649095997348,
+        "test_exp": 0.004139170239476981,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "12h",
+        "family": "rsi_mr",
+        "select": "wr",
+        "params": {
+          "lb": 7,
+          "lo": 20,
+          "hi": 80,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 6
+        },
+        "train_win": 0.5319148936170213,
+        "train_net": 0.015363041422213675,
+        "test_n": 29,
+        "test_win": 0.5862068965517241,
+        "test_net": 0.16000390465607528,
+        "test_pf": 1.3580599741141963,
+        "test_dd": -0.15827143098700114,
+        "test_exp": 0.0058736457717335055,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "12h",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 50,
+          "rsi_lb": 7,
+          "dip": 35,
+          "long_only": false,
+          "tp": 0.06,
+          "sl": 0.03,
+          "max_hold": 4
+        },
+        "train_win": 0.5,
+        "train_net": 0.2656152546163564,
+        "test_n": 20,
+        "test_win": 0.55,
+        "test_net": 0.29278026467543605,
+        "test_pf": 2.06075503322251,
+        "test_dd": -0.09638260368664653,
+        "test_exp": 0.013717019548973494,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "12h",
+        "family": "trend_pullback",
+        "select": "wr",
+        "params": {
+          "slow": 100,
+          "rsi_lb": 14,
+          "dip": 45,
+          "long_only": true,
+          "tp": 0.06,
+          "sl": 0.06,
+          "max_hold": 6
+        },
+        "train_win": 0.6037735849056604,
+        "train_net": 0.082649854971242,
+        "test_n": 16,
+        "test_win": 0.5,
+        "test_net": -0.023731095202477626,
+        "test_pf": 0.9773203317402331,
+        "test_dd": -0.11865456000000008,
+        "test_exp": -0.0004618291460313298,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1d",
+        "family": "zscore_mr",
+        "select": "exp",
+        "params": {
+          "lb": 40,
+          "z": 2.0,
+          "long_only": true,
+          "tp": 0.06,
+          "sl": 0.03,
+          "max_hold": 3
+        },
+        "train_win": 0.4117647058823529,
+        "train_net": 0.14698326631249548,
+        "test_n": 25,
+        "test_win": 0.2,
+        "test_net": -0.3120190496514309,
+        "test_pf": 0.42804665176272333,
+        "test_dd": -0.35022577413244327,
+        "test_exp": -0.014275955572002444,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1d",
+        "family": "zscore_mr",
+        "select": "wr",
+        "params": {
+          "lb": 40,
+          "z": 2.0,
+          "long_only": true,
+          "tp": 0.06,
+          "sl": 0.06,
+          "max_hold": 2
+        },
+        "train_win": 0.5625,
+        "train_net": 0.0871961111850803,
+        "test_n": 21,
+        "test_win": 0.38095238095238093,
+        "test_net": -0.1665409600313391,
+        "test_pf": 0.7292566427008805,
+        "test_dd": -0.2167612939967849,
+        "test_exp": -0.0073529653724193475,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1d",
+        "family": "rsi_mr",
+        "select": "exp",
+        "params": {
+          "lb": 7,
+          "lo": 25,
+          "hi": 75,
+          "long_only": true,
+          "tp": 0.06,
+          "sl": 0.03,
+          "max_hold": 3
+        },
+        "train_win": 0.4117647058823529,
+        "train_net": 0.1805317166631626,
+        "test_n": 23,
+        "test_win": 0.34782608695652173,
+        "test_net": -0.1564555403569563,
+        "test_pf": 0.6704492675265585,
+        "test_dd": -0.2761918077650234,
+        "test_exp": -0.006705640991198741,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1d",
+        "family": "rsi_mr",
+        "select": "wr",
+        "params": {
+          "lb": 7,
+          "lo": 25,
+          "hi": 75,
+          "long_only": true,
+          "tp": 0.04,
+          "sl": 0.04,
+          "max_hold": 2
+        },
+        "train_win": 0.5945945945945946,
+        "train_net": 0.15390274144859561,
+        "test_n": 23,
+        "test_win": 0.5217391304347826,
+        "test_net": 0.009724480234248878,
+        "test_pf": 1.0641940553969167,
+        "test_dd": -0.22309457838884905,
+        "test_exp": 0.0011553033474756026,
+        "survived": true
+      },
+      {
+        "coin": "ETH",
+        "tf": "1d",
+        "family": "trend_pullback",
+        "select": "exp",
+        "params": {
+          "slow": 100,
+          "rsi_lb": 7,
+          "dip": 35,
+          "long_only": true,
+          "tp": 0.06,
+          "sl": 0.06,
+          "max_hold": 1
+        },
+        "train_win": 0.5945945945945946,
+        "train_net": 0.45032523061403573,
+        "test_n": 11,
+        "test_win": 0.6363636363636364,
+        "test_net": 0.07428091112656587,
+        "test_pf": 1.4617936846240933,
+        "test_dd": -0.06120000000000003,
+        "test_exp": 0.0074692166778375065,
+        "survived": false
+      },
+      {
+        "coin": "ETH",
+        "tf": "1d",
+        "family": "trend_pullback",
+        "select": "wr",
+        "params": {
+          "slow": 50,
+          "rsi_lb": 7,
+          "dip": 40,
+          "long_only": true,
+          "tp": 0.02,
+          "sl": 0.04,
+          "max_hold": 1
+        },
+        "train_win": 0.7666666666666667,
+        "train_net": 0.13344661168936445,
+        "test_n": 9,
+        "test_win": 0.7777777777777778,
+        "test_net": 0.013562538326641116,
+        "test_pf": 1.195335778515505,
+        "test_dd": -0.04119999999999979,
+        "test_exp": 0.0017884075721863988,
+        "survived": false
+      }
+    ]
+  }
+}
