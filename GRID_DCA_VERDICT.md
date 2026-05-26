@@ -80,3 +80,23 @@ Re-ran starting 2023-01-01 (skipping the 2022 bear entirely) and through the FTX
 regime cherry-picking, and even then the next drawdown (there is always a next drawdown)
 liquidates 20×. The grid's high win rate is constant (83–96%) across every window; it
 still loses at high leverage, because the losses are liquidations. Win rate is not edge.
+
+## "But does 20× return my initial capital faster?" — No. It never returns it at all.
+The withdrawal model ("pull principal once equity = 2×, then play house money") only
+works if the account can actually *double*. It can't at 20×:
+
+| Leverage | reaches 2× (realized, 2023→)? | days to 2× | P(return principal) MC | P(ruin before) |
+|---|--:|--:|--:|--:|
+| **20×** | **NEVER** (peak 1.6×) | — | **1%** | 27% |
+| 10× | yes | 429 | 24% | 1% |
+| **5×** | **yes** | **406** | **52%** | 0% |
+| 3× | yes | 561 | 18% | 1% |
+
+**Higher leverage returns capital *slower*, not faster — and at 20×, never.** To withdraw
+principal the account must net-double, which needs positive compound drift. At 20× the
+liquidation bleed exceeds the +1%-price wins, so drift is **negative** — equity trends
+down, peaks ~1.6×, and never reaches the 2× trigger. The "more leverage = faster payback"
+intuition is backwards: more leverage = more liquidation bleed = negative drift = the
+account shrinks instead of doubling. Capital comes out **fastest and most reliably at
+~5×** (52% chance, ~400 days, survives). The withdrawal rule cannot save 20× because 20×
+never gets to 2×.
