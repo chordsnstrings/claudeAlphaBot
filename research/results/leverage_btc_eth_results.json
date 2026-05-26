@@ -1,0 +1,87 @@
+{
+  "5x": {
+    "median": -0.11094571815526688,
+    "pct20": 0.2753623188405797,
+    "pct30": 0.2463768115942029,
+    "pct50": 0.18840579710144928,
+    "worst": -0.540106630964821,
+    "liq_month_rate": 0.0,
+    "cagr": 0.029056580628779916,
+    "n_months": 69,
+    "withdrawal": {
+      "p_return_principal": 0.708,
+      "median_months_to_return": 5,
+      "p_ruin_before_return": 0.224,
+      "p_ruin_ever": 0.331,
+      "median_house_money_after_return": 1.96
+    }
+  },
+  "8x": {
+    "median": -0.21228016758403567,
+    "pct20": 0.21739130434782608,
+    "pct30": 0.17391304347826086,
+    "pct50": 0.15942028985507245,
+    "worst": -0.8335837826961072,
+    "liq_month_rate": 0.0,
+    "cagr": -0.8101353388141164,
+    "n_months": 69,
+    "withdrawal": {
+      "p_return_principal": 0.41,
+      "median_months_to_return": 4,
+      "p_ruin_before_return": 0.581,
+      "p_ruin_ever": 0.839,
+      "median_house_money_after_return": 0.05
+    }
+  },
+  "10x": {
+    "median": -0.22768288351385702,
+    "pct20": 0.17391304347826086,
+    "pct30": 0.15942028985507245,
+    "pct50": 0.13043478260869565,
+    "worst": -0.8901075432854647,
+    "liq_month_rate": 0.0,
+    "cagr": -0.9245330720908876,
+    "n_months": 69,
+    "withdrawal": {
+      "p_return_principal": 0.353,
+      "median_months_to_return": 3,
+      "p_ruin_before_return": 0.646,
+      "p_ruin_ever": 0.936,
+      "median_house_money_after_return": 0.04
+    }
+  },
+  "15x": {
+    "median": -0.43041163959880113,
+    "pct20": 0.11594202898550725,
+    "pct30": 0.10144927536231885,
+    "pct50": 0.08695652173913043,
+    "worst": -0.9809250062592667,
+    "liq_month_rate": 0.0,
+    "cagr": -0.9986560439918192,
+    "n_months": 69,
+    "withdrawal": {
+      "p_return_principal": 0.211,
+      "median_months_to_return": 2,
+      "p_ruin_before_return": 0.789,
+      "p_ruin_ever": 0.998,
+      "median_house_money_after_return": 0.03
+    }
+  },
+  "20x": {
+    "median": -0.5925823010801532,
+    "pct20": 0.13043478260869565,
+    "pct30": 0.13043478260869565,
+    "pct50": 0.11594202898550725,
+    "worst": -0.9992261273631289,
+    "liq_month_rate": 0.014492753623188406,
+    "cagr": -0.9999965416951063,
+    "n_months": 69,
+    "withdrawal": {
+      "p_return_principal": 0.12,
+      "median_months_to_return": 2,
+      "p_ruin_before_return": 0.88,
+      "p_ruin_ever": 1.0,
+      "median_house_money_after_return": 0.02
+    }
+  }
+}
