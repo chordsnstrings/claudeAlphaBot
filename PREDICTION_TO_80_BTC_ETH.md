@@ -80,3 +80,24 @@ state is mostly restating the present, not forecasting the future move.
 - This is the deepest confirmation of every prior result: the edge in BTC/ETH is **weak,
   statistical, and harvested at scale via sizing + diversification + risk control** — not
   an 80% crystal ball. Chasing 80% directional accuracy is chasing an artifact.
+
+## Appendix — additional reachable variables tested (breadth, dominance, intraday)
+To exhaust the *reachable* variable space beyond price/momentum/vol/volume/cross-asset,
+also tested (walk-forward OOS, next-day direction, 2022→2026):
+- **Market breadth** (% of the 55-coin universe above its 50d MA) + 5-day change
+- **BTC dominance / relative-strength trend** (BTC vs equal-weight alts, 20d)
+- **Intraday microstructure** (daily range, last-6h momentum into the close, overnight gap)
+
+| Feature set | BTC OOS dir acc | ETH OOS dir acc |
+|---|--:|--:|
+| base (mom20, vol20) | 50.1% | 49.0% |
+| + breadth / dominance | 50.6% | 49.6% |
+| + intraday (range, last-6h, gap) | 49.3% | 49.2% |
+| + ALL new variables | 51.0% | 49.6% |
+
+None move direction above ~51%. **The reachable variable space is now exhausted** — no
+price-derived, cross-asset, breadth, dominance, or intraday-microstructure variable lifts
+next-day BTC/ETH direction prediction beyond noise. The only untested variables are the
+blocked external feeds (funding/OI/options-skew/on-chain/macro), which the evidence and
+literature put at a ~55–58% ceiling — still far from 80%. **Conclusion stands: no variable,
+reachable or otherwise, honestly reaches 80% on balanced direction.**
