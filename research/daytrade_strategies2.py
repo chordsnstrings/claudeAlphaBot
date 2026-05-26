@@ -434,6 +434,7 @@ def walk_forward(sym, tf, name):
     entries = _entry_grid(name, tf); exits = _exit_grid(tf)
 
     oos_trades, fold_nets, fold_wins, picks = [], [], [], []
+    oos_dated = []  # (exit_timestamp, ret_net) for portfolio-level daily aggregation
     start = 0
     while start + train_bars + test_bars <= n:
         tr = df.iloc[start:start + train_bars]
@@ -460,6 +461,7 @@ def walk_forward(sym, tf, name):
             if te:
                 rets = [x.ret_net for x in te]
                 oos_trades.extend(rets)
+                oos_dated.extend((ctx.index[x.exit_i], x.ret_net) for x in te)
                 fold_nets.append(float(np.prod([1 + r for r in rets]) - 1))
                 fold_wins.append(float(np.mean([r > 0 for r in rets])))
                 picks.append((best[1], best[2]))
@@ -487,6 +489,7 @@ def walk_forward(sym, tf, name):
         "fold_winrate_max": float(np.max(fold_wins)),
         "fold_nets": [float(x) for x in fold_nets],
         "picks": picks,
+        "oos_dated": [(t.isoformat(), float(r)) for t, r in oos_dated],
         "oos_returns": rets.tolist(),
     }
 
@@ -514,7 +517,7 @@ def main(argv):
                 r = walk_forward(sym, tf, name)
                 out["results"][sym].setdefault(tf, {})
                 out["results"][sym][tf][name] = {k: v for k, v in r.items()
-                                                 if k != "oos_returns"}
+                                                 if k not in ("oos_returns", "oos_dated")}
                 if r.get("status") != "ok":
                     print(f"  {sym:<4} {tf:<4} {name:<16} {r.get('status')}")
                     continue
