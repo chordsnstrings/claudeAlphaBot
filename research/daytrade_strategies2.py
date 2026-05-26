@@ -433,7 +433,7 @@ def walk_forward(sym, tf, name):
         return {"status": "insufficient_bars", "bars": n}
     entries = _entry_grid(name, tf); exits = _exit_grid(tf)
 
-    oos_trades, fold_nets, fold_wins = [], [], []
+    oos_trades, fold_nets, fold_wins, picks = [], [], [], []
     start = 0
     while start + train_bars + test_bars <= n:
         tr = df.iloc[start:start + train_bars]
@@ -462,6 +462,7 @@ def walk_forward(sym, tf, name):
                 oos_trades.extend(rets)
                 fold_nets.append(float(np.prod([1 + r for r in rets]) - 1))
                 fold_wins.append(float(np.mean([r > 0 for r in rets])))
+                picks.append((best[1], best[2]))
         start += test_bars
 
     if not oos_trades:
@@ -484,6 +485,8 @@ def walk_forward(sym, tf, name):
         "fold_winrate_min": float(np.min(fold_wins)),
         "fold_winrate_med": float(np.median(fold_wins)),
         "fold_winrate_max": float(np.max(fold_wins)),
+        "fold_nets": [float(x) for x in fold_nets],
+        "picks": picks,
         "oos_returns": rets.tolist(),
     }
 

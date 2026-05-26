@@ -1,4 +1,4 @@
-# Day-trading BTC & ETH for the highest win rate — 1H / 8H / 12H / 1D
+# Day-trading BTC & ETH for the highest win rate — 1H / 4H / 8H / 12H / 1D
 
 > **Goal.** Acting as a day trader, find the most profitable way to trade BTC & ETH
 > on 1H, 8H, 12H and 1D candles, optimised for the **highest win rate** — and prove
@@ -10,7 +10,9 @@
 taker cost.** Parameters are chosen only on past data and scored only on later,
 unseen data. Code: [`research/daytrade_winrate.py`](research/daytrade_winrate.py),
 [`research/daytrade_walkforward.py`](research/daytrade_walkforward.py),
-[`research/daytrade_rr_tradeoff.py`](research/daytrade_rr_tradeoff.py).
+[`research/daytrade_rr_tradeoff.py`](research/daytrade_rr_tradeoff.py),
+[`research/daytrade_strategies2.py`](research/daytrade_strategies2.py) (round-2
+families: breakout, vol-adaptive exits, ADX gate, time-of-day, VWAP, cross-asset).
 
 ---
 
@@ -40,6 +42,16 @@ unseen data. Code: [`research/daytrade_winrate.py`](research/daytrade_winrate.py
    — not the 80% the win-rate dial advertises. **ETH has no walk-forward-robust intraday
    edge** (best cell −18.5%), and the edge does **not** carry to 8H/12H/1D — it is
    specifically *buying BTC 1H dips in an uptrend.*
+
+5. **Round 2 (§4) exhausted the families the search skipped** — breakout, ATR/
+   trailing/scale-out exits, an ADX regime gate, time-of-day, VWAP, and the
+   **BTC→ETH lead-lag / relative-strength** cross-asset book — across 1H/4H/8H (36
+   walk-forward cells). Two changed the picture: an **ADX trend-strength gate lifts
+   the BTC 1H edge to ~55% win / +68% (73% fold-win, robust)**, and **vol-scaled ATR
+   exits reveal a genuine but high-variance ETH edge on 8H (+307%, PF 1.61)** that
+   round 1 missed. Everything else — breakout, time-of-day, VWAP, and notably the
+   **cross-asset lead-lag** — added no robust value (the lead-lag thesis failed; ETH's
+   edge is its own 8H trend, not BTC's lead). Net: **two books, BTC 1H and ETH 8H.**
 
 > This reconciles exactly with the rest of the repo: BTC/ETH **direction is
 > unpredictable** at short horizons ([`PREDICTION_ACCURACY_BTC_ETH.md`](PREDICTION_ACCURACY_BTC_ETH.md)),
@@ -190,53 +202,167 @@ Everything else loses after costs across folds:
 - **The edge is timeframe-specific.** Even trend-pullback only works on **BTC 1H**;
   on 8H/12H/1D it goes negative (−19% to −44%). Higher timeframes simply don't
   generate enough day-trade opportunities for the thin edge to compound past costs.
-- **ETH has no walk-forward-robust intraday edge at all.** Its best cell (1H
-  trend_pullback) is −18.5%; everything else is worse. ETH's day-trade "wins" in the
-  single split do not survive. (Consistent with the daily study: ETH is the most
-  cost-sensitive major — it belongs in the daily momentum book, not a 1H scalp.)
+- **ETH has no walk-forward-robust intraday edge *in these families*.** Its best cell
+  (1H trend_pullback) is −18.5%; everything else is worse. ETH's day-trade "wins" in
+  the single split do not survive. *(Round 2 (§4) revisits ETH with vol-adaptive exits
+  and finds one genuine — if high-variance — edge on **8H**, not 1H. ETH remains
+  un-tradeable intraday on 1H.)*
 
-So the most profitable, highest *sustainable* win-rate day-trade option on these
-timeframes is a single, specific thing: **buy BTC 1H dips in an uptrend.** Its OOS
-equity curve is [`research/results/dtwf_BTC_1h_trend_pullback_oos_eq.csv`](research/results/dtwf_BTC_1h_trend_pullback_oos_eq.csv).
+So, among the round-1 families, the most profitable, highest *sustainable* win-rate
+day-trade option is a single, specific thing: **buy BTC 1H dips in an uptrend.** Its
+OOS equity curve is [`research/results/dtwf_BTC_1h_trend_pullback_oos_eq.csv`](research/results/dtwf_BTC_1h_trend_pullback_oos_eq.csv).
+**§4 then exhausts the families this pass skipped** — sharpening this BTC 1H edge with
+an ADX gate and surfacing a second (high-variance) edge on ETH 8H.
 
 ---
 
-## 4. Deployable rule — the best honest day-trade option
+## 4. Round 2 — exhausting the strategies the first pass missed
 
-**Primary: BTC, 1H, trend-filtered pullback (long-only).**
+The first pass searched three entry families (reversion ×2, trend-pullback) with
+**fixed-% brackets only**. To make "only one edge survives" an *exhaustive* result
+rather than a narrow-search artefact, this round walk-forward-tests the families it
+skipped — on the **same** honest harness (train 365d → unseen 120d, non-overlapping
+folds, params incl. exit geometry chosen on train by expectancy, 6 bps/side,
+conservative stop-first fills) — across **1H / 4H / 8H** and both coins (36 cells):
+
+> **#1 breakout** (Donchian channel break ± trend filter) · **#2 vol-adaptive &
+> trailing exits** (ATR brackets, trailing stop, partial scale-out) · **#3 ADX
+> regime gate** on the pullback · **#5 time-of-day/session filter** · **#6 VWAP**
+> entries · **#4 cross-asset BTC→ETH lead-lag / relative-strength** (the ETH rescue).
+
+Code [`research/daytrade_strategies2.py`](research/daytrade_strategies2.py),
+robustness probe [`research/daytrade_strategies2_robustness.py`](research/daytrade_strategies2_robustness.py),
+results [`research/results/daytrade_strategies2_results.json`](research/results/daytrade_strategies2_results.json).
+**Two cells genuinely change the picture; the other 34 do not.** The 12 net-positive
+OOS cells (the other 24 — all 1H/4H breakout & VWAP, ETH 1H everything, the lead-lag
+on 1H/4H — were net-negative):
+
+| strategy | coin/tf | OOS win | OOS net | PF | fold-win | verdict |
+|---|---|---:|---:|---:|---:|---|
+| **regime_pullback** | **BTC 1h** | **54.8%** | **+67.6%** | **1.23** | **73%** | **robust ✅** |
+| regime_pullback | ETH 8h | 51.7% | +306.8% | 1.61 | 60% | *real, high-variance* |
+| eth_btc_gated | ETH 8h | 46.4% | +209.3% | 1.31 | 60% | fragile |
+| eth_btc_rs | ETH 8h | 46.9% | +133.0% | 1.16 | 47% | fragile |
+| tod_pullback | ETH 8h | 44.4% | +119.1% | 1.40 | 60% | fragile |
+| breakout | BTC 8h | 41.2% | +42.7% | 1.20 | 67% | thin (3 trades) |
+| regime_pullback | BTC 4h | 43.0% | +24.5% | 1.16 | 47% | weak |
+| tod_pullback | BTC 1h | 46.9% | +23.8% | 1.10 | 47% | weak |
+| tod_pullback | BTC 8h | 45.6% | +17.9% | 1.14 | 53% | weak |
+| regime_pullback | ETH 4h | 45.0% | +16.7% | 1.10 | 40% | mirage (1 fold) |
+| regime_pullback | BTC 8h | 44.9% | +15.4% | 1.14 | 47% | weak |
+| vwap_pullback | ETH 8h | 39.1% | +13.4% | 1.11 | 47% | weak |
+
+**Robustness probe** (drop-the-best-fold net; top-3 trades' share of total log-return
+— a high net that vanishes either way is a mirage):
+
+| cell | net | net w/o best fold | top-3 trade share | reading |
+|---|---:|---:|---:|---|
+| BTC 1h regime_pullback | +67.6% | **+28.5%** | **22%** | broad — real edge |
+| ETH 8h regime_pullback | +306.8% | **+153.6%** | **30%** | high-variance but real |
+| ETH 8h eth_btc_gated | +209.3% | +54.0% | 40% | ⅔ rides one fold |
+| ETH 8h eth_btc_rs | +133.0% | +30.3% | 51% | fragile (7/15 folds) |
+| ETH 8h tod_pullback | +119.1% | +33.1% | 59% | fragile |
+| BTC 8h breakout | +42.7% | +21.3% | **96%** | 3 trades carry it |
+| ETH 4h regime_pullback | +16.7% | **−26.5%** | 86% | one-fold mirage |
+
+### 4.1 What actually helps
+1. **The ADX regime gate (#3) sharpens the BTC 1H edge.** Gating the same
+   buy-the-dip-in-uptrend on **trend strength (ADX(14) ≥ 30)** lifts it from the
+   round-1 trend_pullback (53.1% / +63.9% / 60% fold-win) to **54.8% win, +67.6% net,
+   PF 1.23, 73% fold-win** — and it is *robust*: 11/15 folds positive, the top-3
+   trades are only 22% of the return, and it still makes +28% with its best fold
+   removed. Skipping chop (low-ADX) is the most direct fix for the round-1 weakness
+   ("flat in chop"). **This is the new best BTC day-trade config.**
+2. **Vol-adaptive exits (#2) unlock a real — but high-variance — ETH edge at 8H.**
+   Round 1's ETH 8H pullback *lost* (−34%) with fixed-% brackets; swap to an
+   **asymmetric ATR bracket (TP = 3×ATR, SL = 1.5×ATR)** plus the ADX gate and ETH 8H
+   `regime_pullback` returns **+306.8% net, PF 1.61, 51.7% win, 9/15 folds positive**.
+   This is *not* a one-fold mirage — it survives dropping its best fold (+154%), the
+   top-3 trades are only 30% of the return, and its winning folds straddle 2021-22
+   *and* 2024-25. But it is far more volatile than BTC 1H (6/15 folds negative; fold
+   returns −15%→+60%) and works only by **letting winners run with vol-scaled
+   targets**. It is a *trend-harvest on ETH's big 8H swings*, not a steady win-rate
+   machine.
+
+### 4.2 What does not hold up
+- **Cross-asset BTC→ETH (#4 — the one we most wanted) adds no robust standalone
+  value.** Lead-lag momentum (`eth_btc_momo`) is net-negative on all three
+  timeframes; relative-strength and BTC-trend-gating are positive *only* on ETH 8H,
+  and there only because of the **same** ATR 2:1 exit — and more fold-concentrated
+  than ETH's own ADX-gated trend (rs positive in just 7/15 folds; ⅔ of `gated`'s net
+  rides one fold). Using BTC's trend as ETH's filter does **not** beat trading ETH's
+  own 8H trend. Honest result: **the lead-lag thesis failed**; ETH's edge is its
+  own-trend edge at a slower timeframe, not a cross-asset signal.
+- **Breakout (#1)** survives only on BTC 8H (+42.7%, 67% fold-win) — but **3 trades
+  are 96% of the return**; remove them and it is flat. Negative/breakeven everywhere
+  else. Too thin to deploy.
+- **Time-of-day (#5)** and **VWAP (#6)** add nothing robust: session-filtered pullback
+  is marginal and fold-concentrated; VWAP-anchored pullback is breakeven-to-negative
+  (a plain SMA is the better trend anchor).
+
+### 4.3 Revised verdict
+The round-1 headline **stands and strengthens**: the best steady, high-win-rate
+day-trade edge is a **trend-filtered BTC pullback**, now sharpened with an **ADX
+trend-strength gate** (BTC 1H, ~55% win, +68% OOS, robust). The honest correction to
+round 1 is on **ETH**: it is *not* un-tradeable intraday — but its only edge is a
+**high-variance 8H trend-harvest** that needs **vol-scaled (ATR ~2:1) let-winners-run
+exits**, not a 1H scalp and not a cross-asset signal. Breakout, time-of-day, VWAP and
+lead-lag add nothing robust. Net effect: **two deployable books (a steady BTC 1H one
+and a punchy ETH 8H one), not one** — see §5.
+
+---
+
+## 5. Deployable rule — the best honest day-trade option
+
+**Primary (steady): BTC, 1H, ADX-gated trend pullback (long-only).** This is the
+round-1 winner sharpened by the §4 regime gate — the highest-conviction book here.
 
 | Parameter | Value |
 |---|---|
 | Trend filter | 1H `close > SMA(50)` (only trade with the higher trend) |
+| **Regime gate** | **`ADX(14) ≥ 30`** — only trade when the trend is *strong*; sit out chop |
 | Entry trigger | `RSI(7) ≤ 35` (short-term dip) → **enter long at next bar's open** |
 | Take-profit | +3% from entry |
 | Stop-loss | −3% from entry |
 | Time-stop | exit at market after 48 hours if neither hit |
-| Sizing | one position at a time; 1× (cap leverage ≤ 2–3× — at 1× the max DD is already −22%) |
-| Direction | **long-only** — shorting the dips/pops did not improve OOS (consistent with the daily book) |
+| Sizing | one position at a time; 1× (cap leverage ≤ 2–3×) |
+| Direction | **long-only** — shorting the dips/pops did not improve OOS |
 
-Expected profile (walk-forward OOS): **~53% win rate, profit factor ~1.2,
-~+0.2%/trade after cost** (full-sample, the friendlier number, is 54.8% / PF 1.34 /
-+0.35%), concentrated in trending months, ~flat in chop. Use **limit (maker) entries**
-to beat the 12 bps round-trip assumption — costs are the main thing that can kill it.
+Expected profile (walk-forward OOS): **~55% win rate, profit factor ~1.2,
++0.21%/trade, +67.6% over 15 folds, 73% of folds positive** — broad (top-3 trades =
+22% of return), concentrated in trending months and now *explicitly out of chop*.
+Use **limit (maker) entries** to beat the 12 bps round-trip assumption.
 
-**ETH: do not day-trade it on these timeframes.** This is the result that surprised
-me, and it is worth stating plainly because the single-split made ETH look tradeable
-(8H/12H showed +13–29% on one window). **Under rolling walk-forward, no ETH cell
-survives** — every coin/TF/family combination is net-negative, the best being 1H
-trend_pullback at **−18.5%**. ETH's intraday "wins" were lucky windows, not an edge.
-ETH is the most cost-sensitive major (see [`STRATEGY_FINDINGS.md`](STRATEGY_FINDINGS.md));
-its real, validated edge is **daily momentum (long-or-flat)**, not an intraday scalp.
-Trade ETH on the daily book; day-trade only BTC 1H.
+**Secondary (punchy, high-variance): ETH, 8H, ADX-gated trend pullback with vol-scaled
+exits.** Round 1 concluded ETH had *no* intraday edge — true for **1H** and for
+fixed-% brackets, but §4 overturns it at 8H once the exit is vol-adaptive. Deploy only
+with risk budget for the swings (6 of 15 folds were negative).
+
+| Parameter | Value |
+|---|---|
+| Timeframe | **8H** (the 1H version stays negative; ETH's edge is slower) |
+| Trend filter | 8H `close > SMA(50)` |
+| Regime gate | `ADX(14) ≥ 20` |
+| Entry trigger | `RSI(7) ≤ 45` (shallower dip than BTC) → enter at next bar's open |
+| **Exit** | **asymmetric ATR bracket: TP = 3×ATR(14), SL = 1.5×ATR(14)** (let winners run ~2:1) |
+| Time-stop | 12 bars (~4 days) |
+| Sizing | smaller than the BTC book — this is a fat-tailed trend-harvest, not a steady book |
+
+Profile (WF OOS): **51.7% win, PF 1.61, +1.08%/trade (mean; fat-tailed), +307% over
+15 folds** — but volatile and regime-dependent (it earns in ETH's big 8H trends,
+bleeds in chop). The
+**ATR 2:1 exit is the active ingredient**, not the coin pair: the cross-asset BTC→ETH
+signals (§4.2) did **not** beat this.
 
 **What to *not* do:** (1) chase the 80% win rate (tight-TP scalp) — §2 shows it is the
 worst net of all; (2) run naive 1H mean reversion on either coin (−63% to −96% OOS);
-(3) day-trade either coin on 8H/12H/1D expecting the 1H edge to carry over — it does
-not (all negative under walk-forward).
+(3) day-trade **ETH on 1H** (−18% to −96% across every family — ETH's edge is 8H); or
+(4) bother with breakout, VWAP, session filters, or BTC→ETH lead-lag — §4 shows none
+add robust value.
 
 ---
 
-## 5. Honest caveats
+## 6. Honest caveats
 
 - **Spot, long-biased sample.** 2020-2026 is net bullish; a trend-pullback (mostly
   long) book is helped by that. The walk-forward spans the 2022 bear and 2025
@@ -248,17 +374,28 @@ not (all negative under walk-forward).
 - **Win rate ≠ profit.** Re-read §2. Any product or signal advertising a 70–90% day-
   trade win rate on BTC/ETH is using the tight-TP dial; its expectancy after costs
   is the number that matters, and it is usually ≤ 0.
+- **Search breadth / multiple testing.** Round 2 scored 36 cells; testing many
+  combinations inflates the chance that *some* look good by luck. That is exactly why
+  every positive is passed through the **drop-the-best-fold and trade-concentration
+  probe** (§4) — and why only BTC 1H regime (broad) and, with caveats, ETH 8H survive
+  it. Treat the "fragile/weak/mirage"-tagged cells as noise, not edges.
+- **The ETH 8H book is genuinely high-variance.** +307% pooled hides 6 negative folds
+  of 15 and a −15% worst fold; it is a fat-tailed trend-harvest whose equity is lumpy.
+  Size it small and judge it over many trades, not one quarter.
 - **Past performance is not predictive.** Walk-forward reduces overfit risk; it does
   not remove regime risk. Paper-trade before risking capital.
 
-## 6. Reproduce
+## 7. Reproduce
 
 ```bash
 pip install numpy pandas
 cd research
-python3 daytrade_rr_tradeoff.py            # the win-rate trap table
-python3 daytrade_winrate.py BTC ETH 1h 8h 12h 1d   # single-split landscape + leaderboard
-python3 daytrade_walkforward.py BTC ETH 1h 8h 12h 1d  # rolling walk-forward verdict
+python3 daytrade_rr_tradeoff.py            # the win-rate trap table (§2)
+python3 daytrade_winrate.py BTC ETH 1h 8h 12h 1d      # single-split landscape (§3)
+python3 daytrade_walkforward.py BTC ETH 1h 8h 12h 1d  # round-1 rolling walk-forward (§3.2)
+python3 daytrade_strategies2.py                       # round-2 missed families (§4)
+python3 daytrade_strategies2_robustness.py            # fold/trade concentration probe (§4)
 ```
 Outputs: `research/results/daytrade_winrate_results.json`,
-`research/results/daytrade_walkforward_results.json`, and `dtwf_*_oos_eq.csv` curves.
+`daytrade_walkforward_results.json`, `daytrade_strategies2_results.json` (incl.
+per-fold nets + selected params), and `dtwf_*` / `dt2_*` OOS equity curves.
