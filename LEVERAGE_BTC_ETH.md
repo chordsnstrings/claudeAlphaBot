@@ -100,3 +100,26 @@ ruin-before-return. **More leverage is strictly worse for this goal.**
   validated signal — a worse signal (most retail systems) gives worse odds.
 - This is BTC+ETH 50/50; single-coin concentration raises variance and ruin further.
 - Past performance is not predictive; leverage ruin is permanent.
+
+## Update — "why couldn't we take out the capital consistently?" (the synthesis)
+We CAN — but only at sane leverage. The withdraw-principal-at-2× plan, on the validated
+momentum engine:
+
+| Leverage | P(return principal) | median months to 2× | P(ruin ever) | P(extract 3 rounds) |
+|---|--:|--:|--:|--:|
+| **2×** | **97%** | 10 | **0%** | **90%** |
+| 3× | 94% | 7 | 5% | 83% |
+| 5× | 74% | 5 | 53% | 40% |
+| 8× | 47% | 2 | 99% | 10% |
+| 20× (grid) | **1%** | — | ~100% | **0%** |
+
+**Consistent extraction is real at 2–3× (94–97% per round, ~0% ruin, ~83–90% over three
+rounds in a row).** It is impossible at 10–20× because the negative drift (liquidation
+bleed) means the account almost never reaches the 2× withdrawal trigger (1% at 20×).
+
+The conflict is fundamental: **extraction *speed* comes from leverage; extraction
+*reliability* comes from surviving to 2×; high leverage destroys survival.** You can have
+consistent-and-slow (2–3×, ~10 months to double, 97% reliable) or explosive-and-fragile
+(20×, 72-day moonshots, ~1% you ever see the principal again) — never both. The +2,200%
+screenshots require the leverage that makes consistent extraction impossible. The fix to
+the whole "return principal then play house money" plan is one variable: 20× → 2–3×.
