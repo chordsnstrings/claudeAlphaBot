@@ -20,6 +20,9 @@ optimistic +2–4%, and is an order of magnitude short of 80%. Its only mild, th
 value is on **volatility** (positioning extremes precede vol, not direction), and even that
 is ~+0.5–0.9% over a price-only vol model — within noise. **This closes the last open
 question: no reachable variable, now including positioning, gives a real directional edge.**
+Re-running the whole ablation at the **1-hour** horizon (§6) gives the same answer: price has
+a small *real* but *untradeable* autocorrelation edge (~53%, ~0.5 bps/bar vs ~5–8 bps cost),
+and funding/OI/flow only degrade it.
 
 ## Data now reachable (no API key, no geo block)
 | Feed | Coverage fetched | Granularity | Notes |
@@ -104,7 +107,48 @@ rate**. Nothing in the direction tests clears that bar; the largest direction li
 does not replicate across coin/horizon. The result is robust to inf-cleaning and to the
 controlled-rows design.
 
+## 6. 1-HOUR horizon — same answer, with an instructive twist
+Intraday is where positioning *should* help most (OI and taker buy/sell flow are natively
+5-min; the premium index — what funding is derived from — updates every bar, not every 8h).
+So the controlled ablation was re-run on 1h bars (~28k controlled rows; funding's full window
+~34k). Code: [`research/funding_oi_1h.py`](research/funding_oi_1h.py). At this n the standard
+error is only **~0.26%**, so even a +0.5% edge would be statistically real — but a 1h edge is
+only tradeable if it also clears the **~5–8 bps/bar** taker round-trip cost, so gross signed
+return per bar is reported alongside accuracy.
+
+**Twist: at 1h, *price itself* has a real edge that daily lacks.** The price baseline scores
+**~53%** (vs ~50% daily) — genuine short-horizon autocorrelation, ~9σ. But it is **not
+tradeable**: gross signed return is only **~0.5 bps/bar** against ~5–8 bps cost.
+
+**Funding/OI/flow add nothing and mildly hurt** — every addition lowers accuracy:
+| Feature set (h=1h, controlled) | BTC OOS acc (d_base) | ETH OOS acc (d_base) | gross bps/bar |
+|---|--:|--:|--:|
+| price baseline | 53.13% (—) | 53.15% (—) | +0.5 to +0.6 |
+| + funding (premium) | 52.79% (−0.34%) | 52.55% (−0.60%) | +0.3 to +0.5 |
+| + OI / flow | 52.57% (−0.56%) | 52.74% (−0.40%) | +0.5 to +0.9 |
+| + funding + OI/flow | 52.14% (−0.99%) | 52.62% (−0.53%) | +0.7 |
+| funding only | 50.22% | 50.48% | ~0 |
+| OI / flow only | 50.54% | 51.32% | ~0 |
+
+Identical pattern at h=4h and h=24h (every `d_base` ≤ 0), and funding on its full 1h window
+(n=34k) also subtracts (BTC 53.26% → 52.80%). **Direct 1h order-flow rules:**
+| Signal (h=1) | BTC hit / gross | ETH hit / gross |
+|---|--:|--:|
+| Follow taker flow (buy when buyers aggressive) | 48.3% / −0.2 bps | 47.9% / +0.8 bps |
+| Fade taker flow (contrarian) | 51.7% / +0.2 bps | 52.0% / −0.8 bps |
+| Fade premium extreme (>1.5σ, contrarian) | 51.6% / **+3.4 bps** | 51.3% / +0.4 bps |
+| OI-confirmed 6h momentum | 47.4% / +0.2 bps | 47.1% / +1.3 bps |
+
+"Follow taker flow" is *worse* than a coin-flip — aggressive market-buying slightly precedes
+mean reversion (liquidity providers absorbing flow), so only the contrarian side has any hit
+rate, and its gross edge is <1 bps/bar. The single best cell (fade premium extreme on BTC,
++3.4 bps/bar) still sits below the cost band and **does not replicate on ETH**. Nothing clears
+both bars (significance *and* cost). **At 1h, the only real predictability is price
+autocorrelation, it is too small to beat costs, and positioning data does not help.**
+
 ## Bottom line
+- **At 1h**, price has a small *real* statistical edge (~53%) but it is **untradeable**
+  (~0.5 bps/bar vs ~5–8 bps cost), and funding/OI/flow only **degrade** it.
 - **Funding / OI / long-short do not lift next-day BTC/ETH direction** beyond ~51% — no
   statistically significant edge over the price baseline or the base rate.
 - The previously-hoped *+2–4% → ~55%* **did not materialize**; measured direction lift is ≈0.

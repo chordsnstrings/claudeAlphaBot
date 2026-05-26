@@ -205,16 +205,138 @@ def fetch_metrics(sym: str, force: bool = False) -> str:
     return out
 
 
+# ------------------------------------------------ intraday: premium index ---
+def fetch_premium_index(sym: str, interval: str = "1h", force: bool = False) -> str:
+    """Monthly premiumIndexKlines -> per-bar premium (close). The premium index is the
+    *continuous* funding-pressure signal funding is computed from; unlike the 8h realised
+    funding it updates every bar, so it is the right intraday positioning feature."""
+    pair = PAIRS[sym]
+    out = os.path.join(FUT_DIR, f"{sym}_premium_{interval}.csv")
+    if os.path.exists(out) and not force:
+        print(f"[fut] {sym} premium {interval} cached -> {out}", file=sys.stderr)
+        return out
+    os.makedirs(FUT_DIR, exist_ok=True)
+    rows: dict[int, float] = {}
+    y, m = FUNDING_START
+    now = datetime.now(timezone.utc)
+    n_files = 0
+    while (y, m) <= (now.year, now.month):
+        url = (f"{BASE}/monthly/premiumIndexKlines/{pair}/{interval}/"
+               f"{pair}-{interval}-{y:04d}-{m:02d}.zip")
+        data = _download(url)
+        if data is not None:
+            n_files += 1
+            for row in _csv_rows(data):
+                if len(row) < 5:
+                    continue
+                try:
+                    ts = int(row[0]); prem = float(row[4])  # close of the premium index
+                except ValueError:
+                    continue  # header
+                rows[ts] = prem
+        m += 1
+        if m > 12:
+            m, y = 1, y + 1
+    with open(out, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["date", "premium"])
+        for ts in sorted(rows):
+            d = datetime.fromtimestamp(ts / 1000, tz=timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+            w.writerow([d, f"{rows[ts]:.8f}"])
+    ks = sorted(rows)
+    print(f"[fut] {sym} premium {interval}: {len(ks)} bars ({n_files} files) -> {out}",
+          file=sys.stderr)
+    return out
+
+
+# ------------------------------------------------ intraday: hourly metrics ---
+def _agg_metrics_day_hourly(pair: str, d: date) -> tuple[str, dict | None]:
+    """Download one daily metrics file, reduce to one row PER HOUR (end-of-hour snapshot
+    for OI/LS, hourly mean for taker flow). Returns {hour_iso: agg}."""
+    url = f"{BASE}/daily/metrics/{pair}/{pair}-metrics-{d.isoformat()}.zip"
+    data = _download(url)
+    if data is None:
+        return d.isoformat(), None
+    hours: dict[str, dict] = {}
+    for row in _csv_rows(data):
+        if len(row) < 8 or row[0] == "create_time":
+            continue
+        try:
+            oi = float(row[2]); oi_val = float(row[3])
+            ls_top = float(row[5]); ls_global = float(row[6]); taker_ls = float(row[7])
+        except ValueError:
+            continue
+        t = row[0]
+        hk = t[:13] + ":00:00"  # bucket to the hour
+        h = hours.setdefault(hk, {"last_t": "", "oi": None, "oi_value": None,
+                                  "ls_global": None, "ls_top": None,
+                                  "taker_sum": 0.0, "n": 0})
+        h["taker_sum"] += taker_ls
+        h["n"] += 1
+        if t >= h["last_t"]:
+            h["last_t"] = t
+            h["oi"] = oi; h["oi_value"] = oi_val
+            h["ls_global"] = ls_global; h["ls_top"] = ls_top
+    return d.isoformat(), hours
+
+
+def fetch_metrics_hourly(sym: str, force: bool = False) -> str:
+    pair = PAIRS[sym]
+    out = os.path.join(FUT_DIR, f"{sym}_metrics_1h.csv")
+    if os.path.exists(out) and not force:
+        print(f"[fut] {sym} metrics 1h cached -> {out}", file=sys.stderr)
+        return out
+    os.makedirs(FUT_DIR, exist_ok=True)
+    today = datetime.now(timezone.utc).date()
+    days = []
+    d = METRICS_START
+    while d <= today:
+        days.append(d); d += timedelta(days=1)
+    rows: dict[str, dict] = {}
+    done = 0
+    with ThreadPoolExecutor(max_workers=WORKERS) as ex:
+        futs = {ex.submit(_agg_metrics_day_hourly, pair, dd): dd for dd in days}
+        for fut in as_completed(futs):
+            _ds, hours = fut.result()
+            done += 1
+            if hours:
+                for hk, h in hours.items():
+                    rows[hk] = {"oi": h["oi"], "oi_value": h["oi_value"],
+                                "ls_global": h["ls_global"], "ls_top": h["ls_top"],
+                                "taker_ls": h["taker_sum"] / h["n"]}
+            if done % 250 == 0:
+                print(f"[fut] {sym} metrics-1h {done}/{len(days)} ...", file=sys.stderr)
+    with open(out, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["date", "oi", "oi_value", "ls_global", "ls_top", "taker_ls"])
+        for hk in sorted(rows):
+            r = rows[hk]
+            w.writerow([hk, f"{r['oi']:.4f}", f"{r['oi_value']:.4f}",
+                        f"{r['ls_global']:.6f}", f"{r['ls_top']:.6f}", f"{r['taker_ls']:.6f}"])
+    ks = sorted(rows)
+    print(f"[fut] {sym} metrics 1h: {len(ks)} hourly bars {ks[0]}->{ks[-1]} -> {out}",
+          file=sys.stderr)
+    return out
+
+
 def main(argv):
     syms = [a.upper() for a in argv if a.upper() in PAIRS] or ["BTC", "ETH"]
-    mode = ("funding" if "--funding" in argv else
-            "metrics" if "--metrics" in argv else "all")
     force = "--force" in argv
+    funding = "--funding" in argv
+    metrics = "--metrics" in argv
+    premium = "--premium" in argv
+    metrics_1h = "--metrics-1h" in argv
+    intraday = "--intraday" in argv     # premium + hourly metrics
+    none_picked = not any((funding, metrics, premium, metrics_1h, intraday))
     for sym in syms:
-        if mode in ("funding", "all"):
+        if funding or none_picked:
             fetch_funding(sym, force=force)
-        if mode in ("metrics", "all"):
+        if metrics or none_picked:
             fetch_metrics(sym, force=force)
+        if premium or intraday:
+            fetch_premium_index(sym, force=force)
+        if metrics_1h or intraday:
+            fetch_metrics_hourly(sym, force=force)
     return 0
 
 
