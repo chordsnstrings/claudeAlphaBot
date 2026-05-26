@@ -53,7 +53,7 @@ These are the genuinely informative variables not in price data. None reach 80% 
 direction; realistic lift is a few percent, and most are **unavailable in this environment**.
 | Variable | Predicts | Realistic direction lift | Available here? |
 |---|---|--:|:--:|
-| Funding rate / open interest / long-short ratio (positioning) | contrarian direction | +2–4% (→ ~55%) | ❌ blocked |
+| Funding rate / open interest / long-short ratio (positioning) | contrarian direction | **measured ≈0%** (now tested — see [FUNDING_OI_VERDICT.md](FUNDING_OI_VERDICT.md)) | ✅ now reachable |
 | Options 25Δ skew / implied vol | volatility, mild direction | helps *vol* target | ❌ Deribit blocked |
 | On-chain (exchange flows, stablecoin supply, MVRV) | slow direction/regime | +2–4% | ❌ paid API |
 | Macro (DXY, real rates, SPX/VIX, liquidity) | risk regime | +2–4% | ❌ |
@@ -97,7 +97,12 @@ also tested (walk-forward OOS, next-day direction, 2022→2026):
 
 None move direction above ~51%. **The reachable variable space is now exhausted** — no
 price-derived, cross-asset, breadth, dominance, or intraday-microstructure variable lifts
-next-day BTC/ETH direction prediction beyond noise. The only untested variables are the
-blocked external feeds (funding/OI/options-skew/on-chain/macro), which the evidence and
-literature put at a ~55–58% ceiling — still far from 80%. **Conclusion stands: no variable,
-reachable or otherwise, honestly reaches 80% on balanced direction.**
+next-day BTC/ETH direction prediction beyond noise.
+
+**Update — the last external lever is now tested.** `data.binance.vision` became reachable,
+so funding rate / open interest / long-short positioning (the one informative feed previously
+blocked) was fetched and tested with identical rigor. It adds **≈0% to direction** (~50–51%,
+within 1σ of baseline) and at most a small, non-significant bump to *volatility* — see
+[FUNDING_OI_VERDICT.md](FUNDING_OI_VERDICT.md). The hoped +2–4% did not materialize.
+**Conclusion stands and is now fully tested: no variable, reachable or otherwise, honestly
+reaches 80% on balanced direction.**
