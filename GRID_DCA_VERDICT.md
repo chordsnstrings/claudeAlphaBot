@@ -100,3 +100,24 @@ intuition is backwards: more leverage = more liquidation bleed = negative drift 
 account shrinks instead of doubling. Capital comes out **fastest and most reliably at
 ~5×** (52% chance, ~400 days, survives). The withdrawal rule cannot save 20× because 20×
 never gets to 2×.
+
+## Update — 20% grid / 5% tranche / +40% TP (refined spec)
+Tested the refined parameters (add a 5% tranche every −20%, take profit at +40%):
+
+| exit meaning | 20× | 10× | 5× |
+|---|--:|--:|--:|
+| +40% on margin (+2% price) | **0.049× — RUIN 2025-02** | 1.45× | 1.94× |
+| +40% price move | 3.49×* | 4.03×* | 2.15× |
+
+\* the 20×/10× "+40% price" survivors are **regime luck** — they caught the 2020 & 2023
+mega-rallies off averaged-down lows (win rate only 15–27%); from a 2023 start they never
+even double (~1.2×). Not robust.
+
+**The decisive structural point:** at 20× you are liquidated at **−5% below the average
+entry**, but the grid only adds at **−20%** — so **liquidation always fires before the
+first DCA add.** You never actually average down; the "DCA into a better position" is
+**dead on arrival at high leverage.** Widening the grid or raising the TP cannot help when
+the position is closed at −5% first. The refined spec still ruins at 20× (Feb 2025 instead
+of May 2022 — a later death, not a cure). The adds only *fire* — and the strategy only
+survives and returns principal — at **~5×**, where the liquidation distance (−20%) finally
+matches the grid step. Leverage is the only variable that changes the verdict.

@@ -38,7 +38,8 @@ def load_1h():
 
 
 def simulate(ohlc, lev=LEV, margin_frac=MARGIN_FRAC, dca_step=DCA_STEP,
-             tp_margin=TP_ON_MARGIN, max_adds=MAX_ADDS, start_equity=1.0):
+             tp_margin=TP_ON_MARGIN, max_adds=MAX_ADDS, start_equity=1.0,
+             tp_price=None):
     hi = ohlc["high"].values; lo = ohlc["low"].values; cl = ohlc["close"].values
     t_idx = ohlc.index
     E = start_equity
@@ -49,7 +50,8 @@ def simulate(ohlc, lev=LEV, margin_frac=MARGIN_FRAC, dca_step=DCA_STEP,
     wins = losses = liqs = 0
     eq_curve = np.empty(len(cl)); eq_curve[:] = np.nan
     ruin_at = None
-    tp_price_mult = 1.0 + tp_margin / lev
+    # TP as an explicit price move (tp_price) OR as %-on-margin (tp_margin/lev)
+    tp_price_mult = (1.0 + tp_price) if tp_price is not None else (1.0 + tp_margin / lev)
     liq_mult = 1.0 - 1.0 / lev
     for i in range(len(cl)):
         if in_pos:
