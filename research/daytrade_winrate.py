@@ -100,7 +100,8 @@ def rsi(close: np.ndarray, n: int) -> np.ndarray:
     for i in range(n, len(close)):
         ru[i] = (1 - a) * ru[i - 1] + a * up[i]
         rd[i] = (1 - a) * rd[i - 1] + a * dn[i]
-    rs = np.where(rd > 1e-12, ru / rd, np.inf)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        rs = np.where(rd > 1e-12, ru / rd, np.inf)
     out = 100.0 - 100.0 / (1.0 + rs)
     out[:n] = 50.0
     return out
