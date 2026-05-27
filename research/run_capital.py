@@ -47,8 +47,10 @@ def main(argv):
         if argv[i] == "--since": since = argv[i + 1]; i += 2
         elif argv[i] == "--capital": capital = float(argv[i + 1]); i += 2
         elif argv[i] == "--alloc":
-            c, b, e = (float(x) for x in argv[i + 1].split(","))
-            alloc = {"CORE": c, "BTC1H": b, "ETH8H": e}; i += 2
+            vals = [float(x) for x in argv[i + 1].split(",")]
+            keys = ["CORE", "BTC1H", "ETH8H", "SPINE"]
+            alloc = {k: (vals[j] if j < len(vals) else 0.0) for j, k in enumerate(keys)}
+            i += 2
         else: i += 1
 
     df, _ = build_panel()
@@ -61,16 +63,18 @@ def main(argv):
 
     print(f"UNIFIED BOT — ${capital:,.0f} from {start_d} to {end_d} "
           f"({len(w)} days, ~{months:.1f} months)")
-    print(f"allocation CORE/BTC1H/ETH8H = {alloc['CORE']:.0%}/{alloc['BTC1H']:.0%}/{alloc['ETH8H']:.0%}\n")
+    print("allocation CORE/BTC1H/ETH8H/SPINE = "
+          + "/".join(f"{alloc.get(k, 0.0):.0%}" for k in ("CORE", "BTC1H", "ETH8H", "SPINE")) + "\n")
 
     # ---- per-sleeve standalone (1x) over the window ----
     print("Per-sleeve over the window (standalone, 1×):")
     print(f"  {'sleeve':<7} {'return':>9} {'maxDD':>8} {'final $ of its slice':>22}")
     for s in df.columns:
-        eq_s = lever_equity(w[s], capital * alloc[s], 1.0)
-        st = stats(eq_s, capital * alloc[s])
+        st = stats(lever_equity(w[s], capital, 1.0), capital)   # standalone 1× return
+        aw_ = alloc.get(s, 0.0)
+        slice0 = capital * aw_
         print(f"  {s:<7} {st['ret']:>+9.1%} {st['max_dd']:>8.1%} "
-              f"  ${capital*alloc[s]:>8,.0f} -> ${st['final']:>9,.0f}")
+              f"  ${slice0:>8,.0f} -> ${slice0 * (1 + st['ret']):>9,.0f}")
 
     # ---- combined book at m = 1, 2, 3 ----
     print("\nCombined book — $ path by leverage (continuous compounding, no withdrawal):")

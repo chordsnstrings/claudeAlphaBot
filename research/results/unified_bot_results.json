@@ -4,11 +4,21 @@
     "2026-05-24"
   ],
   "n_days": 1821,
-  "fixed_weights": {
-    "CORE": 0.7,
-    "BTC1H": 0.15,
-    "ETH8H": 0.15
+  "profiles": {
+    "growth": {
+      "CORE": 0.7,
+      "BTC1H": 0.15,
+      "ETH8H": 0.15,
+      "SPINE": 0.0
+    },
+    "all_weather": {
+      "CORE": 0.4,
+      "BTC1H": 0.15,
+      "ETH8H": 0.15,
+      "SPINE": 0.3
+    }
   },
+  "default_profile": "all_weather",
   "sleeve_meta": {
     "BTC1H": {
       "oos_net": 0.6759046841232261,
@@ -23,6 +33,10 @@
       "oos_n_trades": 151,
       "trade_days": 149,
       "fold_win_rate": 0.6
+    },
+    "SPINE": {
+      "oos_net": 1.8909460475755608,
+      "trade_days": 1962
     }
   },
   "sleeve_metrics": {
@@ -55,23 +69,42 @@
       "calmar": 0.8825397451603444,
       "total_return": 3.0675378715702166,
       "n_days": 1821
+    },
+    "SPINE": {
+      "cagr": 0.06306218440394806,
+      "ann_vol": 0.4070846646686065,
+      "sharpe": 0.35374387522503814,
+      "sortino": 0.4844741236798595,
+      "max_dd": -0.4392882170975657,
+      "calmar": 0.14355537423837156,
+      "total_return": 0.3567576964927388,
+      "n_days": 1821
     }
   },
   "correlation": {
     "CORE": {
       "CORE": 1.0,
       "BTC1H": 0.0388,
-      "ETH8H": 0.0822
+      "ETH8H": 0.0822,
+      "SPINE": 0.137
     },
     "BTC1H": {
       "CORE": 0.0388,
       "BTC1H": 1.0,
-      "ETH8H": -0.0491
+      "ETH8H": -0.0491,
+      "SPINE": 0.0303
     },
     "ETH8H": {
       "CORE": 0.0822,
       "BTC1H": -0.0491,
-      "ETH8H": 1.0
+      "ETH8H": 1.0,
+      "SPINE": 0.0919
+    },
+    "SPINE": {
+      "CORE": 0.137,
+      "BTC1H": 0.0303,
+      "ETH8H": 0.0919,
+      "SPINE": 1.0
     }
   },
   "metrics": {
@@ -85,7 +118,7 @@
       "total_return": 11.277814257597672,
       "n_days": 1821
     },
-    "combined_fixed": {
+    "growth": {
       "cagr": 0.6070731906760409,
       "ann_vol": 0.5349486550021385,
       "sharpe": 1.1543742499665812,
@@ -95,45 +128,29 @@
       "total_return": 9.664005394248672,
       "n_days": 1821
     },
-    "combined_alloc_wf": {
-      "cagr": 0.5827382890394159,
-      "ann_vol": 0.4722678734109837,
-      "sharpe": 1.2083289313012717,
-      "sortino": 1.6446563362424418,
-      "max_dd": -0.38256938368134286,
-      "calmar": 1.5232224895570883,
-      "total_return": 5.283227163473009,
+    "all_weather": {
+      "cagr": 0.437962904084352,
+      "ann_vol": 0.3504448607266303,
+      "sharpe": 1.212298709505498,
+      "sortino": 1.549551763223238,
+      "max_dd": -0.3160325369602306,
+      "calmar": 1.3858158666095355,
+      "total_return": 5.123640272723443,
+      "n_days": 1821
+    },
+    "alloc_wf": {
+      "cagr": 0.38501546984359414,
+      "ann_vol": 0.3216087233040663,
+      "sharpe": 1.1739632278140153,
+      "sortino": 1.510967760894948,
+      "max_dd": -0.29474839265404185,
+      "calmar": 1.3062512958145371,
+      "total_return": 2.6830366786068436,
       "n_days": 1461
     }
   },
   "annual": {
-    "CORE only m=2.0": {
-      "m": 2.0,
-      "banked_50": 2,
-      "full_years": 4,
-      "hit_rate": 0.5,
-      "avg_year": 0.0541,
-      "worst_year": -0.4252,
-      "per_year": [
-        [
-          2022,
-          -0.4252
-        ],
-        [
-          2023,
-          0.5069
-        ],
-        [
-          2024,
-          -0.4088
-        ],
-        [
-          2025,
-          0.5436
-        ]
-      ]
-    },
-    "COMBINED fixed m=2.0": {
+    "GROWTH m=2.0": {
       "m": 2.0,
       "banked_50": 3,
       "full_years": 4,
@@ -159,59 +176,59 @@
         ]
       ]
     },
-    "COMBINED alloc-WF m=2.0": {
+    "ALL-WEATHER m=2.0": {
       "m": 2.0,
       "banked_50": 3,
       "full_years": 4,
       "hit_rate": 0.75,
-      "avg_year": 0.3158,
-      "worst_year": -0.4051,
+      "avg_year": 0.4127,
+      "worst_year": -0.0833,
       "per_year": [
         [
           2022,
-          -0.4051
+          -0.0833
         ],
         [
           2023,
-          0.5666
+          0.6395
         ],
         [
           2024,
-          0.5928
+          0.5623
         ],
         [
           2025,
-          0.5088
+          0.5322
         ]
       ]
     },
-    "CORE only m=3.0": {
-      "m": 3.0,
+    "alloc-WF m=2.0": {
+      "m": 2.0,
       "banked_50": 3,
       "full_years": 4,
       "hit_rate": 0.75,
-      "avg_year": 0.3153,
-      "worst_year": -0.4167,
+      "avg_year": 0.4136,
+      "worst_year": -0.0665,
       "per_year": [
         [
           2022,
-          0.5423
+          -0.0665
         ],
         [
           2023,
-          0.5242
+          0.5467
         ],
         [
           2024,
-          -0.4167
+          0.5463
         ],
         [
           2025,
-          0.6112
+          0.6278
         ]
       ]
     },
-    "COMBINED fixed m=3.0": {
+    "GROWTH m=3.0": {
       "m": 3.0,
       "banked_50": 2,
       "full_years": 4,
@@ -237,53 +254,83 @@
         ]
       ]
     },
-    "COMBINED alloc-WF m=3.0": {
+    "ALL-WEATHER m=3.0": {
       "m": 3.0,
       "banked_50": 3,
       "full_years": 4,
       "hit_rate": 0.75,
-      "avg_year": 0.4006,
-      "worst_year": -0.427,
+      "avg_year": 0.4293,
+      "worst_year": -0.1877,
       "per_year": [
         [
           2022,
-          -0.427
+          -0.1877
         ],
         [
           2023,
-          0.6417
+          0.7651
         ],
         [
           2024,
-          0.8735
+          0.6137
         ],
         [
           2025,
-          0.5141
+          0.5259
+        ]
+      ]
+    },
+    "alloc-WF m=3.0": {
+      "m": 3.0,
+      "banked_50": 4,
+      "full_years": 4,
+      "hit_rate": 1.0,
+      "avg_year": 0.5617,
+      "worst_year": 0.5198,
+      "per_year": [
+        [
+          2022,
+          0.5323
+        ],
+        [
+          2023,
+          0.5198
+        ],
+        [
+          2024,
+          0.6015
+        ],
+        [
+          2025,
+          0.5934
         ]
       ]
     }
   },
   "alloc_wf_choices": {
     "2022": {
-      "CORE": 0.6,
+      "CORE": 0.4,
       "BTC1H": 0.2,
-      "ETH8H": 0.2
+      "ETH8H": 0.2,
+      "SPINE": 0.2
     },
     "2023": {
-      "CORE": 0.6,
-      "BTC1H": 0.2,
-      "ETH8H": 0.2
+      "CORE": 0.25,
+      "BTC1H": 0.15,
+      "ETH8H": 0.15,
+      "SPINE": 0.45
     },
     "2024": {
-      "CORE": 0.6,
+      "CORE": 0.4,
       "BTC1H": 0.2,
-      "ETH8H": 0.2
+      "ETH8H": 0.2,
+      "SPINE": 0.2
     },
     "2025": {
-      "CORE": 0.6,
+      "CORE": 0.4,
       "BTC1H": 0.2,
-      "ETH8H": 0.2
+      "ETH8H": 0.2,
+      "SPINE": 0.2
     }
   }
 }
