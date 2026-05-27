@@ -79,6 +79,16 @@ ALLOC_GRID = [
     {"CORE": 0.40, "BTC1H": 0.20, "ETH8H": 0.20, "SPINE": 0.20},
 ]
 
+# ---- wired "HARVEST" deployment policy (best output of harvest_2x.py) ----
+# Run the smooth ALL-WEATHER(30% spine) book at 3x on a $300k base that RESETS each
+# Jan (no compounding). Take 100% profit out the moment equity 2x's, then go flat for
+# the rest of that year; sweep any remaining profit at year end; -40% YTD stop.
+HARVEST_PROFILE = "all_weather"      # 30%-spine book (smooth enough to lever 3x)
+HARVEST_M = 3.0
+HARVEST_BASE = 300_000.0
+DOUBLE_AT = 2.0                      # +100% intra-year profit-lock
+ANNUAL_STOP = 0.40
+
 
 # --------------------------------------------------------------------- sleeve streams
 def core_daily_returns() -> pd.Series:
@@ -204,7 +214,81 @@ def annual_report(r: pd.Series, m_lev: float):
             "worst_year": e["worst_year"], "per_year": e["per_year"]}
 
 
+def harvest_run(r: pd.Series, base=HARVEST_BASE, m=HARVEST_M, double_at=DOUBLE_AT,
+                stop=ANNUAL_STOP) -> pd.DataFrame:
+    """Whole-run sim of the harvest policy. Per calendar year: start at base; compound
+    m*daily; the moment equity >= double_at*base, withdraw the profit and go FLAT for
+    the rest of the year; -stop YTD also goes flat; sweep remaining profit at year end.
+    Causal & path-dependent. Returns a daily frame (equity reset-aware, cash events,
+    cumulative net cash)."""
+    rows, cum = [], 0.0
+    for y in sorted(set(r.index.year)):
+        ry = r[r.index.year == y]
+        last = ry.index[-1]
+        eq, locked = base, False
+        for d, x in ry.items():
+            ev_cash, ev = 0.0, ""
+            if not locked:
+                eq *= (1.0 + m * x)
+                if eq <= 1e-9:
+                    eq, locked, ev = 0.0, True, "LIQUIDATION"
+                elif eq >= double_at * base:
+                    ev_cash = eq - base; cum += ev_cash; eq = base; locked = True; ev = "2X-HARVEST"
+                elif eq <= (1.0 - stop) * base:
+                    locked, ev = True, "STOP"
+            if d == last:                                   # year-end settle / reset
+                settle = eq - base
+                if abs(settle) > 1e-9:
+                    cum += settle; ev_cash += settle
+                    ev = (ev + "+" if ev else "") + ("YE-SWEEP" if settle > 0 else "YE-LOSS")
+                    eq = base
+            rows.append((d, eq, "FLAT" if locked else "ACTIVE", ev_cash, ev, cum))
+    return pd.DataFrame(rows, columns=["date", "equity", "mode", "cash", "event",
+                                       "cum_cash"]).set_index("date")
+
+
+def harvest_report(df: pd.DataFrame):
+    r = weighted(df, PROFILES[HARVEST_PROFILE])
+    daily = harvest_run(r)
+    book_m = (1.0 + HARVEST_M * r)                          # leveraged book daily factor
+    w = PROFILES[HARVEST_PROFILE]
+    print(f"HARVEST POLICY — {HARVEST_PROFILE} book "
+          f"(CORE {w['CORE']:.0%}/BTC1H {w['BTC1H']:.0%}/ETH8H {w['ETH8H']:.0%}/SPINE {w['SPINE']:.0%}) "
+          f"at {HARVEST_M:g}x on ${HARVEST_BASE:,.0f}")
+    print(f"  rule: reset to base each Jan; take 100% profit out when equity 2x's then go "
+          f"flat; sweep at year end; -{ANNUAL_STOP:.0%} YTD stop.\n")
+    print(f"  {'month':<8} {'mode':<6} {'book m=3':>9} {'equity$':>10} {'cash out$':>11} {'cum cash$':>12}  event")
+    for y in sorted(set(df.index.year)):
+        ry = r[r.index.year == y]
+        dy = daily[daily.index.year == y]
+        for mdate in pd.date_range(ry.index[0], ry.index[-1], freq="ME").union(
+                pd.DatetimeIndex([dy.index[-1]])):
+            mdays = dy[(dy.index.year == mdate.year) & (dy.index.month == mdate.month)]
+            if mdays.empty:
+                continue
+            bret = book_m[(book_m.index.year == mdate.year) & (book_m.index.month == mdate.month)].prod() - 1
+            row = mdays.iloc[-1]
+            cash_m = mdays["cash"].sum()
+            evs = "/".join(sorted({e for e in mdays["event"] if e}))
+            print(f"  {mdate.strftime('%Y-%m'):<8} {row['mode']:<6} {bret:>+9.0%} "
+                  f"${row['equity']:>9,.0f} {('$'+format(cash_m,',.0f')) if abs(cash_m)>1 else '—':>11} "
+                  f"${row['cum_cash']:>11,.0f}  {evs}")
+        # annual line
+        yr_cash = dy["cash"].sum()
+        print(f"  -> {y} total: cash ${yr_cash:>+12,.0f}   cumulative ${dy['cum_cash'].iloc[-1]:>12,.0f}\n")
+    total = daily["cum_cash"].iloc[-1]
+    n2x = int((daily["event"].str.contains("2X")).sum())
+    print(f"WHOLE RUN {df.index[0].date()} -> {df.index[-1].date()}: net cash extracted "
+          f"${total:,.0f} on ${HARVEST_BASE:,.0f} base ({total/HARVEST_BASE:.1f}x), {n2x} doublings. "
+          f"Base intact (reset each year). 2021/2026 are partial years.")
+    print("Note: once locked (FLAT), the 'book m=3' move is NOT earned (you sit in cash, "
+          "having banked the 2x) — that is the cost of locking: it sacrifices post-harvest "
+          "upside (e.g. 2024-11) to protect the harvested profit. Backtest, not predictive.")
+
+
 def main(argv):
+    if "--harvest" in argv:
+        harvest_report(build_panel()[0]); return
     os.makedirs(RESULTS, exist_ok=True)
     print("UNIFIED ORCHESTRATOR — CORE (daily momentum) + BTC1H + ETH8H intraday + SPINE "
           "(all-weather L/S trend)\n(intraday & spine params chosen OOS per fold; daily "
