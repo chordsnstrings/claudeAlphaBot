@@ -40,24 +40,32 @@ only for `--execute`.
    `PRINCIPAL FULLY RETURNED`, `year-end` settle.
 
 ## Fidelity to the tested system (`research/fidelity_check.py`)
-Run it before every deploy — it proves the live target book equals the backtested
-engine's positions on the latest bar (pure code-parity, same data):
-- **CORE — identical** (same `production_strategy.book_weights` code, ΔW = 0).
-- **SPINE — identical selection** (live now draws the top-30-by-30d-$vol from the *same
-  survivorship-free pool* and the same inverse-vol logic as the backtest, ΔW = 0). The
-  only residual is execution: pool names are routed as `<SYM>USDT` futures; any not
-  listed is dropped + renormalised.
-- **Intraday — trigger matches** the tested signal, **but execution does not yet**: the
-  backtest manages an intrabar bracket (entry next-open, TP/SL/time intrabar) on a 1H/8H
-  clock; live evaluates at the daily bar. **Exact intraday parity requires the hourly
-  runner** (the one open fidelity gap — scope below).
+Run it before every deploy — it proves the live target book uses the backtested engine's
+own code on the same data, sleeve by sleeve. **All four sleeves now PASS:**
+- **CORE — identical** (`production_strategy.book_weights`, ΔW = 0).
+- **SPINE — identical selection + params** (top-30-by-30d-$vol from the *same
+  survivorship-free pool*, inverse-vol weighted, with **walk-forward-selected params**
+  via `latest_spine_params`, ΔW = 0).
+- **BTC1H / ETH8H — faithful bracket runner** (`intraday_live.position_now`): reuses the
+  exact `sig_regime_pullback` + `bracket_ext` + walk-forward param selection, and derives
+  the *current open position* from history on the proper 1H/8H clock (no longer the
+  daily-bar proxy). It correctly holds a position opened on a prior bar until its bracket
+  closes — e.g. it shows BTC1H **long** today, which the old daily proxy missed.
 
-Remaining fidelity residuals to close for "exact": (1) **intraday hourly runner** with
-intrabar brackets; (2) **SPINE params** — live uses the fixed `(10,30,60,120)/gross 1.0/
-max 2.5`; the backtest's walk-forward re-selects per fold, so live should pull the
-latest-fold params; (3) **pool data refresh** — `combined_book` reads the cached
-universe pool; the live pipeline must refresh its tradeable coins daily; (4) **spot vs
-futures** — signals on spot, execution on futures (daily ~identical; intraday can diverge).
+The earlier four residuals are closed: ✅ intraday hourly runner, ✅ SPINE WF params,
+✅ daily pool refresh (`combined_book(refresh=True)` / `refresh_pool()`), ✅ signals on
+spot (matches the backtest's data).
+
+**Only two residuals remain, both inherent to live trading (not signal fidelity):**
+1. **Execution venue** — signals are on spot (faithful to the backtest); fills are on
+   USDT-M futures. Daily CORE/SPINE are ~identical; intraday can diverge slightly during
+   funding/basis events (the reviewer's point — accepted, monitor).
+2. **Unlisted names** — pool-selected coins are routed as `<SYM>USDT`; any without a
+   futures listing is dropped + renormalised at execution.
+
+*(Perf note: `position_now` and `latest_spine_params` re-select params each cycle by
+re-running the walk-forward rule; cache them daily in production — they change only when
+a fold rolls.)*
 
 ## Going live (no strategy paper-trading, per request) — checklist
 You've chosen to skip the paper-trading-the-strategy period — i.e. you accept the

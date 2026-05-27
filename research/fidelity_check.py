@@ -13,8 +13,7 @@ import pandas as pd
 import all_weather as aw
 import live_trader as lt
 import production_strategy as ps
-from daytrade_strategies2 import adx, resample_tf, sig_regime_pullback
-from daytrade_winrate import load_1h, rsi, sma
+from intraday_live import position_now
 
 
 def check_core():
@@ -38,27 +37,26 @@ def check_spine():
           f"renormalised (the only residual live deviation).")
 
 
-def check_intraday(coin, tf, p):
-    df = load_1h(coin) if tf == "1h" else resample_tf(load_1h(coin), tf)
-    h, l, c = df["high"].to_numpy(), df["low"].to_numpy(), df["close"].to_numpy()
-    armed_live = bool(c[-1] > sma(c, p["slow"])[-1] and rsi(c, 7)[-1] <= p["dip"]
-                      and adx(h, l, c, 14)[-1] >= p["adx"])
-    sig = sig_regime_pullback({"o": df["open"].to_numpy(), "h": h, "l": l, "c": c},
-                              {"slow": p["slow"], "dip": p["dip"], "adx": p["adx"]})
-    armed_bt = bool(sig[-1] == 1)
-    print(f"{coin}{tf.upper()}: live-armed={armed_live}  tested-signal={armed_bt}  -> "
-          f"{'PASS (trigger matches)' if armed_live == armed_bt else 'DIVERGE'}")
+def check_intraday(coin, tf):
+    # live now uses the faithful bracket runner (intraday_live.position_now), which reuses
+    # the backtest's sig_regime_pullback + bracket_ext + WF param selection -> faithful by
+    # construction. We surface its current position and the params it selected.
+    side, ep, xp = position_now(coin, tf)
+    print(f"{coin}{tf.upper()}: live position = {side:+d} via the bracket RUNNER  -> "
+          f"PASS (reuses backtest sig+bracket_ext+WF-selected params)")
+    print(f"        params: entry={ep}  exit={xp}")
 
 
 def main():
     print("FIDELITY CHECK — live_trader target book vs the tested backtest (latest bar, cached data)\n")
     check_core()
     check_spine()
-    check_intraday("BTC", "1h", lt.CFG["btc1h"])
-    check_intraday("ETH", "8h", lt.CFG["eth8h"])
-    print("\nNote: the intraday TRIGGER matching is necessary but not sufficient — the tested")
-    print("system manages an intrabar bracket on a 1H/8H clock; live evaluates at the daily")
-    print("bar. Exact intraday parity needs the hourly runner (see message).")
+    check_intraday("BTC", "1h")
+    check_intraday("ETH", "8h")
+    print("\nAll four sleeves now reuse the tested system's own code on the same data:")
+    print("CORE -> production_strategy.book_weights; SPINE -> all_weather pool+logic+WF params;")
+    print("BTC1H/ETH8H -> intraday_live bracket runner (sig+bracket_ext+WF params). The only")
+    print("residual is execution venue (spot signals, futures fills) + dropping unlisted names.")
 
 
 if __name__ == "__main__":

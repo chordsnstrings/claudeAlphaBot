@@ -46,8 +46,7 @@ import pandas as pd
 import all_weather as aw
 import binance_vision as bv
 import production_strategy as ps
-from daytrade_strategies2 import adx, resample_tf
-from daytrade_winrate import rsi, sma
+from intraday_live import position_now
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 STATE_PATH = os.path.join(HERE, "live_trader_state.json")
@@ -98,20 +97,6 @@ def fetch_market(days: int):
     return px.loc[:last_common], vol.loc[:last_common]
 
 
-def _intraday(coin: str, tf: str, days: int = 150):
-    """Fetch recent 1h klines IN MEMORY (no file write — does not touch cached data) and
-    resample to `tf`; enough history for SMA50/ADX14 on 1h and 8h."""
-    pair = bv.PAIRS[coin]
-    start_ms = int((datetime.now(timezone.utc).timestamp() - days * 86400) * 1000)
-    kl = bv.fetch_klines(pair, "1h", start_ms)
-    idx = pd.to_datetime([int(k[0]) for k in kl], unit="ms")
-    df1 = pd.DataFrame({"open": [float(k[1]) for k in kl], "high": [float(k[2]) for k in kl],
-                        "low": [float(k[3]) for k in kl], "close": [float(k[4]) for k in kl],
-                        "volume": [float(k[5]) for k in kl]}, index=idx)
-    df1 = df1[~df1.index.duplicated(keep="last")].sort_index()
-    return df1 if tf == "1h" else resample_tf(df1, tf)
-
-
 # ----------------------------------------------------------------- signal layer
 def core_weights(px: pd.DataFrame) -> dict:
     """CORE daily book per-coin weight (fraction of CORE capital; gross <= 2x)."""
@@ -120,9 +105,12 @@ def core_weights(px: pd.DataFrame) -> dict:
     return {c: float(book[c].iloc[-1]) for c in CFG["core_coins"]}
 
 
-def spine_weights(px: pd.DataFrame, vol: pd.DataFrame) -> dict:
-    """SPINE long/short trend per-coin weight on the live universe (last bar)."""
-    sig = aw.ts_signal(px, CFG["spine_lbs"])
+def spine_weights(px: pd.DataFrame, vol: pd.DataFrame, lbs=None, gross=None, max_gross=None) -> dict:
+    """SPINE long/short trend per-coin weight on the universe pool (last bar). Params
+    default to the walk-forward-selected ones (see latest_spine_params)."""
+    lbs = lbs or CFG["spine_lbs"]; gross = gross or CFG["spine_gross"]
+    max_gross = max_gross or CFG["spine_max_gross"]
+    sig = aw.ts_signal(px, lbs)
     iv = 1.0 / aw.realized_vol(px, 30).clip(lower=0.20)
     dv = vol.rolling(30, min_periods=10).mean()
     i = -1
@@ -135,37 +123,70 @@ def spine_weights(px: pd.DataFrame, vol: pd.DataFrame) -> dict:
     g = float(raw.abs().sum())
     if g <= 0:
         return {}
-    w = raw / g * CFG["spine_gross"]
-    if w.abs().sum() > CFG["spine_max_gross"]:
-        w = w * CFG["spine_max_gross"] / w.abs().sum()
+    w = raw / g * gross
+    if w.abs().sum() > max_gross:
+        w = w * max_gross / w.abs().sum()
     return {c: float(w[c]) for c in top}
 
 
-def intraday_armed(coin: str, tf: str, p: dict) -> bool:
-    df = _intraday(coin, tf)
-    h, l, c = df["high"].to_numpy(), df["low"].to_numpy(), df["close"].to_numpy()
-    return bool(c[-1] > sma(c, p["slow"])[-1] and rsi(c, 7)[-1] <= p["dip"]
-                and adx(h, l, c, 14)[-1] >= p["adx"])
+def latest_spine_params(px: pd.DataFrame, vol: pd.DataFrame, train_days=540):
+    """Same per-fold selection all_weather.walk_forward uses (max train Sharpe over the
+    grid), applied to the most-recent train window -> the params the tested system runs now."""
+    grid = [dict(lbs=lbs, gross_target=gt, max_gross=mg)
+            for lbs in ((10, 30, 60, 120), (20, 50, 100), (30, 60, 120))
+            for gt in (0.6, 1.0) for mg in (1.5, 2.5)]
+    lo = px.index[-1] - pd.Timedelta(days=train_days)
+    best, bsc = None, -1e9
+    for p in grid:
+        g, tn, ex, _ = aw.build_ts_trend(px, vol, **p)
+        net = aw.net_from(g, tn, ex, 15)                   # spine cost 15 bps/side (as backtested)
+        trs = net[net.index >= lo]
+        if len(trs) < 60:
+            continue
+        sd = trs.std(ddof=0)
+        sc = trs.mean() / sd * np.sqrt(365) if sd > 0 else -9
+        if sc > bsc:
+            bsc, best = sc, p
+    return best or grid[0]
 
 
-def combined_book(px, vol, with_intraday=True) -> dict:
-    """Per-coin book weight (fraction of equity, 1x, pre-leverage). SPINE selects from the
-    SAME survivorship-free pool and uses the SAME top-30-by-$vol + inverse-vol logic as the
-    tested backtest (single source of truth — `all_weather`), so live == backtest by
-    construction. CORE uses the live-fetched 5-coin panel (same `production_strategy` code)."""
-    cw = core_weights(px)                                  # live 5-coin data, ps.book_weights
-    spx, svol = aw.load_panel()                            # the TESTED universe pool (refresh for live)
-    sw = spine_weights(spx, svol)                          # exact tested selection + weights
+def refresh_pool() -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Refresh the universe pool's currently-fetchable coins to today's daily close
+    IN MEMORY (delisted names keep their cached history and are auto-excluded by NaN).
+    Returns (px, vol). Falls back to the cached pool on any failure."""
+    px, vol = aw.load_panel()
+    for c in list(px.columns):
+        pair = CFG["spine_pairs"].get(c, f"{c}USDT")
+        try:
+            d = _daily(pair, 400)
+            px.loc[d.index, c] = d["close"]
+            vol.loc[d.index, c] = d["vol"]
+        except Exception:
+            continue                                       # delisted / unlisted -> keep cached
+    return px.sort_index(), vol.reindex_like(px)
+
+
+def combined_book(px, vol, with_intraday=True, refresh=False) -> dict:
+    """Per-coin book weight (fraction of equity, 1x). SPINE selects from the SAME pool +
+    logic + walk-forward params as the backtest; intraday uses the faithful bracket runner
+    (intraday_live.position_now) with WF-selected params on the 1H/8H clock. CORE uses the
+    live-fetched 5-coin panel. -> live == tested system by construction."""
+    cw = core_weights(px)                                  # ps.book_weights (same code)
+    spx, svol = refresh_pool() if refresh else aw.load_panel()
+    sp = latest_spine_params(spx, svol)                    # WF-selected params (matches backtest)
+    sw = spine_weights(spx, svol, sp["lbs"], sp["gross_target"], sp["max_gross"])
     book: dict[str, float] = {}
     for c, w in cw.items():
         book[c] = book.get(c, 0.0) + CFG["w_core"] * w
     for c, w in sw.items():
         book[c] = book.get(c, 0.0) + CFG["w_spine"] * w
     if with_intraday:
-        if intraday_armed("BTC", "1h", CFG["btc1h"]):
-            book["BTC"] = book.get("BTC", 0.0) + CFG["w_btc1h"]
-        if intraday_armed("ETH", "8h", CFG["eth8h"]):
-            book["ETH"] = book.get("ETH", 0.0) + CFG["w_eth8h"]
+        sb, _, _ = position_now("BTC", "1h")               # faithful 1H bracket position
+        if sb:
+            book["BTC"] = book.get("BTC", 0.0) + CFG["w_btc1h"] * sb
+        se, _, _ = position_now("ETH", "8h")               # faithful 8H bracket position
+        if se:
+            book["ETH"] = book.get("ETH", 0.0) + CFG["w_eth8h"] * se
     return {c: w for c, w in book.items() if abs(w) > 1e-6}
 
 
