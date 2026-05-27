@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hydra — All-Weather Harvest</title>
+  <link rel="preconnect" href="/" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div id="app" hidden>
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <div>
+          <h1>All-Weather Harvest</h1>
+          <p class="sub" id="sub">unified momentum + crisis-alpha + 2× profit-harvest</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="badge" id="mode-badge">PAPER</span>
+        <span class="asof" id="asof"></span>
+        <button class="btn" id="refresh">↻ Refresh</button>
+      </div>
+    </header>
+
+    <!-- Headline KPIs -->
+    <section class="kpis" id="kpis"></section>
+
+    <!-- Grid -->
+    <main class="grid">
+      <section class="card span-4">
+        <div class="card-head"><h2>Strategy book</h2><span class="hint" id="book-hint"></span></div>
+        <div id="book-weights" class="weights"></div>
+        <div id="harvest-chips" class="chips"></div>
+      </section>
+
+      <section class="card span-4">
+        <div class="card-head"><h2>Sleeve quality</h2><span class="hint">walk-forward OOS, 1×</span></div>
+        <div id="sleeve-table" class="tbl"></div>
+      </section>
+
+      <section class="card span-4">
+        <div class="card-head"><h2>Fidelity to backtest</h2><span class="hint">live == tested</span></div>
+        <div id="fidelity" class="fidelity"></div>
+      </section>
+
+      <section class="card span-6">
+        <div class="card-head"><h2>Harvest cash curve</h2><span class="hint">cumulative cash on $300k base</span></div>
+        <div class="chart" id="chart-cash"></div>
+        <div id="per-year" class="peryear"></div>
+      </section>
+
+      <section class="card span-6">
+        <div class="card-head"><h2>Sweep — risk / return frontier</h2><span class="hint">597 self-funding configs</span></div>
+        <div class="chart" id="chart-sweep"></div>
+        <div id="frontier" class="tbl tbl-sm"></div>
+      </section>
+
+      <section class="card span-7">
+        <div class="card-head"><h2>Live target book</h2><span class="hint" id="book-asof"></span></div>
+        <div id="harvest-state" class="state"></div>
+        <div id="live-book" class="book"></div>
+      </section>
+
+      <section class="card span-5">
+        <div class="card-head"><h2>Market</h2><span class="hint" id="mkt-asof"></span></div>
+        <div id="market" class="market"></div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span id="gen"></span>
+      <span>Backtest · OOS · not financial advice. Leverage is ruinous if mis-sized.</span>
+    </footer>
+  </div>
+
+  <div id="loader" class="loader"><div class="spinner"></div><p id="loader-msg">loading…</p></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
