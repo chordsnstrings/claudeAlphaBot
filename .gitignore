@@ -33,3 +33,4 @@ research/**/__pycache__/
 
 # bot runtime state
 research/bot_state.json
+research/live_trader_state.json
