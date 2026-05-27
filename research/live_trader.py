@@ -149,8 +149,13 @@ def intraday_armed(coin: str, tf: str, p: dict) -> bool:
 
 
 def combined_book(px, vol, with_intraday=True) -> dict:
-    """Per-coin book weight (fraction of equity, 1x, pre-leverage)."""
-    cw, sw = core_weights(px), spine_weights(px, vol)
+    """Per-coin book weight (fraction of equity, 1x, pre-leverage). SPINE selects from the
+    SAME survivorship-free pool and uses the SAME top-30-by-$vol + inverse-vol logic as the
+    tested backtest (single source of truth — `all_weather`), so live == backtest by
+    construction. CORE uses the live-fetched 5-coin panel (same `production_strategy` code)."""
+    cw = core_weights(px)                                  # live 5-coin data, ps.book_weights
+    spx, svol = aw.load_panel()                            # the TESTED universe pool (refresh for live)
+    sw = spine_weights(spx, svol)                          # exact tested selection + weights
     book: dict[str, float] = {}
     for c, w in cw.items():
         book[c] = book.get(c, 0.0) + CFG["w_core"] * w

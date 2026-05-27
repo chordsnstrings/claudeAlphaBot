@@ -39,6 +39,26 @@ only for `--execute`.
 4. **Watch the events line**: `2x HARVEST` (cash withdrawn), `STOP` (flat for the year),
    `PRINCIPAL FULLY RETURNED`, `year-end` settle.
 
+## Fidelity to the tested system (`research/fidelity_check.py`)
+Run it before every deploy — it proves the live target book equals the backtested
+engine's positions on the latest bar (pure code-parity, same data):
+- **CORE — identical** (same `production_strategy.book_weights` code, ΔW = 0).
+- **SPINE — identical selection** (live now draws the top-30-by-30d-$vol from the *same
+  survivorship-free pool* and the same inverse-vol logic as the backtest, ΔW = 0). The
+  only residual is execution: pool names are routed as `<SYM>USDT` futures; any not
+  listed is dropped + renormalised.
+- **Intraday — trigger matches** the tested signal, **but execution does not yet**: the
+  backtest manages an intrabar bracket (entry next-open, TP/SL/time intrabar) on a 1H/8H
+  clock; live evaluates at the daily bar. **Exact intraday parity requires the hourly
+  runner** (the one open fidelity gap — scope below).
+
+Remaining fidelity residuals to close for "exact": (1) **intraday hourly runner** with
+intrabar brackets; (2) **SPINE params** — live uses the fixed `(10,30,60,120)/gross 1.0/
+max 2.5`; the backtest's walk-forward re-selects per fold, so live should pull the
+latest-fold params; (3) **pool data refresh** — `combined_book` reads the cached
+universe pool; the live pipeline must refresh its tradeable coins daily; (4) **spot vs
+futures** — signals on spot, execution on futures (daily ~identical; intraday can diverge).
+
 ## Going live (no strategy paper-trading, per request) — checklist
 You've chosen to skip the paper-trading-the-strategy period — i.e. you accept the
 backtested alpha without a live forward test. That is a strategy call. The steps below
