@@ -10,9 +10,16 @@ Closes the deployment gaps identified in the live-state review:
      50% on the table (keep trading); -40% YTD stop -> flat for the year; year-end sweep;
      SELF-FUNDING accounting (losing-year top-ups come from already-harvested cash, never
      external money) + principal-returned flag.
-  4. EXECUTION  — a fully-functional PaperBroker (mark-to-close, turnover cost) and a
-     LiveBroker seam (clearly marked; you wire your exchange SDK there). No real orders.
+  4. EXECUTION  — a PaperBroker (mark-to-close, turnover cost) and a real ccxt-based
+     LiveBroker. LiveBroker DEFAULTS to dry-run (computes & prints exact orders, sends
+     nothing); real orders require `run --execute` + EXCHANGE_API_KEY/SECRET in env.
+     UNTESTED against a live account — verify on testnet/tiny size first.
   5. STATE      — JSON-persisted, idempotent per UTC day.
+
+Going live (no paper-trading the strategy, per request): init --mode live; `run` shows a
+DRY-RUN order preview; add `--execute` (with keys in env) to send. Harvest withdrawals and
+the -40% flatten print as OPERATOR ALERTS. Do ONE testnet/tiny-size cycle to confirm the
+order plumbing before full size — that is execution-sanity, not strategy validation.
 
 Cadence: once per day after 00:00 UTC. CORE + SPINE are daily strategies; the BTC1H/
 ETH8H pullback triggers are evaluated at the daily bar in this v1 (a documented
@@ -192,21 +199,72 @@ class PaperBroker:
 
 
 class LiveBroker:
-    """SEAM — implement with your exchange SDK. Intentionally not wired (no real orders)."""
+    """Real execution via ccxt. DEFAULT is dry-run (computes & prints the exact orders,
+    sends NOTHING). Real orders require dry_run=False AND exchange API keys in the env
+    (EXCHANGE, EXCHANGE_API_KEY, EXCHANGE_API_SECRET). post-only limits, rebalance band,
+    isolated leverage. UNTESTED against a live account here — verify on testnet/tiny size
+    first (that is execution-sanity, not strategy paper-trading)."""
+    def __init__(self, dry_run=True):
+        self.dry_run, self.ex = dry_run, None
+        if not dry_run:
+            import ccxt
+            name = os.environ.get("EXCHANGE", "binanceusdm")
+            self.ex = getattr(ccxt, name)({
+                "apiKey": os.environ["EXCHANGE_API_KEY"],
+                "secret": os.environ["EXCHANGE_API_SECRET"],
+                "enableRateLimit": True, "options": {"defaultType": "future"}})
+
     def mark(self, st, px, held_now):
-        raise NotImplementedError(
-            "LIVE not wired. Implement: read account equity & positions from the exchange;\n"
-            "for each coin compute target notional = equity * leverage * book_weight; submit\n"
-            "reduce/extend limit (post-only) orders to reach it within rebal_band; set the\n"
-            "isolated-margin leverage; reconcile fills; persist. Paper-trade >=1 quarter first.")
+        last = {c: float(px[c].iloc[-1]) for c in px.columns}
+        if self.dry_run:
+            return 0.0, 0.0, last                          # equity stays as tracked
+        bal = self.ex.fetch_balance()
+        eq = float(bal.get("total", {}).get("USDT", st["equity"]))
+        port_ret = (eq / st["equity"] - 1.0) if st["equity"] else 0.0
+        st["equity"] = eq                                  # exchange is the source of truth
+        return port_ret, 0.0, last
+
+    def _pos_notional(self, pair, price):
+        try:
+            for p in self.ex.fetch_positions([pair]):
+                if p.get("symbol") == pair or p.get("info", {}).get("symbol", "").startswith(pair.replace("/", "")):
+                    return float(p.get("notional") or 0.0)
+        except Exception:
+            pass
+        return 0.0
+
+    def rebalance(self, held, equity, last, band, leverage):
+        print("  ORDERS (post-only limits):" + ("  [DRY-RUN — nothing sent]" if self.dry_run else ""))
+        any_order = False
+        for coin, w in sorted(held.items(), key=lambda kv: -abs(kv[1])):
+            pair = CFG["spine_pairs"].get(coin, f"{coin}USDT")
+            tgt = w * equity
+            cur = 0.0 if self.dry_run else self._pos_notional(pair, last[coin])
+            delta = tgt - cur
+            if abs(delta) < band * equity:
+                continue
+            any_order = True
+            side, qty = ("buy" if delta > 0 else "sell"), abs(delta) / last[coin]
+            if self.dry_run:
+                print(f"    [DRY] {side.upper():4} {coin:>5} ~${abs(delta):>11,.0f}  "
+                      f"({qty:.5f} @ ~${last[coin]:,.4f})")
+            else:
+                try:
+                    self.ex.set_leverage(int(max(1, round(leverage))), pair, {"marginMode": "isolated"})
+                except Exception:
+                    pass
+                o = self.ex.create_limit_order(pair, side, qty, last[coin], {"postOnly": True})
+                print(f"    SENT {side.upper():4} {coin:>5} ${abs(delta):>11,.0f}  id={o.get('id')}")
+        if not any_order:
+            print("    (no coin outside the rebalance band — nothing to do)")
 
 
-def broker_for(mode):
-    return LiveBroker() if mode == "live" else PaperBroker()
+def broker_for(mode, dry_run=True):
+    return LiveBroker(dry_run=dry_run) if mode == "live" else PaperBroker()
 
 
 # ------------------------------------------------------- harvest state machine
-def daily_cycle(st, px, vol):
+def daily_cycle(st, px, vol, broker):
     cfg = CFG
     date = str(px.index[-1].date())
     if st.get("last_date") == date:
@@ -223,7 +281,7 @@ def daily_cycle(st, px, vol):
     st["year"] = yr
 
     # --- mark to market on yesterday's held book ---
-    port_ret, cost, last = broker_for(st["mode"]).mark(st, px, st["held"])
+    port_ret, cost, last = broker.mark(st, px, st["held"])
 
     # --- harvest rules on the new equity ---
     if not st["locked"]:
@@ -274,8 +332,10 @@ def cmd_run(a):
     st = load_state()
     if not st:
         print("No account. Run: python live_trader.py init --capital 300000"); return
+    dry = not getattr(a, "execute", False)
+    broker = broker_for(st["mode"], dry_run=dry)
     px, vol = fetch_market(CFG["history_days"])
-    out = daily_cycle(st, px, vol)
+    out = daily_cycle(st, px, vol, broker)
     save_state(st)
     if out.get("skipped"):
         print(f"Already ran for {out['date']} (idempotent). Use status to inspect."); return
@@ -290,6 +350,11 @@ def cmd_run(a):
     _print_book(out["held"], st["equity"], out["last"])
     if out["note"]:
         print("  " + out["note"])
+    if st["mode"] == "live":
+        broker.rebalance(out["held"], st["equity"], out["last"], CFG["rebal_band"], CFG["leverage"])
+        if dry:
+            print("  (DRY-RUN. Re-run with `--execute` + EXCHANGE_API_KEY/SECRET in env to send. "
+                  "Harvest withdrawals / -40% flatten are OPERATOR ALERTS in the note above.)")
 
 
 def cmd_status(a):
@@ -358,7 +423,10 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     pi = sub.add_parser("init"); pi.add_argument("--capital", type=float, default=300000.0)
     pi.add_argument("--mode", choices=["paper", "live"], default="paper"); pi.set_defaults(func=cmd_init)
-    sub.add_parser("run").set_defaults(func=cmd_run)
+    pr = sub.add_parser("run")
+    pr.add_argument("--execute", action="store_true",
+                    help="LIVE mode only: actually send orders via ccxt (default = dry-run preview)")
+    pr.set_defaults(func=cmd_run)
     sub.add_parser("status").set_defaults(func=cmd_status)
     pb = sub.add_parser("backtest"); pb.add_argument("--capital", type=float, default=300000.0)
     pb.set_defaults(func=cmd_backtest)

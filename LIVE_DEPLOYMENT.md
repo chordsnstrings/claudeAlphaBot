@@ -16,12 +16,17 @@ code is in [`ENGINE_AND_HARVEST_REPLICATION.md`](ENGINE_AND_HARVEST_REPLICATION.
 ## Commands
 ```bash
 cd research
-python live_trader.py init --capital 300000     # create a PAPER account at the base
-python live_trader.py run                        # one daily cycle (refresh → mark → harvest → rebalance)
-python live_trader.py status                     # current state + today's target book
-python live_trader.py backtest --capital 300000  # full-history paper run of this exact live logic
+# --- going straight to live (no strategy paper-trading, per request) ---
+python live_trader.py init --capital 300000 --mode live   # live account at the base
+python live_trader.py run                                 # DRY-RUN: prints the exact orders, sends NOTHING
+EXCHANGE=binanceusdm EXCHANGE_API_KEY=... EXCHANGE_API_SECRET=... \
+  python live_trader.py run --execute                     # actually send orders via ccxt
+python live_trader.py status                              # state + today's target book
+python live_trader.py backtest --capital 300000           # vectorised full-history sanity of the live logic
 ```
-State persists to `research/live_trader_state.json` (idempotent: one cycle per UTC day).
+`run` without `--execute` always previews (dry-run). State persists to
+`research/live_trader_state.json` (idempotent: one cycle per UTC day). Needs `pip install ccxt`
+only for `--execute`.
 
 ## Daily operating procedure
 1. **Schedule `run` once per day, shortly after 00:00 UTC** (cron/systemd-timer). It
@@ -34,21 +39,29 @@ State persists to `research/live_trader_state.json` (idempotent: one cycle per U
 4. **Watch the events line**: `2x HARVEST` (cash withdrawn), `STOP` (flat for the year),
    `PRINCIPAL FULLY RETURNED`, `year-end` settle.
 
-## Paper burn-in → go-live checklist
-- [ ] Run `backtest` and confirm it reproduces the documented harvest numbers
-      (~5× cash on $300k over the sample, self-funding, principal returned fast).
-- [ ] Paper-trade (`init --mode paper`, daily `run`) for **≥ 1 quarter**; verify the
-      paper equity/withdrawals track a reference backtest on the same dates.
-- [ ] Exercise every risk path in paper: a 2× harvest, the −40% stop, a year-end reset.
-- [ ] **Implement `LiveBroker.mark`** (the marked SEAM in `live_trader.py`): read account
-      equity + positions from your exchange; for each coin compute
-      `target_notional = equity × leverage × book_weight`; submit reduce/extend
-      **post-only limit** orders to reach it within the rebalance band; set isolated-margin
-      leverage; reconcile fills; persist. **It deliberately places no real orders until you do.**
-- [ ] `init --mode live`, fund the **$300k base once**, start at **reduced size**, scale
-      only after live fills track paper.
-- [ ] Confirm the **self-funding** invariant holds live: never wire in more than the
-      initial base; cover losing-year resets from withdrawn `cum_cash`.
+## Going live (no strategy paper-trading, per request) — checklist
+You've chosen to skip the paper-trading-the-strategy period — i.e. you accept the
+backtested alpha without a live forward test. That is a strategy call. The steps below
+are **execution-sanity** (not losing money to a *bug*) — a different thing, and
+non-negotiable, because the live order code is untested against a real account:
+- [ ] `run` (dry-run) and read the **order preview**; confirm sides/sizes match the
+      target book and your intuition (today: long DOGE/ETH, short LTC/ADA/XLM/BCH).
+- [ ] `backtest` reproduces the harvest shape (CORE+SPINE m=2 → ~5–6× cash on $300k,
+      self-funding, principal back fast).
+- [ ] **One cycle on testnet or tiny size** via `--execute`: confirm orders fill and
+      sizing/leverage/sign are correct and positions reconcile. This catches wiring bugs
+      (wrong qty, inverted side, missing leverage) before real size.
+- [ ] Fund the **$300k base once**; start at **reduced leverage/size**, scale only after
+      live fills match the preview.
+- [ ] Wire the **operator alerts**: the bot prints `2x HARVEST`, `STOP`, and `year-end`
+      lines — you (or a transfer script) move withdrawn cash to cold and keep the trading
+      account at base. **Self-funding invariant:** never wire in more than the initial
+      base; cover losing-year resets from withdrawn `cum_cash`.
+- [ ] Set a hard **kill switch** + exchange-side liquidation buffers (see below).
+
+> What you accept by skipping paper: an unvalidated-live edge **and** first-time order
+> code at 2× leverage. The testnet/tiny check is the minimum that stops a *bug* from
+> compounding the *strategy* risk; a single overnight gap at 2× can still be ruinous.
 
 ## Risk controls (mandatory)
 - **−40% annual stop** (flat for the rest of the calendar year if YTD ≤ −40% of base).
@@ -68,5 +81,10 @@ State persists to `research/live_trader_state.json` (idempotent: one cycle per U
   top-30 (incl. delisted corpses) to avoid bias; live trades a fixed set of
   currently-listed liquid USDT pairs (`CFG["spine_pairs"]`). Keep it to genuinely liquid
   names and modest size (the spine is cost-sensitive: fine ≤20 bps, gone at 50 bps).
-- **No real OMS yet** — `LiveBroker` is a stub; paper is fully functional.
-- **Capacity is finite** and **past performance is not predictive.** Paper first.
+- **`LiveBroker` is implemented (ccxt) but UNTESTED against a real account here.** It
+  defaults to dry-run; `--execute` sends post-only limits, sets isolated leverage, and
+  reconciles vs current positions. Verify on testnet/tiny size first (see checklist).
+  Order/position/leverage calls vary by exchange — confirm they map to yours.
+- **Harvest withdrawals & the −40% flatten are OPERATOR ALERTS**, not auto-transfers
+  (deliberately — moving real funds is left manual/scripted by you).
+- **Capacity is finite** and **past performance is not predictive.**
