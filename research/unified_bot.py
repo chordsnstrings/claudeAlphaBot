@@ -215,12 +215,12 @@ def annual_report(r: pd.Series, m_lev: float):
 
 
 def harvest_run(r: pd.Series, base=HARVEST_BASE, m=HARVEST_M, double_at=DOUBLE_AT,
-                stop=ANNUAL_STOP) -> pd.DataFrame:
+                stop=ANNUAL_STOP, harvest_frac=1.0, go_flat=True) -> pd.DataFrame:
     """Whole-run sim of the harvest policy. Per calendar year: start at base; compound
-    m*daily; the moment equity >= double_at*base, withdraw the profit and go FLAT for
-    the rest of the year; -stop YTD also goes flat; sweep remaining profit at year end.
-    Causal & path-dependent. Returns a daily frame (equity reset-aware, cash events,
-    cumulative net cash)."""
+    m*daily; when equity >= double_at*base, withdraw `harvest_frac` of the profit. If
+    go_flat, stop for the rest of the year; otherwise keep trading (leaving
+    (1-harvest_frac) of the profit ON THE TABLE to ride). -stop YTD also goes flat;
+    sweep remaining profit at year end. Causal & path-dependent."""
     rows, cum = [], 0.0
     for y in sorted(set(r.index.year)):
         ry = r[r.index.year == y]
@@ -232,10 +232,13 @@ def harvest_run(r: pd.Series, base=HARVEST_BASE, m=HARVEST_M, double_at=DOUBLE_A
                 eq *= (1.0 + m * x)
                 if eq <= 1e-9:
                     eq, locked, ev = 0.0, True, "LIQUIDATION"
-                elif eq >= double_at * base:
-                    ev_cash = eq - base; cum += ev_cash; eq = base; locked = True; ev = "2X-HARVEST"
-                elif eq <= (1.0 - stop) * base:
-                    locked, ev = True, "STOP"
+                elif harvest_frac > 0 and eq >= double_at * base:
+                    take = harvest_frac * (eq - base)
+                    cum += take; ev_cash += take; eq -= take; ev = "2X-HARVEST"
+                    if go_flat:
+                        locked = True
+                if not locked and eq <= (1.0 - stop) * base:
+                    locked, ev = True, (ev or "STOP")
             if d == last:                                   # year-end settle / reset
                 settle = eq - base
                 if abs(settle) > 1e-9:
@@ -247,48 +250,63 @@ def harvest_run(r: pd.Series, base=HARVEST_BASE, m=HARVEST_M, double_at=DOUBLE_A
                                        "cum_cash"]).set_index("date")
 
 
-def harvest_report(df: pd.DataFrame):
+def _acct_maxdd(daily: pd.DataFrame) -> float:
+    eq = daily["equity"]; return float((eq / eq.cummax() - 1).min())
+
+
+def harvest_report(df: pd.DataFrame, harvest_frac=1.0, go_flat=True):
     r = weighted(df, PROFILES[HARVEST_PROFILE])
-    daily = harvest_run(r)
-    book_m = (1.0 + HARVEST_M * r)                          # leveraged book daily factor
+    book_m = (1.0 + HARVEST_M * r)
     w = PROFILES[HARVEST_PROFILE]
     print(f"HARVEST POLICY — {HARVEST_PROFILE} book "
           f"(CORE {w['CORE']:.0%}/BTC1H {w['BTC1H']:.0%}/ETH8H {w['ETH8H']:.0%}/SPINE {w['SPINE']:.0%}) "
-          f"at {HARVEST_M:g}x on ${HARVEST_BASE:,.0f}")
-    print(f"  rule: reset to base each Jan; take 100% profit out when equity 2x's then go "
-          f"flat; sweep at year end; -{ANNUAL_STOP:.0%} YTD stop.\n")
+          f"at {HARVEST_M:g}x on ${HARVEST_BASE:,.0f} (annual reset, -{ANNUAL_STOP:.0%} stop)\n")
+
+    print("  profit-taking variants (whole run, net cash on $300k base):")
+    print(f"    {'variant':<34} {'net cash':>12} {'acct maxDD':>11} {'2x-events':>10}")
+    for f, gf, lbl in [(1.0, True, "take 100% at 2x, then FLAT"),
+                       (1.0, False, "take 100% at 2x, keep trading"),
+                       (0.5, False, "leave 50% on the table"),
+                       (0.25, False, "leave 75% on the table"),
+                       (0.0, False, "leave 100% (year-end sweep only)")]:
+        d = harvest_run(r, harvest_frac=f, go_flat=gf)
+        tot = d["cum_cash"].iloc[-1]; n = int(d["event"].str.contains("2X").sum())
+        mark = "  <-- this run" if (abs(f - harvest_frac) < 1e-9 and gf == go_flat) else ""
+        print(f"    {lbl:<34} ${tot:>11,.0f} {_acct_maxdd(d):>11.0%} {n:>10}{mark}")
+
+    pol = "take 100% then FLAT" if (harvest_frac >= 1 and go_flat) else \
+        f"leave {1 - harvest_frac:.0%} on the table (keep trading)"
+    print(f"\n  MONTH-ON-MONTH — {pol}:")
+    daily = harvest_run(r, harvest_frac=harvest_frac, go_flat=go_flat)
     print(f"  {'month':<8} {'mode':<6} {'book m=3':>9} {'equity$':>10} {'cash out$':>11} {'cum cash$':>12}  event")
     for y in sorted(set(df.index.year)):
-        ry = r[r.index.year == y]
         dy = daily[daily.index.year == y]
+        ry = r[r.index.year == y]
         for mdate in pd.date_range(ry.index[0], ry.index[-1], freq="ME").union(
                 pd.DatetimeIndex([dy.index[-1]])):
             mdays = dy[(dy.index.year == mdate.year) & (dy.index.month == mdate.month)]
             if mdays.empty:
                 continue
             bret = book_m[(book_m.index.year == mdate.year) & (book_m.index.month == mdate.month)].prod() - 1
-            row = mdays.iloc[-1]
-            cash_m = mdays["cash"].sum()
+            row = mdays.iloc[-1]; cash_m = mdays["cash"].sum()
             evs = "/".join(sorted({e for e in mdays["event"] if e}))
             print(f"  {mdate.strftime('%Y-%m'):<8} {row['mode']:<6} {bret:>+9.0%} "
                   f"${row['equity']:>9,.0f} {('$'+format(cash_m,',.0f')) if abs(cash_m)>1 else '—':>11} "
                   f"${row['cum_cash']:>11,.0f}  {evs}")
-        # annual line
-        yr_cash = dy["cash"].sum()
-        print(f"  -> {y} total: cash ${yr_cash:>+12,.0f}   cumulative ${dy['cum_cash'].iloc[-1]:>12,.0f}\n")
+        print(f"  -> {y} total: cash ${dy['cash'].sum():>+12,.0f}   cumulative ${dy['cum_cash'].iloc[-1]:>12,.0f}\n")
     total = daily["cum_cash"].iloc[-1]
-    n2x = int((daily["event"].str.contains("2X")).sum())
-    print(f"WHOLE RUN {df.index[0].date()} -> {df.index[-1].date()}: net cash extracted "
-          f"${total:,.0f} on ${HARVEST_BASE:,.0f} base ({total/HARVEST_BASE:.1f}x), {n2x} doublings. "
-          f"Base intact (reset each year). 2021/2026 are partial years.")
-    print("Note: once locked (FLAT), the 'book m=3' move is NOT earned (you sit in cash, "
-          "having banked the 2x) — that is the cost of locking: it sacrifices post-harvest "
-          "upside (e.g. 2024-11) to protect the harvested profit. Backtest, not predictive.")
+    print(f"WHOLE RUN {df.index[0].date()} -> {df.index[-1].date()}: net cash ${total:,.0f} "
+          f"on ${HARVEST_BASE:,.0f} ({total/HARVEST_BASE:.1f}x), acct maxDD {_acct_maxdd(daily):.0%}. "
+          f"2021/2026 partial. Leaving profit on the table rides post-2x upside but risks "
+          f"giving it back (the -40% stop is vs base, so retained profit is unprotected). Not predictive.")
 
 
 def main(argv):
     if "--harvest" in argv:
-        harvest_report(build_panel()[0]); return
+        leave50 = "--leave50" in argv
+        harvest_report(build_panel()[0],
+                       harvest_frac=0.5 if leave50 else 1.0, go_flat=not leave50)
+        return
     os.makedirs(RESULTS, exist_ok=True)
     print("UNIFIED ORCHESTRATOR — CORE (daily momentum) + BTC1H + ETH8H intraday + SPINE "
           "(all-weather L/S trend)\n(intraday & spine params chosen OOS per fold; daily "
