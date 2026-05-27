@@ -79,14 +79,17 @@ ALLOC_GRID = [
     {"CORE": 0.40, "BTC1H": 0.20, "ETH8H": 0.20, "SPINE": 0.20},
 ]
 
-# ---- wired "HARVEST" deployment policy (best output of harvest_2x.py) ----
-# Run the smooth ALL-WEATHER(30% spine) book at 3x on a $300k base that RESETS each
-# Jan (no compounding). Take 100% profit out the moment equity 2x's, then go flat for
-# the rest of that year; sweep any remaining profit at year end; -40% YTD stop.
-HARVEST_PROFILE = "all_weather"      # 30%-spine book (smooth enough to lever 3x)
-HARVEST_M = 3.0
+# ---- wired "HARVEST" deployment policy (sweep-optimal: harvest_sweep.py) ----
+# ALL-WEATHER(30% spine) book at 2x on a $300k base that RESETS each Jan (no
+# compounding). Take profit when equity 2x's, leaving 50% on the table to ride;
+# sweep at year end; -40% YTD stop. This is the best risk-adjusted, SELF-FUNDING
+# (never needs external cash) config that returns the full $300k fast (~99 days):
+# ROI ~5.1x with a ~-25% total-wealth drawdown. (`--harvest --lock-flat` = the more
+# conservative take-100%-and-sit variant.)
+HARVEST_PROFILE = "all_weather"      # 30%-spine book
+HARVEST_M = 2.0
 HARVEST_BASE = 300_000.0
-DOUBLE_AT = 2.0                      # +100% intra-year profit-lock
+DOUBLE_AT = 2.0                      # take profit when equity reaches 2x base
 ANNUAL_STOP = 0.40
 
 
@@ -250,8 +253,11 @@ def harvest_run(r: pd.Series, base=HARVEST_BASE, m=HARVEST_M, double_at=DOUBLE_A
                                        "cum_cash"]).set_index("date")
 
 
-def _acct_maxdd(daily: pd.DataFrame) -> float:
-    eq = daily["equity"]; return float((eq / eq.cummax() - 1).min())
+def _wealth_maxdd(daily: pd.DataFrame) -> float:
+    """Drawdown of total wealth = at-risk account + cash already pocketed (withdrawals
+    move money to the pocket, so the wealth curve is continuous — the real drawdown)."""
+    w = daily["equity"] + daily["cum_cash"]
+    return float((w / w.cummax() - 1).min())
 
 
 def harvest_report(df: pd.DataFrame, harvest_frac=1.0, go_flat=True):
@@ -263,7 +269,7 @@ def harvest_report(df: pd.DataFrame, harvest_frac=1.0, go_flat=True):
           f"at {HARVEST_M:g}x on ${HARVEST_BASE:,.0f} (annual reset, -{ANNUAL_STOP:.0%} stop)\n")
 
     print("  profit-taking variants (whole run, net cash on $300k base):")
-    print(f"    {'variant':<34} {'net cash':>12} {'acct maxDD':>11} {'2x-events':>10}")
+    print(f"    {'variant':<34} {'net cash':>12} {'wealth maxDD':>11} {'2x-events':>10}")
     for f, gf, lbl in [(1.0, True, "take 100% at 2x, then FLAT"),
                        (1.0, False, "take 100% at 2x, keep trading"),
                        (0.5, False, "leave 50% on the table"),
@@ -272,13 +278,14 @@ def harvest_report(df: pd.DataFrame, harvest_frac=1.0, go_flat=True):
         d = harvest_run(r, harvest_frac=f, go_flat=gf)
         tot = d["cum_cash"].iloc[-1]; n = int(d["event"].str.contains("2X").sum())
         mark = "  <-- this run" if (abs(f - harvest_frac) < 1e-9 and gf == go_flat) else ""
-        print(f"    {lbl:<34} ${tot:>11,.0f} {_acct_maxdd(d):>11.0%} {n:>10}{mark}")
+        print(f"    {lbl:<34} ${tot:>11,.0f} {_wealth_maxdd(d):>11.0%} {n:>10}{mark}")
 
     pol = "take 100% then FLAT" if (harvest_frac >= 1 and go_flat) else \
         f"leave {1 - harvest_frac:.0%} on the table (keep trading)"
     print(f"\n  MONTH-ON-MONTH — {pol}:")
     daily = harvest_run(r, harvest_frac=harvest_frac, go_flat=go_flat)
-    print(f"  {'month':<8} {'mode':<6} {'book m=3':>9} {'equity$':>10} {'cash out$':>11} {'cum cash$':>12}  event")
+    blbl = f"book m={HARVEST_M:g}"
+    print(f"  {'month':<8} {'mode':<6} {blbl:>9} {'equity$':>10} {'cash out$':>11} {'cum cash$':>12}  event")
     for y in sorted(set(df.index.year)):
         dy = daily[daily.index.year == y]
         ry = r[r.index.year == y]
@@ -296,16 +303,16 @@ def harvest_report(df: pd.DataFrame, harvest_frac=1.0, go_flat=True):
         print(f"  -> {y} total: cash ${dy['cash'].sum():>+12,.0f}   cumulative ${dy['cum_cash'].iloc[-1]:>12,.0f}\n")
     total = daily["cum_cash"].iloc[-1]
     print(f"WHOLE RUN {df.index[0].date()} -> {df.index[-1].date()}: net cash ${total:,.0f} "
-          f"on ${HARVEST_BASE:,.0f} ({total/HARVEST_BASE:.1f}x), acct maxDD {_acct_maxdd(daily):.0%}. "
+          f"on ${HARVEST_BASE:,.0f} ({total/HARVEST_BASE:.1f}x), wealth maxDD {_wealth_maxdd(daily):.0%}. "
           f"2021/2026 partial. Leaving profit on the table rides post-2x upside but risks "
           f"giving it back (the -40% stop is vs base, so retained profit is unprotected). Not predictive.")
 
 
 def main(argv):
     if "--harvest" in argv:
-        leave50 = "--leave50" in argv
+        lockflat = "--lock-flat" in argv          # default = recommended leave-50% @ 2x
         harvest_report(build_panel()[0],
-                       harvest_frac=0.5 if leave50 else 1.0, go_flat=not leave50)
+                       harvest_frac=1.0 if lockflat else 0.5, go_flat=lockflat)
         return
     os.makedirs(RESULTS, exist_ok=True)
     print("UNIFIED ORCHESTRATOR — CORE (daily momentum) + BTC1H + ETH8H intraday + SPINE "
