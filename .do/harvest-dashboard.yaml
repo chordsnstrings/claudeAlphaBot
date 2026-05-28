@@ -1,22 +1,23 @@
-# DigitalOcean App Platform spec — Harvest monitoring dashboard (Python, self-contained).
+# DigitalOcean App Platform — Harvest bot: PUBLIC keyless dashboard + PRIVATE keyed worker.
+#
+# Architecture (keys never public):
+#   dashboard (public)  -- relays commands -->  worker (INTERNAL only, holds keys, trades)
+# The dashboard image has NO ccxt and cannot place orders. The worker has no public
+# ingress (internal_ports). Deploys in PAPER mode by default; going live is a deliberate
+# step (set MODE/LIVE_CONFIRMED/keys on the WORKER only — see bottom).
+#
 # Deploy:  doctl apps create --spec .do/harvest-dashboard.yaml
-# Update:  doctl apps update <app-id> --spec .do/harvest-dashboard.yaml
-#
-# This is the READ-ONLY monitoring dashboard for the all-weather harvest bot. It has no
-# database and cannot place orders (no ccxt in the image). Live trading is a separate
-# operator CLI (research/live_trader.py --execute), deliberately NOT run by this service.
-#
-# Set DASHBOARD_USER / DASHBOARD_PASS (SECRET) before first deploy, or the app runs OPEN.
-name: harvest-dashboard
+name: harvest-bot
 region: nyc
 
 services:
+  # ── PUBLIC dashboard (keyless, read-only + command relay) ───────────────────
   - name: dashboard
     instance_count: 1
-    instance_size_slug: basic-xs        # 1 GB — the /api/refresh recompute loads ~1.1M candles
+    instance_size_slug: basic-xs
     http_port: 8080
     source_dir: /
-    dockerfile_path: research/ui/Dockerfile
+    dockerfile_path: research/ui/Dockerfile          # no ccxt — cannot trade
     github:
       repo: chordsnstrings/claudealphabot
       branch: claude/eager-ramanujan-MJ4MR
@@ -25,15 +26,40 @@ services:
       http_path: /health
       initial_delay_seconds: 25
       period_seconds: 30
-      timeout_seconds: 4
-      failure_threshold: 3
     envs:
-      - key: DASHBOARD_USER
-        scope: RUN_TIME
-        type: SECRET
-      - key: DASHBOARD_PASS
-        scope: RUN_TIME
-        type: SECRET
-      - key: REFRESH_HOURS         # self-refresh the snapshot every N hours (optional)
-        scope: RUN_TIME
-        value: "12"
+      - { key: DASHBOARD_USER, scope: RUN_TIME, type: SECRET }
+      - { key: DASHBOARD_PASS, scope: RUN_TIME, type: SECRET }
+      - { key: REFRESH_HOURS, scope: RUN_TIME, value: "12" }
+      - { key: WORKER_URL, scope: RUN_TIME, value: "${worker.PRIVATE_URL}" }
+      - { key: WORKER_TOKEN, scope: RUN_TIME, type: SECRET }
+
+  # ── PRIVATE worker (holds keys, enforces caps, trades) ──────────────────────
+  - name: worker
+    instance_count: 1
+    instance_size_slug: basic-xs
+    internal_ports: [8090]                            # INTERNAL only — no public ingress
+    source_dir: /
+    dockerfile_path: research/ui/Dockerfile.worker    # has ccxt
+    github:
+      repo: chordsnstrings/claudealphabot
+      branch: claude/eager-ramanujan-MJ4MR
+      deploy_on_push: true
+    envs:
+      - { key: WORKER_PORT, scope: RUN_TIME, value: "8090" }
+      - { key: WORKER_TOKEN, scope: RUN_TIME, type: SECRET }   # same value as dashboard's
+      - { key: BASE, scope: RUN_TIME, value: "300000" }
+      - { key: MAX_LEVERAGE, scope: RUN_TIME, value: "1.5" }   # hard cap (OOS-safe knee)
+      - { key: MAX_GROSS, scope: RUN_TIME, value: "3.0" }
+      - { key: DAILY_LOSS_LIMIT, scope: RUN_TIME, value: "0.15" }
+      - { key: CYCLE_SECONDS, scope: RUN_TIME, value: "86400" }
+      # ── GO-LIVE (leave UNSET to stay paper). Set ALL THREE only after the engine
+      #    reconciliation + a testnet check, and IP-allowlist the key to this app:
+      # - { key: MODE, scope: RUN_TIME, value: "live" }
+      # - { key: LIVE_CONFIRMED, scope: RUN_TIME, value: "yes" }
+      # - { key: EXCHANGE, scope: RUN_TIME, value: "binanceusdm" }
+      # - { key: EXCHANGE_API_KEY, scope: RUN_TIME, type: SECRET }
+      # - { key: EXCHANGE_API_SECRET, scope: RUN_TIME, type: SECRET }
+      #
+      # NOTE: worker state is SQLite on local disk (ephemeral on App Platform). For
+      # durable harvest baseline/cash-floor across restarts, attach a persistent volume
+      # or a managed DB and point DB_PATH at it, or reconcile from the exchange on boot.

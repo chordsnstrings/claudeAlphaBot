@@ -23,6 +23,8 @@ import subprocess
 import sys
 import threading
 import time
+import urllib.error
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -31,6 +33,10 @@ DATA = os.path.join(HERE, "ui_data.json")
 _BUILDING = {"on": False}
 _USER, _PASS = os.environ.get("DASHBOARD_USER"), os.environ.get("DASHBOARD_PASS")
 _AUTH = bool(_USER and _PASS)
+# Private worker (holds keys, trades). The dashboard only RELAYS commands to it — it
+# never trades itself. Set WORKER_URL to the worker's INTERNAL address on App Platform.
+_WORKER_URL = os.environ.get("WORKER_URL", "")
+_WORKER_TOKEN = os.environ.get("WORKER_TOKEN", "")
 _CTYPE = {".html": "text/html; charset=utf-8", ".css": "text/css",
           ".js": "application/javascript", ".json": "application/json", ".svg": "image/svg+xml"}
 _SEC = {"X-Content-Type-Options": "nosniff", "X-Frame-Options": "DENY",
@@ -92,6 +98,21 @@ class Handler(BaseHTTPRequestHandler):
         with open(fp, "rb") as f:
             self._send(200, f.read(), _ctype(fp))
 
+    def _relay(self, method, subpath, body=None):
+        """Forward a command/state request to the private worker (never executed here)."""
+        if not _WORKER_URL:
+            return self._send(503, b'{"error":"worker not configured"}')
+        req = urllib.request.Request(_WORKER_URL.rstrip("/") + subpath, data=body, method=method,
+                                     headers={"Authorization": f"Bearer {_WORKER_TOKEN}",
+                                              "Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=8) as r:
+                self._send(r.status, r.read())
+        except urllib.error.HTTPError as e:
+            self._send(e.code, e.read())
+        except Exception as e:
+            self._send(502, json.dumps({"error": f"worker unreachable: {e}"}).encode())
+
     def do_GET(self):
         path = self.path.split("?")[0]
         if path == "/health":                                  # unauthenticated liveness
@@ -103,7 +124,10 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/data":
             return self._file(DATA) if os.path.exists(DATA) else self._send(503, b'{"error":"no snapshot"}')
         if path == "/api/status":
-            return self._send(200, json.dumps({"building": _BUILDING["on"]}).encode())
+            return self._send(200, json.dumps({"building": _BUILDING["on"],
+                                               "worker": bool(_WORKER_URL)}).encode())
+        if path == "/api/worker":
+            return self._relay("GET", "/state")
         if path.startswith("/static/"):
             fp = os.path.realpath(os.path.join(HERE, path.lstrip("/")))
             if os.path.commonpath([fp, STATIC]) == STATIC and os.path.isfile(fp):
@@ -116,9 +140,13 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self._authed():
             return
-        if self.path.split("?")[0] == "/api/refresh":
+        path = self.path.split("?")[0]
+        if path == "/api/refresh":
             _refresh_async()
             return self._send(202, b'{"started":true}')
+        if path == "/api/cmd":                                 # relay command to the private worker
+            n = int(self.headers.get("Content-Length", 0))
+            return self._relay("POST", "/cmd", self.rfile.read(n))
         return self._send(404, b"not found", "text/plain")
 
 

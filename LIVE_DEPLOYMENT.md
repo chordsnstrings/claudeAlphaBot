@@ -13,6 +13,44 @@ code is in [`ENGINE_AND_HARVEST_REPLICATION.md`](ENGINE_AND_HARVEST_REPLICATION.
   **−40% YTD stop** → flat for the rest of the year. **Self-funding:** losing-year
   top-ups come only from already-harvested cash (`cum_cash`), never new money.
 
+## Web deployment (DigitalOcean App Platform) — public dashboard + private worker
+The web app is split into **two images so exchange keys are never on a public surface**:
+
+| component | image | ingress | ccxt? | role |
+|-----------|-------|---------|-------|------|
+| **dashboard** | `research/ui/Dockerfile` | **public** (HTTP 8080) | **no** | read-only snapshot + **relays** commands to the worker; **cannot trade** |
+| **worker** | `research/ui/Dockerfile.worker` | **internal only** (`internal_ports: [8090]`) | yes | holds keys, enforces caps, places orders |
+
+The dashboard reaches the worker over the platform's private network
+(`WORKER_URL=${worker.PRIVATE_URL}`); both share a `WORKER_TOKEN` (bearer auth on the
+relay). Deploy the whole thing from [`.do/harvest-dashboard.yaml`](.do/harvest-dashboard.yaml):
+
+```bash
+doctl apps create --spec .do/harvest-dashboard.yaml
+# then set the secrets (App Platform console or `doctl apps update`):
+#   dashboard: DASHBOARD_USER, DASHBOARD_PASS  (HTTP Basic on every route but /health)
+#   dashboard + worker: WORKER_TOKEN           (SAME value on both)
+```
+
+**Defaults are safe:** the worker boots **PAUSED, PAPER, leverage 1.5×**. The public UI's
+*Live controls* card (Resume / Pause / **Flatten** kill-switch / leverage) POSTs to
+`/api/cmd`, which the dashboard relays to the worker — it never trades in the browser
+process. **Hard caps the UI cannot exceed** (worker env): `MAX_LEVERAGE=1.5` (the OOS-safe
+knee — deliberately below the backtest's m=2; raise only with eyes open), `MAX_GROSS=3.0`,
+`DAILY_LOSS_LIMIT=0.15` (auto-flatten + pause). `set_mode live` is **rejected** unless the
+worker is live-capable.
+
+**Going live = set these on the WORKER only** (never on the dashboard), then redeploy:
+`MODE=live`, `LIVE_CONFIRMED=yes`, `EXCHANGE=binanceusdm`, `EXCHANGE_API_KEY`,
+`EXCHANGE_API_SECRET` (as SECRETs) — and **IP-allowlist the key to the worker**. Leave any
+of them unset and it stays paper. Do this only after the engine reconciliation + a testnet
+check (see "Going live" checklist below).
+
+> **State is ephemeral on App Platform** (worker SQLite on local disk). For a durable
+> harvest baseline / cash-floor across restarts, attach a persistent volume or managed DB
+> and point `DB_PATH` at it, or reconcile from the exchange on boot — otherwise a restart
+> resets `cum_cash`/baseline.
+
 ## Commands
 ```bash
 cd research

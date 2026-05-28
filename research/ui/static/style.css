@@ -55,7 +55,7 @@ h1{font-size:18px} h2{font-size:14px}
   transition:.18s border-color}
 .card:hover{border-color:var(--line2)}
 .span-4{grid-column:span 4} .span-5{grid-column:span 5} .span-6{grid-column:span 6}
-.span-7{grid-column:span 7}
+.span-7{grid-column:span 7} .span-12{grid-column:span 12}
 .card-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
 .hint{color:var(--mut);font-size:11.5px}
 
@@ -114,6 +114,20 @@ h1{font-size:18px} h2{font-size:14px}
 .bbar .fill{position:absolute;top:0;bottom:0;border-radius:4px}
 .bbar .mid{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--line2)}
 .brow .bnot{text-align:right;font-family:var(--mono)}
+
+/* live controls */
+.controls{display:flex;flex-direction:column;gap:13px}
+.wstate{display:flex;flex-wrap:wrap;gap:8px}
+.ctl-actions{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
+.btn-danger{border-color:rgba(248,113,113,.35);color:var(--neg)}
+.btn-danger:hover{border-color:var(--neg);background:rgba(248,113,113,.1);color:var(--neg)}
+.ctl-lev{display:flex;align-items:center;gap:7px;margin-left:auto}
+.ctl-lev label{color:var(--mut);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.ctl-lev input{width:74px;background:var(--bg2);border:1px solid var(--line2);color:var(--tx);
+  font-family:var(--mono);font-size:13px;padding:6px 9px;border-radius:9px}
+.ctl-lev input:focus{outline:none;border-color:var(--acc)}
+.ctl-msg{min-height:16px;font-size:12px;font-family:var(--mono);color:var(--mut)}
+.ctl-msg.pos{color:var(--pos)} .ctl-msg.neg{color:var(--neg)}
 
 /* market */
 .market{display:grid;grid-template-columns:repeat(auto-fit,minmax(86px,1fr));gap:9px}

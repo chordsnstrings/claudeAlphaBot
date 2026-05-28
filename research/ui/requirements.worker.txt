@@ -1,0 +1,5 @@
+# Private trading WORKER deps (this image MAY place orders, so it has ccxt).
+# Deploy this ONLY as an internal component with no public ingress + IP-allowlisted keys.
+numpy>=1.24,<3
+pandas>=2.0,<3
+ccxt>=4.0

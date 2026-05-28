@@ -1,0 +1,18 @@
+# Private trading WORKER image (has ccxt — can place orders). Deploy with NO public
+# ingress (internal_ports only). Build context = repo root.
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    WORKER_PORT=8090
+
+WORKDIR /app
+COPY research/ui/requirements.worker.txt ./research/ui/requirements.worker.txt
+RUN pip install -r research/ui/requirements.worker.txt
+COPY research ./research
+RUN useradd -m app && chown -R app /app
+USER app
+WORKDIR /app/research
+
+EXPOSE 8090
+CMD ["python", "ui/worker.py"]

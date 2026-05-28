@@ -118,6 +118,61 @@ function render(d) {
   $("#gen").textContent = "generated " + (d.generated_at || "").replace("T", " ") + (s.window ? " · OOS " + s.window[0] + "→" + s.window[1] : "");
 }
 
+/* ---------- live worker controls ---------- */
+function ctlMsg(text, kind) {
+  const m = $("#ctl-msg"); if (!m) return;
+  m.textContent = text; m.className = "ctl-msg" + (kind ? " " + kind : "");
+}
+function renderWorker(d) {
+  const st = d.state || {}, caps = d.caps || {};
+  const mode = st.mode || "paper", paused = !!st.paused, lev = st.leverage;
+  $("#worker-hint").innerHTML = `worker connected · ${d.live_capable
+    ? '<span class="amber">live-capable</span>' : '<span class="pos">paper-locked</span>'}`;
+  $("#worker-state").innerHTML = [
+    ["mode", `<span class="${mode === "live" ? "amber" : "pos"}">${mode.toUpperCase()}</span>`],
+    ["state", paused ? '<span class="amber">PAUSED</span>' : '<span class="pos">ACTIVE</span>'],
+    ["leverage", (lev == null ? "—" : lev + "×")],
+    ["max lev", (caps.max_leverage ?? "—") + "×"],
+    ["max gross", caps.max_gross == null ? "—" : (caps.max_gross * 100).toFixed(0) + "%"],
+    ["daily stop", caps.daily_loss_limit == null ? "—" : "−" + (caps.daily_loss_limit * 100).toFixed(0) + "%"],
+  ].map(([k, v]) => `<div class="stat"><div class="s-lab">${k}</div><div class="s-val">${v}</div></div>`).join("");
+  const li = $("#lev-input");
+  if (caps.max_leverage != null) li.max = caps.max_leverage;
+  if (lev != null && document.activeElement !== li) li.value = lev;
+}
+async function loadWorker() {
+  try {
+    const r = await fetch("/api/worker?t=" + Date.now());
+    if (!r.ok) { ctlMsg("worker unreachable (" + r.status + ")", "neg"); return; }
+    renderWorker(await r.json());
+  } catch (e) { ctlMsg("worker error: " + e, "neg"); }
+}
+async function sendCmd(action, params) {
+  if (action === "flatten" && !confirm("Flatten the book and pause trading? This zeroes all positions.")) return;
+  ctlMsg("sending " + action + "…");
+  try {
+    const r = await fetch("/api/cmd", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, params: params || {} }),
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { ctlMsg(j.error || ("failed (" + r.status + ")"), "neg"); return; }
+    ctlMsg(j.result || "ok", "pos");
+    loadWorker();
+  } catch (e) { ctlMsg("error: " + e, "neg"); }
+}
+async function initControls() {
+  let configured = false;
+  try { configured = (await (await fetch("/api/status")).json()).worker; } catch (_) {}
+  if (!configured) return;                       // no worker wired — hide controls
+  $("#controls-card").hidden = false;
+  document.querySelectorAll("[data-cmd]").forEach(b =>
+    b.addEventListener("click", () => sendCmd(b.dataset.cmd)));
+  $("#lev-set").addEventListener("click", () =>
+    sendCmd("set_leverage", { m: parseFloat($("#lev-input").value) || 0 }));
+  loadWorker();
+}
+
 /* ---------- load + refresh ---------- */
 async function load() {
   const r = await fetch("/api/data?t=" + Date.now());
@@ -129,6 +184,7 @@ async function init() {
     render(d);
     $("#app").hidden = false; $("#loader").hidden = true;
     window.__gen = d.generated_at;
+    initControls();
   } catch (e) { $("#loader-msg").textContent = "failed to load: " + e; }
 }
 $("#refresh").addEventListener("click", async () => {
