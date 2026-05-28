@@ -1,0 +1,39 @@
+# DigitalOcean App Platform spec — Harvest monitoring dashboard (Python, self-contained).
+# Deploy:  doctl apps create --spec .do/harvest-dashboard.yaml
+# Update:  doctl apps update <app-id> --spec .do/harvest-dashboard.yaml
+#
+# This is the READ-ONLY monitoring dashboard for the all-weather harvest bot. It has no
+# database and cannot place orders (no ccxt in the image). Live trading is a separate
+# operator CLI (research/live_trader.py --execute), deliberately NOT run by this service.
+#
+# Set DASHBOARD_USER / DASHBOARD_PASS (SECRET) before first deploy, or the app runs OPEN.
+name: harvest-dashboard
+region: nyc
+
+services:
+  - name: dashboard
+    instance_count: 1
+    instance_size_slug: basic-xs        # 1 GB — the /api/refresh recompute loads ~1.1M candles
+    http_port: 8080
+    source_dir: /
+    dockerfile_path: research/ui/Dockerfile
+    github:
+      repo: chordsnstrings/claudealphabot
+      branch: claude/eager-ramanujan-MJ4MR
+      deploy_on_push: true
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 25
+      period_seconds: 30
+      timeout_seconds: 4
+      failure_threshold: 3
+    envs:
+      - key: DASHBOARD_USER
+        scope: RUN_TIME
+        type: SECRET
+      - key: DASHBOARD_PASS
+        scope: RUN_TIME
+        type: SECRET
+      - key: REFRESH_HOURS         # self-refresh the snapshot every N hours (optional)
+        scope: RUN_TIME
+        value: "12"

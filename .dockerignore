@@ -11,6 +11,9 @@ build
 coverage
 .scratch
 .tmp
+**/__pycache__
+*.pyc
+research/*_state.json
 README.md
 RUNBOOK.md
 ARCHITECTURE.md

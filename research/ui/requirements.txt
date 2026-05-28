@@ -1,0 +1,6 @@
+# Dashboard + snapshot builder. The web server itself is pure stdlib; these are only
+# needed by build_ui_data.py (the engine recompute on /api/refresh).
+# NOTE: ccxt is intentionally NOT here — the public dashboard cannot place orders.
+# Live trading (live_trader.py --execute) is a separate operator CLI: pip install ccxt.
+numpy>=1.24,<3
+pandas>=2.0,<3
