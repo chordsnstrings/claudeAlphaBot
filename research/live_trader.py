@@ -223,6 +223,9 @@ class PaperBroker:
         st["equity"] *= (1.0 + port_ret) * (1.0 - cost)
         return port_ret, cost, last
 
+    def equity(self, st):
+        return float(st.get("equity") or 0.0)              # paper bankroll (no real account)
+
 
 class LiveBroker:
     """Real execution via ccxt. DEFAULT is dry-run (computes & prints the exact orders,
@@ -249,6 +252,16 @@ class LiveBroker:
         port_ret = (eq / st["equity"] - 1.0) if st["equity"] else 0.0
         st["equity"] = eq                                  # exchange is the source of truth
         return port_ret, 0.0, last
+
+    def equity(self, st):
+        """Total account equity (USDT) — the real starting asset when live; tracked in dry-run."""
+        if self.dry_run or self.ex is None:
+            return float(st.get("equity") or 0.0)
+        try:
+            bal = self.ex.fetch_balance()
+            return float(bal.get("total", {}).get("USDT", st.get("equity", 0.0)) or 0.0)
+        except Exception:
+            return float(st.get("equity") or 0.0)
 
     def _pos_notional(self, pair, price):
         try:

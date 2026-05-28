@@ -74,6 +74,30 @@ def put_state(st: dict):
         c.execute("INSERT OR REPLACE INTO state VALUES('bot',?)", (json.dumps(st, default=str),))
 
 
+def capture_base(st: dict, broker, live: bool):
+    """Lock the harvest baseline to the ACTUAL starting asset the first time the bot trades
+    (and again the first time it goes live), then log that number. Live -> the real account
+    equity read from the exchange; paper -> the configured paper bankroll (BASE). Every
+    harvest threshold (2x / year-stop / daily-loss / leave-on-the-table) is a PERCENTAGE of
+    this number — nothing downstream is a hard-coded dollar amount."""
+    if st.get("base_source") == "live":
+        return                                             # real baseline already locked
+    if not live and st.get("base_source") == "paper":
+        return                                             # paper baseline already logged
+    if live:
+        eq = broker.equity(st)
+        if eq and eq > 0:                                  # start the harvest fresh from the real balance
+            st.update(base=eq, equity=eq, cum_cash=0.0, principal_returned=False,
+                      locked=False, history=[])
+        st["base_source"] = "live"
+    else:
+        st["base_source"] = "paper"
+    d2x, stop = lt.CFG["double_at"], lt.CFG["year_stop"]
+    audit(f"STARTING ASSET ${st['base']:,.2f} ({st['base_source']}) — baseline locked; "
+          f"2x=${st['base'] * d2x:,.0f}, year-stop -{stop:.0%}, daily-loss -{DAILY_LOSS_LIMIT:.0%}")
+    put_state(st)
+
+
 def apply_command(st: dict, action: str, params: dict) -> str:
     if action == "pause":
         st["paused"] = True; return "paused"
@@ -99,6 +123,7 @@ def run_cycle(st: dict):
     lt.CFG["leverage"] = max(0.0, min(st.get("leverage", 1.5), MAX_LEVERAGE))   # enforce cap
     live = (st.get("mode") == "live" and LIVE_OK)
     broker = lt.broker_for("live" if live else "paper", dry_run=not live)
+    capture_base(st, broker, live)                                # lock baseline to the real starting asset
     px, vol = lt.fetch_market(lt.CFG["history_days"])
     pre = st["equity"]
     out = lt.daily_cycle(st, px, vol, broker)
@@ -172,7 +197,10 @@ def _loop():
 
 
 def main(argv):
-    audit(f"worker start — live_capable={LIVE_OK}, max_lev={MAX_LEVERAGE}, db={DB_PATH}")
+    st0 = get_state()
+    audit(f"worker start — starting asset ${st0['base']:,.2f} "
+          f"(source={st0.get('base_source', 'pending first cycle')}), "
+          f"live_capable={LIVE_OK}, max_lev={MAX_LEVERAGE}, db={DB_PATH}")
     if "--once" in argv:
         run_cycle(get_state()); return
     threading.Thread(target=_loop, daemon=True).start()

@@ -47,10 +47,10 @@ services:
     envs:
       - { key: WORKER_PORT, scope: RUN_TIME, value: "8090" }
       - { key: WORKER_TOKEN, scope: RUN_TIME, type: SECRET }   # same value as dashboard's
-      - { key: BASE, scope: RUN_TIME, value: "300000" }
-      - { key: MAX_LEVERAGE, scope: RUN_TIME, value: "1.5" }   # hard cap (OOS-safe knee)
-      - { key: MAX_GROSS, scope: RUN_TIME, value: "3.0" }
-      - { key: DAILY_LOSS_LIMIT, scope: RUN_TIME, value: "0.15" }
+      - { key: BASE, scope: RUN_TIME, value: "300000" }       # PAPER bankroll only; LIVE auto-captures the real account equity at start
+      - { key: MAX_LEVERAGE, scope: RUN_TIME, value: "1.5" }   # hard cap (OOS-safe knee) — a multiple, not $
+      - { key: MAX_GROSS, scope: RUN_TIME, value: "3.0" }      # 300% of equity
+      - { key: DAILY_LOSS_LIMIT, scope: RUN_TIME, value: "0.15" }  # -15% of equity
       - { key: CYCLE_SECONDS, scope: RUN_TIME, value: "86400" }
       # ── GO-LIVE (leave UNSET to stay paper). Set ALL THREE only after the engine
       #    reconciliation + a testnet check, and IP-allowlist the key to this app:
