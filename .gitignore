@@ -39,3 +39,10 @@ research/live_trader_state.json
 research/bb_harvest_eth.csv
 research/bb_harvest_eth.html
 research/bb_harvest_eth.png
+
+# scalping sweep: large regenerable data + generated artifacts
+research/data/intraday/BTC_15m.csv
+research/data/intraday/BTC_4h.csv
+research/scalp_trend_oos.csv
+research/scalp_trend.html
+research/scalp_trend.png
