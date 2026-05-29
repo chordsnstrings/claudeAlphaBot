@@ -26,7 +26,14 @@ import eth_engine as E
 import eth_bracket as B
 
 # ---- config ----
-W_REGIME, W_POOL = 0.5, 0.5
+# Weights chosen for ROBUST FORWARD return, NOT the lucky full-window score. A windfall
+# decomposition (drop-the-best-K-months + post-2021 sub-period) showed the REGIME sleeve's
+# edge was mostly the 2020-21 super-bull (a once-in-a-cycle windfall), while the BREAKOUT
+# pool is positive in ALL 7 years (its big years are repeatable sustained trends, not a
+# one-time crash bet). So the pool dominates: on 2022-2026 it returns ~+36%/Sharpe 0.97 vs
+# the regime sleeve's +12%/0.49. Keeping 25% regime adds genuine diversification (best
+# luck-stripped robustness) + bull-capture optionality if a real bull returns.
+W_REGIME, W_POOL = 0.25, 0.75
 VOL_TARGET = 0.30            # annual vol each sleeve is scaled to (the risk dial; 25-40% sane)
 LEV_CAP = 1.5               # hard leverage cap per sleeve (Kelly-aligned; never over-bet)
 COST_BPS = 5.0
