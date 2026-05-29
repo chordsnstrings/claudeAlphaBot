@@ -62,3 +62,6 @@ research/scalp_eth_full.png
 # ETH regime engine artifacts
 research/eth_engine.html
 research/eth_engine.png
+
+# ETH 15m bracket-resolution data (regenerable)
+research/data/intraday/ETH_15m.csv
