@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TF_BARS_PER_DAY = {"5m": 288, "15m": 96, "1h": 24, "4h": 6}
+TF_BARS_PER_DAY = {"5m": 288, "15m": 96, "1h": 24, "4h": 6, "1d": 1}
 BARS_PER_DAY = 96
 BARS_PER_YEAR = BARS_PER_DAY * 365            # set per timeframe by set_tf()
 
@@ -33,8 +33,8 @@ def set_tf(tf):
 
 
 # ----------------------------------------------------------------- data
-def load(tf="15m") -> pd.DataFrame:
-    csv = os.path.join(HERE, "data", "intraday", f"BTC_{tf}.csv")
+def load(tf="15m", asset="BTC") -> pd.DataFrame:
+    csv = os.path.join(HERE, "data", "intraday", f"{asset}_{tf}.csv")
     df = pd.read_csv(csv, parse_dates=["date"]).set_index("date")
     return df[["open", "high", "low", "close", "volume"]].astype(float)
 
@@ -241,9 +241,9 @@ def daily_metrics(d) -> dict:
                 total=eq.iloc[-1] - 1, pos_months=float((mon > 0).mean()), n=len(d))
 
 
-def run(cost_bps=5.0, train_days=90, test_days=30, tf="15m"):
+def run(cost_bps=5.0, train_days=90, test_days=30, tf="15m", asset="BTC"):
     set_tf(tf)
-    df = load(tf)
+    df = load(tf, asset)
     tb, te = train_days * BARS_PER_DAY, test_days * BARS_PER_DAY
     rows = []
     oos_curves = {}
@@ -265,11 +265,12 @@ if __name__ == "__main__":
     ap.add_argument("--train-days", type=int, default=90)
     ap.add_argument("--test-days", type=int, default=30)
     ap.add_argument("--tf", default="15m", choices=list(TF_BARS_PER_DAY))
+    ap.add_argument("--asset", default="BTC")
     a = ap.parse_args()
-    df, res, _ = run(a.cost_bps, a.train_days, a.test_days, a.tf)
+    df, res, _ = run(a.cost_bps, a.train_days, a.test_days, a.tf, a.asset)
     span_days = (df.index[-1] - df.index[0]).days
     bh = df["close"].iloc[-1] / df["close"].iloc[0] - 1
-    print(f"\nBTC {a.tf}  {df.index[0].date()} -> {df.index[-1].date()} ({span_days}d, {len(df)} bars)")
+    print(f"\n{a.asset} {a.tf}  {df.index[0].date()} -> {df.index[-1].date()} ({span_days}d, {len(df)} bars)")
     print(f"buy&hold BTC: {bh:+.0%}   |   costs {a.cost_bps} bps/side   |   WF train {a.train_days}d / test {a.test_days}d\n")
     pd.set_option("display.width", 160, "display.max_columns", 20)
     show = res.copy()

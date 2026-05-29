@@ -46,3 +46,10 @@ research/data/intraday/BTC_4h.csv
 research/scalp_trend_oos.csv
 research/scalp_trend.html
 research/scalp_trend.png
+
+# ETH momentum study artifacts (regenerable)
+research/data/intraday/ETH_4h.csv
+research/data/intraday/ETH_1d.csv
+research/scalp_eth_roc.csv
+research/scalp_eth.html
+research/scalp_eth.png
