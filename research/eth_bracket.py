@@ -59,6 +59,21 @@ def s_donch_trend(df, n=50, sma=200):                      # breakout, but only 
 def committee(signals):                                    # majority entry vote across a basket
     return np.sign(sum(signals))
 
+def breakout_pool_spec():
+    """Recommended PARALLEL-BOOK breakout pool for ETH (2:1 RR brackets, trend+ADX filtered,
+    fine-bar resolution). Running several Donchian lengths/timeframes as CONCURRENT independent
+    books and pooling their trades multiplies the trade count without lowering per-trade win
+    much. Findings (2023-26, 15m-resolved):
+      * win rate ceiling ~42% — faster TFs / weaker filters only ADD trades at slightly lower win.
+      * 4h x {20,50,100} + SMA200 trend + ADX20, ATR*2 stop  -> 41.7% win, ~142 trades/yr (BEST
+        balance, 7x the single-config count); 2h+4h adds more (~213/yr @ 41.3%).
+    IMPORTANT: books run concurrently, so divide risk by the number of likely-simultaneous books
+    (e.g. 2% total / ~3-4 concurrent = ~0.5% each) to keep aggregate exposure controlled."""
+    return dict(timeframes=["4h"], lengths=[20, 50, 100], trend_sma=200, adx_min=20,
+                atr_mult=2.0, rr=2.0, risk_total=0.02,
+                more_trades=dict(timeframes=["2h", "4h"], lengths=[20, 50, 100], adx_min=20))
+
+
 def recommended_entry(df, kind="pullback"):
     """Highest-win-rate bracket entries found by the sweep (4h signal, resolve on 1h, 2:1 RR).
     Trend ALIGNMENT is the key lever — it lifts win rate from ~38% (raw breakout) to ~42%.
