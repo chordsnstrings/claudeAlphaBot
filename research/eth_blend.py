@@ -41,6 +41,15 @@ import eth_bracket as B
 #   * adding a 3rd cross-asset BTC-breakout sleeve was TESTED and REJECTED: corr to the ETH
 #     pool is 0.46 (not diversifying enough) and it LOWERS forward return (28-30%) while only
 #     shaving DD a little. ETH-only wins. -> 25/75 is the locked recommendation.
+#
+# WALK-FORWARD OOS (nested: blend weight reselected out-of-sample every fold, 365d train /
+# 90d test, ~5yr OOS 2021-2026) CONFIRMED the weight is NOT overfit -- fixed 25/75 (+24% /
+# Sharpe 0.80) matches the WF-selected weight (+25% / 0.80). But the honest forward number
+# is the DEFLATED one: ~+24%/yr, Sharpe 0.80, -28..-32% DD at 1x  (NOT the +35%/Sharpe 1.06
+# full-window in-sample figure that backtest() prints). Remaining in-sample layer: the pool/
+# regime component CONFIGS were chosen from a full-sample sweep (subperiod-robust, but not
+# per-fold reselected). NOTE: the Kelly leverage (~3.5x) is a full-sample estimate -> biased
+# high; do not trust the specific optimum, only the shape (Kelly exists, ruin beyond it).
 W_REGIME, W_POOL = 0.25, 0.75
 VOL_TARGET = 0.30            # annual vol each sleeve is scaled to (the risk dial; 25-40% sane)
 LEV_CAP = 1.5               # hard leverage cap per sleeve (Kelly-aligned; never over-bet)
