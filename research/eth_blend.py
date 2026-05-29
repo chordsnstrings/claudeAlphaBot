@@ -50,6 +50,14 @@ import eth_bracket as B
 # regime component CONFIGS were chosen from a full-sample sweep (subperiod-robust, but not
 # per-fold reselected). NOTE: the Kelly leverage (~3.5x) is a full-sample estimate -> biased
 # high; do not trust the specific optimum, only the shape (Kelly exists, ruin beyond it).
+#
+# FULLY-NESTED WF-OOS (weight AND leverage reselected out-of-sample each fold, 2021-2026):
+#   * leverage held FIXED -> +24%/Sharpe 0.80/-28% DD at 1x (Sharpe-invariant: 1.5x=+32%/-40%,
+#     2x=+38%/-52%). The edge survives. Leverage is purely a risk dial.
+#   * leverage made ADAPTIVE (half-Kelly on trailing yr, WF-selected) -> +4%/Sharpe 0.36/-57%
+#     DD. It FAILS: trailing-return Kelly is pro-cyclical (levers up into tops, down into
+#     bottoms). => Use a FIXED leverage; never time/optimize it. (Vol-targeting, which adapts
+#     to VOLATILITY not returns, is fine and already in the sleeves.)
 W_REGIME, W_POOL = 0.25, 0.75
 VOL_TARGET = 0.30            # annual vol each sleeve is scaled to (the risk dial; 25-40% sane)
 LEV_CAP = 1.5               # hard leverage cap per sleeve (Kelly-aligned; never over-bet)
