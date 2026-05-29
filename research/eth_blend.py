@@ -33,6 +33,14 @@ import eth_bracket as B
 # one-time crash bet). So the pool dominates: on 2022-2026 it returns ~+36%/Sharpe 0.97 vs
 # the regime sleeve's +12%/0.49. Keeping 25% regime adds genuine diversification (best
 # luck-stripped robustness) + bull-capture optionality if a real bull returns.
+#
+# SEARCH OUTCOME (forward 2022-26, vol-tgt 30% / cap 1.5):
+#   * 100% pool        -> +36% / Sh 0.97 / DD -32%   (max raw return; no bull hedge)
+#   * 25/75 (THIS)     -> +31% / Sh 0.96 / DD -28%   (best all-around: ~95% of the return,
+#                                                      lower DD, + bull optionality)
+#   * adding a 3rd cross-asset BTC-breakout sleeve was TESTED and REJECTED: corr to the ETH
+#     pool is 0.46 (not diversifying enough) and it LOWERS forward return (28-30%) while only
+#     shaving DD a little. ETH-only wins. -> 25/75 is the locked recommendation.
 W_REGIME, W_POOL = 0.25, 0.75
 VOL_TARGET = 0.30            # annual vol each sleeve is scaled to (the risk dial; 25-40% sane)
 LEV_CAP = 1.5               # hard leverage cap per sleeve (Kelly-aligned; never over-bet)
