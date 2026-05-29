@@ -53,3 +53,8 @@ research/data/intraday/ETH_1d.csv
 research/scalp_eth_roc.csv
 research/scalp_eth.html
 research/scalp_eth.png
+
+# ETH full-history stress-test artifacts
+research/scalp_eth_full.csv
+research/scalp_eth_full.html
+research/scalp_eth_full.png
