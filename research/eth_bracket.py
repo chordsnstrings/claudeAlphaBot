@@ -51,6 +51,27 @@ def s_ema_pull(df, slow=200, fast=20):                     # pullback to fast EM
     up = (c > es).values; dn = (c < es).values; below = (c <= ef).values; above = (c >= ef).values
     e = np.zeros(len(df)); e[up & below] = 1; e[dn & above] = -1; return e
 
+def s_donch_trend(df, n=50, sma=200):                      # breakout, but only WITH the macro trend
+    s = s_donch(df, n)
+    up = (df["close"] > df["close"].rolling(sma).mean()).values
+    s[(s > 0) & ~up] = 0; s[(s < 0) & up] = 0; return s     # no counter-trend breakouts
+
+def committee(signals):                                    # majority entry vote across a basket
+    return np.sign(sum(signals))
+
+def recommended_entry(df, kind="pullback"):
+    """Highest-win-rate bracket entries found by the sweep (4h signal, resolve on 1h, 2:1 RR).
+    Trend ALIGNMENT is the key lever — it lifts win rate from ~38% (raw breakout) to ~42%.
+      'pullback' : trend-aligned RSI dip (sma100, dip40) — 42.5% win, +0.50%/trade, -12% DD,
+                   slippage-robust to ~50bps (buy dips with LIMIT orders, no chasing). ~20 trades/yr.
+      'breakout' : trend-breakout committee (donch 20/50/100 aligned to SMA200) — 41.8% win,
+                   +0.47%/trade, stable EVERY year (36-48%), ~50 trades/yr, more slippage-sensitive.
+    Use ATR*2.0 (pullback) or ATR*2.5 (breakout) for the stop; target = 2x (2:1)."""
+    if kind == "breakout":
+        return committee([s_donch_trend(df, n, 200) for n in (20, 50, 100)])
+    return s_rsi_trend(df, sma=100, period=14, dip=40)
+
+
 SIGNALS = {
     "rsi_rev":   (s_rsi_rev,   [dict(period=14, lo=30, hi=70), dict(period=14, lo=25, hi=75),
                                 dict(period=7, lo=20, hi=80), dict(period=14, lo=35, hi=65)]),
