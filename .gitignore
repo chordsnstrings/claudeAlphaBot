@@ -65,3 +65,7 @@ research/eth_engine.png
 
 # ETH 15m bracket-resolution data (regenerable)
 research/data/intraday/ETH_15m.csv
+
+# ETH comparison artifacts
+research/eth_compare.html
+research/eth_compare.png
