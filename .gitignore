@@ -34,3 +34,8 @@ research/**/__pycache__/
 # bot runtime state
 research/bot_state.json
 research/live_trader_state.json
+
+# generated backtest artifacts (regenerate via the scripts)
+research/bb_harvest_eth.csv
+research/bb_harvest_eth.html
+research/bb_harvest_eth.png
