@@ -73,3 +73,6 @@ research/eth_compare.png
 # Final review artifacts
 research/final_review.html
 research/final_review.png
+
+# BTC daily (regenerable via binance_vision)
+research/data/intraday/BTC_1d.csv
