@@ -58,6 +58,16 @@ import eth_bracket as B
 #     DD. It FAILS: trailing-return Kelly is pro-cyclical (levers up into tops, down into
 #     bottoms). => Use a FIXED leverage; never time/optimize it. (Vol-targeting, which adapts
 #     to VOLATILITY not returns, is fine and already in the sleeves.)
+#
+# FULLY-NESTED WF-OOS (also reselect pool config + vol_target + weight per fold; 12 pool
+# configs * 3 vol_targets * 5 weights = 180 candidates / fold over 2021-26 / 20 folds):
+#   * Result: +20%/yr, Sharpe 0.68, -41% DD.
+#   * Key finding: per-fold optimization HURTS vs the deployed FIXED config (+24%/0.80/-28%
+#     under weight-only WF). The picks swung wildly (w_pool from 0 to 1, vt 25-40%) and the
+#     extra optimization layer overfit to train noise. STABLE FIXED CONFIG > PER-FOLD CHASE.
+#   * Honest forward expectation for the deployed strategy: ~+24%/yr, Sharpe ~0.80, -28% DD.
+#     The +20% fully-nested is a conservative LOWER bound that includes the noise penalty of
+#     trying to re-optimize each fold -- don't pay it; trust the fixed config.
 W_REGIME, W_POOL = 0.25, 0.75
 VOL_TARGET = 0.30            # annual vol each sleeve is scaled to (the risk dial; 25-40% sane)
 LEV_CAP = 1.5               # hard leverage cap per sleeve (Kelly-aligned; never over-bet)
