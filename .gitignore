@@ -77,10 +77,6 @@ research/final_review.png
 # BTC daily (regenerable via binance_vision)
 research/data/intraday/BTC_1d.csv
 
-# Alt high-vol data (regenerable via binance_vision)
+# Alt high-vol data (regenerable via binance_vision); USDT-suffixed names only
+# (majors are BTC_*.csv / ETH_*.csv etc., already gitignored individually above)
 research/data/intraday/*USDT_*.csv
-!research/data/intraday/BTC_*.csv
-!research/data/intraday/ETH_*.csv
-!research/data/intraday/SOL_*.csv
-!research/data/intraday/DOGE_*.csv
-!research/data/intraday/XRP_*.csv
