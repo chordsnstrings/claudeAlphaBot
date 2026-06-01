@@ -64,3 +64,25 @@ git checkout -b strategy/v2-xxx          # new branch for v2
 ---
 
 <!-- Add new locked versions below as the work evolves -->
+
+---
+
+## Last-year deep dive (2025-05 to 2026-05) — RECENT regime check
+
+ETH itself fell **−24%** in this window. The deployable strategies still won by wide margin:
+
+| strategy | ann | best month | worst month | maxDD | %pos months |
+|---|--:|--:|--:|--:|--:|
+| ETH buy & hold | −24% | +49% | −22% | −62% | 31% |
+| v1 blend (deployed 25/75) at 1× | +39% | +25% | −9% | −16% | 54% |
+| v1 blend × 2× | +76% | +55% | −18% | −30% | 54% |
+| v1 blend × 3× | +103% | **+91%** | −26% | −43% | 54% |
+| **POOL sleeve alone at 1×** | **+57%** | +55% | −19% | −31% | 54% |
+| POOL sleeve × 2× | +73% | **+131%** | −35% | −57% | 54% |
+| POOL sleeve × 3× | +34% (decay) | +232% | −49% | −77% | 54% |
+| REGIME sleeve alone | +27% | +31% | −10% | −24% | 38% |
+
+Simple trend signals (4h EMA/Donchian/ROC) at 1× ranged **−22% to +7% ann** in this window — they did not work this year. The bracket pool (which the v1 blend weights at 75%) is what carried.
+
+Key insight: **the POOL sleeve alone outperformed the full blend** in the last year (+57% vs +39%) because the regime sleeve was a drag (short most of the year while ETH chopped, not crashed). The blend's robustness comes at a cost in any single regime. Over multiple regimes (full history) the blend is best risk-adjusted; in a chop-bear regime the pool alone wins.
+
