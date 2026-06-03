@@ -1,0 +1,13 @@
+run = "npm run paper"
+entrypoint = "src/index.ts"
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-23_11"
+
+[deployment]
+deploymentTarget = "cloudrun"
+run = ["sh", "-c", "npm start"]
+
+[env]
+PAPER = "true"
